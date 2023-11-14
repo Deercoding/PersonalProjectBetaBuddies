@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Room</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      #chat-wrap {
+        display: flex;
+        flex-direction: row;
+      }
+
+      #chat-container {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chat-wrap">
+      <div id="chat-container">
+        <p>岩館一 AB牆 黃色</p>
+        <ul id="messages"></ul>
+        <input id="input" autocomplete="off" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+      <div id="chat-container">
+        <p>岩館一 CD牆 綠色</p>
+        <ul id="messages"></ul>
+        <input id="input" " autocomplete="off" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+    <div id="chat-wrap">
+      <div id="chat-container">
+        <p>岩館一 CD牆 紅色</p>
+        <ul id="messages"></ul>
+        <input id="input" autocomplete="off" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+      <div id="chat-container">
+        <p>岩館一 AB牆 紫色</p>
+        <ul id="messages"></ul>
+        <input id="input" " autocomplete="off" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      const socket = io(); // URL of your server
+
+      socket.on("connect", () => {
+        console.log(`You connect with id ${socket.id}`); // Connection started
+      });
+
+      socket.on("talk", (response) => {
+        console.log(response);
+        const message = response.message;
+        const roomId = response.roomId;
+        const userId = response.userId;
+        console.log(roomId, ":", message);
+        appendMessage(message, roomId, userId);
+      });
+
+      function sendMessage() {
+        const parentElement = event.currentTarget.closest("#chat-container");
+        const input = parentElement.querySelector("input");
+        const roomId = parentElement.querySelector("p").innerText;
+        let userIdentify = { userId: "user2", roomId: roomId };
+        if (input.value) {
+          socket.emit("talk", input.value, userIdentify);
+          input.value = "";
+        }
+      }
+
+      function appendMessage(message, roomId, userId) {
+        const p = document.createElement("p");
+        p.textContent = `${userId}: ${message}`;
+        const chatContainers = document.querySelectorAll("#chat-container");
+        console.log(chatContainers);
+        chatContainers.forEach((chatContainer) => {
+          const findRoom = chatContainer.querySelector("p").textContent;
+          console.log(findRoom);
+          if (findRoom == roomId) {
+            chatContainer.querySelector("#messages").appendChild(p);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
