@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import Chat from "./models/chat-model.js";
 import chatRouter from "./routes/chat-api.js";
+import wallUpdateRouter from "./routes/wallupload-api.js";
 
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
@@ -15,7 +16,8 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/api", chatRouter);
+app.use("/api/chat", chatRouter);
+app.use("/api/wallupload", wallUpdateRouter);
 
 app.listen(3000, () => {
   console.log(`Server is running on port 3000`);

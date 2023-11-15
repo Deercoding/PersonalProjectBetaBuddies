@@ -1,11 +1,18 @@
 import cv2
 import numpy as np
 import os
+import requests
+
+
+imageName = "AB wall crop new.jpg_1700043852723.jpg"
+
+cloudfrontUrl = "https://d2mh6uqojgaomb.cloudfront.net/"
+cdnTest = cloudfrontUrl + imageName
+response = requests.get(cdnTest)
+np_arr = np.frombuffer(response.content, np.uint8)
 
 # Read the image
-imageName = "AB wall crop new.jpg"
-imagePath = f'bouldering pics/{imageName}'
-image = cv2.imread(imagePath)
+image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
 # Convert BGR to HSV
 hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -49,8 +56,8 @@ for color_name, (lower_range, upper_range) in color_ranges.items():
         cv2.imwrite(output_image_path, image)
 
     # Reset the image for the next color
-    image = cv2.imread(imagePath)
+    image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-# Display the result
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    #save image to s3
+    
+

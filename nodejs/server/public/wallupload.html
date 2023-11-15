@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image upload</title>
+    <script>
+      updateList = function () {
+        let input = document.getElementById("file");
+        let output = document.getElementById("fileList");
+        let children = "";
+        for (let i = 0; i < input.files.length; ++i) {
+          children += "<li>" + input.files.item(i).name + "</li>";
+        }
+
+        output.innerHTML = "<ul>" + children + "</ul>";
+
+        for (let i = 0; i < input.files.length; ++i) {
+          let reader = new FileReader();
+          reader.onload = function (e) {
+            let img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.maxWidth = "200px";
+            img.style.marginRight = "10px";
+            preview.appendChild(img);
+          };
+          reader.readAsDataURL(input.files[i]);
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div>
+      <img
+        src="https://d2mh6uqojgaomb.cloudfront.net/AB wall crop new.jpg_1700043852723.jpg"
+      />
+      <form
+        action="/api/wallupload"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <label for="file">Upload 1-5 images</label>
+        <input
+          id="file"
+          type="file"
+          name="file"
+          onchange="updateList()"
+          multiple
+        />
+        <div id="fileList"></div>
+        <br />
+        <div id="preview"></div>
+        <br />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </body>
+</html>

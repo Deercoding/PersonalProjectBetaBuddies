@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.451.0",
     "cors": "^2.8.5",
     "cropper": "^4.1.0",
     "dotenv": "^16.3.1",

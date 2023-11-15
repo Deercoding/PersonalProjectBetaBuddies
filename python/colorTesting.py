@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Read the image
-image = cv2.imread('bouldering pics/IJK wall crop.jpg')
+image = cv2.imread('bouldering pics/AB wall crop new.jpg')
 hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # change to black write to better get counter
@@ -38,9 +38,9 @@ hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 # lower_range = np.array([0, 100, 100])
 # upper_range = np.array([10, 225, 225])
 # orange
-lower_range = np.array([10, 110, 110])
-upper_range = np.array([20, 225, 225])
-
+# lower_range = np.array([10, 110, 110])
+# upper_range = np.array([20, 225, 225])
+#
 
 # Create a mask
 mask = cv2.inRange(hsv_image, lower_range, upper_range)
