@@ -24,13 +24,13 @@
   <body>
     <div id="chat-wrap">
       <div id="chat-container">
-        <p>岩館一 AB牆 黃色</p>
+        <h3 id="room-name">岩館一 AB牆 黃色</h3>
         <ul id="messages"></ul>
         <input id="input" autocomplete="off" />
         <button onclick="sendMessage()">Send</button>
       </div>
       <div id="chat-container">
-        <p>岩館一 CD牆 綠色</p>
+        <h3 id="room-name">岩館一 CD牆 綠色</h3>
         <ul id="messages"></ul>
         <input id="input" " autocomplete="off" />
         <button onclick="sendMessage()">Send</button>
@@ -38,13 +38,13 @@
     </div>
     <div id="chat-wrap">
       <div id="chat-container">
-        <p>岩館一 CD牆 紅色</p>
+        <h3 id="room-name">岩館一 CD牆 紅色</h3>
         <ul id="messages"></ul>
         <input id="input" autocomplete="off" />
         <button onclick="sendMessage()">Send</button>
       </div>
       <div id="chat-container">
-        <p>岩館一 AB牆 紫色</p>
+        <h3 id="room-name">岩館一 AB牆 紫色</h3>
         <ul id="messages"></ul>
         <input id="input" " autocomplete="off" />
         <button onclick="sendMessage()">Send</button>
@@ -55,23 +55,28 @@
     <script>
       const socket = io(); // URL of your server
 
+      document.addEventListener("DOMContentLoaded", async () => {
+        const chatContainers = document.querySelectorAll("#chat-container");
+        chatContainers.forEach(async (chatContainer) => {
+          const findRoom =
+            chatContainer.querySelector("#room-name").textContent;
+          await fetchChatHistory(findRoom);
+        });
+      });
+
       socket.on("connect", () => {
-        console.log(`You connect with id ${socket.id}`); // Connection started
+        console.log(`You connect with id ${socket.id}`);
       });
 
       socket.on("talk", (response) => {
-        console.log(response);
-        const message = response.message;
-        const roomId = response.roomId;
-        const userId = response.userId;
-        console.log(roomId, ":", message);
+        const { message, roomId, userId } = response;
         appendMessage(message, roomId, userId);
       });
 
       function sendMessage() {
         const parentElement = event.currentTarget.closest("#chat-container");
         const input = parentElement.querySelector("input");
-        const roomId = parentElement.querySelector("p").innerText;
+        const roomId = parentElement.querySelector("#room-name").innerText;
         let userIdentify = { userId: "user2", roomId: roomId };
         if (input.value) {
           socket.emit("talk", input.value, userIdentify);
@@ -83,14 +88,44 @@
         const p = document.createElement("p");
         p.textContent = `${userId}: ${message}`;
         const chatContainers = document.querySelectorAll("#chat-container");
-        console.log(chatContainers);
         chatContainers.forEach((chatContainer) => {
-          const findRoom = chatContainer.querySelector("p").textContent;
-          console.log(findRoom);
+          const findRoom =
+            chatContainer.querySelector("#room-name").textContent;
+
           if (findRoom == roomId) {
             chatContainer.querySelector("#messages").appendChild(p);
           }
         });
+      }
+
+      function fetchChatHistory(roomId) {
+        const data = { roomId: roomId };
+        fetch("/api/chat/history", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const chatContainers = document.querySelectorAll("#chat-container");
+
+            chatContainers.forEach((chatContainer) => {
+              const findRoom =
+                chatContainer.querySelector("#room-name").textContent;
+              data.forEach((message) => {
+                if (findRoom == message.roomId) {
+                  const p = document.createElement("p");
+                  p.textContent = `${message.userId}: ${message.content}`;
+                  chatContainer.querySelector("#messages").appendChild(p);
+                }
+              });
+            });
+          })
+          .catch((error) =>
+            console.error(`Error fetching chat history: ${error}`)
+          );
       }
     </script>
   </body>
