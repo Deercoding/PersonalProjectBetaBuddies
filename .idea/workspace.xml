@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bae14619-57ee-4eff-bc4f-546719c764db" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/python/cdntest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/awss3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nodejs/server/public/wallupload.html" beforeDir="false" afterPath="$PROJECT_DIR$/nodejs/server/public/wallupload.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/python/circlepic_colors.py" beforeDir="false" afterPath="$PROJECT_DIR$/python/circlepic_colors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nodejs/server/routes/wallupload-api.js" beforeDir="false" afterPath="$PROJECT_DIR$/nodejs/server/routes/wallupload-api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/cdntest.py" beforeDir="false" afterPath="$PROJECT_DIR$/python/cdntest.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -58,6 +58,12 @@ for color_name, (lower_range, upper_range) in color_ranges.items():
     # Reset the image for the next color
     image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-    #save image to s3
-    
+
+#save images to s3
+
+
+
+
+
+
 

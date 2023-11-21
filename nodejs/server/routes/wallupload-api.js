@@ -49,8 +49,12 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
   // await createImage(imageQuery);
   let toFolder = __dirname;
   uploadObject("boulderingproject", req.files, "ap-southeast-1", toFolder);
+});
 
-  res.status(200).json();
+router.post("/response", async (req, res) => {
+  const imageNames = req.body;
+  console.log(imageNames);
+  res.status(200).json("Get image result");
 });
 
 export default router;
