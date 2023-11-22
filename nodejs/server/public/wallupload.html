@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image upload</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
       updateList = function () {
         let input = document.getElementById("file");
@@ -27,6 +28,28 @@
           reader.readAsDataURL(input.files[i]);
         }
       };
+
+      const socket = io(); // URL of your server
+
+      socket.on("connect", () => {
+        console.log(`You connect with id ${socket.id}`);
+      });
+
+      socket.on("wallcolor", (response) => {
+        console.log(response);
+        for (let i = 0; i < response.length; i++) {
+          const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
+          let imageProcessed = cloudfrontUrl + response[0];
+          appendImage(imageProcessed);
+        }
+      });
+
+      function appendImage(imageProcessed) {
+        const img = document.createElement("img");
+        img.src = imageProcessed;
+        var src = document.getElementById("header");
+        src.appendChild(img);
+      }
     </script>
   </head>
   <body>
@@ -34,12 +57,13 @@
       <!-- <img
         src="https://d2mh6uqojgaomb.cloudfront.net/AB wall crop new.jpg_1700043852723.jpg"
       /> -->
+      <!-- <img src="https://d3ebcb0pef2qqe.cloudfront.net/test_obj2.jpg" /> -->
       <form
         action="/api/wallupload"
         method="post"
         enctype="multipart/form-data"
       >
-        <label for="file">Upload 1-5 images</label>
+        <label for="file">Upload 1 image</label>
         <input
           id="file"
           type="file"
@@ -54,5 +78,6 @@
         <button type="submit">Send</button>
       </form>
     </div>
+    <div id="header"></div>
   </body>
 </html>

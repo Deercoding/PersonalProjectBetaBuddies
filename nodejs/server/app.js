@@ -40,7 +40,7 @@ const io = new Server(server, {
     origin: "*",
   },
 });
-
+app.set("socketio", io);
 io.on("connection", (socket) => {
   console.log("Socket-connect");
 

@@ -53,8 +53,11 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
 
 router.post("/response", async (req, res) => {
   const imageNames = req.body;
-  console.log(imageNames);
-  res.status(200).json("Get image result");
+  // const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
+  // const cdnTest = cloudfrontUrl + imageNames.image_name[0];
+  const io = req.app.get("socketio");
+  io.emit("wallcolor", imageNames.image_name);
+  console.log("Get image result");
 });
 
 export default router;
