@@ -36,27 +36,14 @@ const imageUpload = multer({
 });
 
 router.post("/", imageUpload.array("file", 12), async (req, res) => {
-  console.log(req.files);
-
-  // save to DB - save later
-  // let imageSend = [];
-  // let imageQuery = [];
-  // for (let i = 1; i < req.files.length; i++) {
-  //   let imageName = req.files[i].filename;
-  //   imageSend.push(imageName);
-  //   imageQuery.push([product_id, imageName]);
-  // }
-  // await createImage(imageQuery);
   let toFolder = __dirname;
   uploadObject("boulderingproject", req.files, "ap-southeast-1", toFolder);
 });
 
 router.post("/response", async (req, res) => {
   const imageNames = req.body;
-  // const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
-  // const cdnTest = cloudfrontUrl + imageNames.image_name[0];
   const io = req.app.get("socketio");
-  io.emit("wallcolor", imageNames.image_name);
+  io.emit("wallcolor", imageNames.imageNames);
   console.log("Get image result");
 });
 
