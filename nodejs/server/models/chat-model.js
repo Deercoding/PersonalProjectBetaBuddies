@@ -1,16 +1,27 @@
 import mongoose, { now } from "mongoose";
 
-const chatSchema = new mongoose.Schema({
+const roomCounterSchema = new mongoose.Schema({
+  roomId: { type: String },
+});
+
+const RoomCounter = mongoose.model("RoomCounter", roomCounterSchema);
+
+const boulderingChatSchema = new mongoose.Schema({
   sendTime: { type: Date },
   roomId: { type: String },
   userId: { type: String },
   content: { type: String },
+  tagSearched: { type: Boolean },
+  roomNumericId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "RoomCounter",
+  },
 });
 
 // create a model
-const Chat = mongoose.model("Chat", chatSchema); //singular + lower case start
+const BoulderingChat = mongoose.model("BoulderingChat", boulderingChatSchema); //singular + lower case start
 
-// Chat.deleteMany()
+// BoulderingChat.deleteMany()
 //   .then(function () {
 //     console.log("Data deleted"); // Success
 //   })
@@ -18,4 +29,12 @@ const Chat = mongoose.model("Chat", chatSchema); //singular + lower case start
 //     console.log(error); // Failure
 //   });
 
-export default Chat;
+// RoomCounter.deleteMany()
+//   .then(function () {
+//     console.log("Data deleted"); // Success
+//   })
+//   .catch(function (error) {
+//     console.log(error); // Failure
+//   });
+
+export { BoulderingChat, RoomCounter };

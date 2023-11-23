@@ -6,9 +6,10 @@ import { Server } from "socket.io";
 import cors from "cors";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
-import Chat from "./models/chat-model.js";
+import { BoulderingChat, RoomCounter } from "./models/chat-model.js";
 import chatRouter from "./routes/chat-api.js";
 import wallUpdateRouter from "./routes/wallupload-api.js";
+import searchKeyWord from "./utils/elasticsearch.js";
 
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
@@ -18,6 +19,7 @@ dotenv.config();
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
+app.use("/search", searchKeyWord);
 
 app.listen(3000, () => {
   console.log(`Server is running on port 3000`);
@@ -48,13 +50,35 @@ io.on("connection", (socket) => {
     const userId = userIdentify.userId;
     const roomId = userIdentify.roomId;
 
-    const saveMessage = new Chat({
-      sendTime: new Date(),
-      userId: userId,
-      roomId: roomId,
-      content: msg,
-    });
-    await saveMessage.save();
+    const roomExist = await RoomCounter.find({ roomId: roomId });
+
+    if (roomExist.length > 0) {
+      const saveMessage = new BoulderingChat({
+        sendTime: new Date(),
+        userId: userId,
+        roomId: roomId,
+        content: msg,
+        tagSearched: 0,
+        roomNumericId: roomExist[0]._id,
+      });
+      await saveMessage.save();
+      console.log(roomExist);
+    } else {
+      const saveRoom = new RoomCounter({
+        roomId: roomId,
+      });
+      const newRoom = await saveRoom.save();
+      console.log(newRoom);
+      const saveMessage = new BoulderingChat({
+        sendTime: new Date(),
+        userId: userId,
+        roomId: roomId,
+        content: msg,
+        tagSearched: 0,
+        roomNumericId: newRoom._id,
+      });
+      await saveMessage.save();
+    }
 
     // const room = io.sockets.adapter.rooms.get("admin");
     // const roomUsers = await io.in("admin").fetchSockets();
