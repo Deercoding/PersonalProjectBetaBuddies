@@ -20,6 +20,12 @@
           appendImage(imageProcessed);
         }
       });
+      function appendImage(imageProcessed) {
+        const img = document.createElement("img");
+        img.src = imageProcessed;
+        var src = document.getElementById("header");
+        src.appendChild(img);
+      }
     </script>
   </head>
   <body>

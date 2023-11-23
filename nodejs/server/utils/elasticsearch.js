@@ -6,7 +6,7 @@ import path from "path";
 import url from "url";
 import TagList from "../models/taglist-model.js";
 import { BoulderingChat } from "../models/chat-model.js";
-import TagRoom from "../models/tagRoom-model.js";
+import TagRoom from "../models/tagroom-model.js";
 import schedule from "node-schedule";
 
 dotenv.config({ path: "./.env" });
