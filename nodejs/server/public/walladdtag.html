@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>walladdtagpage</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      const socket = io(); // URL of your server
+
+      socket.on("connect", () => {
+        console.log(`You connect with id ${socket.id}`);
+      });
+
+      socket.on("wallcolor", (response) => {
+        console.log(response);
+        for (let i = 0; i < response.length; i++) {
+          const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
+          let imageProcessed = cloudfrontUrl + response[i];
+          appendImage(imageProcessed);
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div><h3>this page is setup to add tag to images</h3></div>
+    <div id="header"></div>
+  </body>
+</html>

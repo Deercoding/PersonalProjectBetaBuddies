@@ -38,6 +38,7 @@ const imageUpload = multer({
 router.post("/", imageUpload.array("file", 12), async (req, res) => {
   let toFolder = __dirname;
   uploadObject("boulderingproject", req.files, "ap-southeast-1", toFolder);
+  res.redirect("/walladdtag.html");
 });
 
 router.post("/response", async (req, res) => {
@@ -45,6 +46,7 @@ router.post("/response", async (req, res) => {
   const io = req.app.get("socketio");
   io.emit("wallcolor", imageNames.imageNames);
   console.log("Get image result");
+  res.status(200).send("Success");
 });
 
 export default router;
