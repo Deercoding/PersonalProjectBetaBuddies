@@ -54,3 +54,5 @@ Match
 Traversing
 bat hang
 bat-hang
+動態
+指力
