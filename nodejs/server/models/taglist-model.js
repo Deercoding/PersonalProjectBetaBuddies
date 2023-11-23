@@ -36,6 +36,14 @@ const TagList = mongoose.model("TagList", tagListSchema); //singular + lower cas
 //     console.log(error); // Failure
 //   });
 
+// const saveTag = new TagList({
+//   addTime: new Date(),
+//   userId: "defualt",
+//   tag: "指力",
+//   usedCount: 0,
+// });
+// saveTag.save().then();
+
 // TagList.deleteMany()
 //   .then(function () {
 //     console.log("Data deleted"); // Success

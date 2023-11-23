@@ -7,6 +7,7 @@ import url from "url";
 import TagList from "../models/taglist-model.js";
 import { BoulderingChat } from "../models/chat-model.js";
 import TagRoom from "../models/tagRoom-model.js";
+import schedule from "node-schedule";
 
 dotenv.config({ path: "./.env" });
 const router = express.Router();
@@ -25,23 +26,21 @@ const client = new Client({
   },
 });
 
-// const interval = 1000;
-// setInterval(await processQueue, interval);
-// schedule time
-searchKeyword();
+//schedule tag creation every 6am
+const job = schedule.scheduleJob("0 6 * * *", function () {
+  searchKeyword();
+});
 
 async function searchKeyword() {
-  // create bouldering term list
-  // clear chat history, start some bouldering conversation- update the DB setup with "tagSearched"
-  // for each new chat (check if tagSearched=0 )
-
   let notTaggedChats = await BoulderingChat.find({ tagSearched: false }).select(
     "content roomId tagSearched roomNumericId -_id "
   );
+  await BoulderingChat.updateMany(
+    { tagSearched: false },
+    { $set: { tagSearched: true } }
+  );
   let tagList = await TagList.find({}).select("tag usedCount -_id");
 
-  // check keyword count by room, and add into the mongoDB keyword table
-  // group by roomId
   const chatsByRoom = notTaggedChats.reduce((accumulator, currentValue) => {
     const { roomNumericId, content } = currentValue;
     if (!accumulator[roomNumericId]) {
@@ -50,7 +49,6 @@ async function searchKeyword() {
     accumulator[roomNumericId].push(content);
     return accumulator;
   }, {});
-
   const chatsByRoomGroupContent = Object.entries(chatsByRoom).map(
     ([roomNumericId, contentArray]) => ({
       roomNumericId,
@@ -60,81 +58,54 @@ async function searchKeyword() {
 
   const tags = tagList.map((tag) => tag.tag);
 
-  //await createIndex(client, "abyellow");
-  // await addDocumentToIndex(
-  //   client,
-  //   { content: chatsByRoomGroupContent[0].content },
-  //   "abyellow"
-  // );
-  //await getAllDocuments(client, "abyellow");
-
   for (let i = 0; i < chatsByRoomGroupContent.length; i++) {
     let chats = chatsByRoomGroupContent[i];
-    console.log(chats);
-    // await addDocumentToIndex(
-    //   client,
-    //   { content: chats.content },
-    //   chats.roomNumericId
-    // );
-    await getAllDocuments(client, chats.roomNumericId);
-    //
-    //
-    //
+    await addDocumentToIndex(
+      client,
+      { content: chats.content },
+      chats.roomNumericId
+    );
+
     let roomTag = {};
     const clientSearchs = tags;
     for (let i = 0; i < clientSearchs.length; i++) {
+      await client.indices.refresh({ index: chats.roomNumericId }); //!!!
       const result = await searchKeyCn(
         client,
         chats.roomNumericId,
         clientSearchs[i]
       );
+
       const hitsTotalValue = result.hits.total.value;
       if (hitsTotalValue > 0) {
         roomTag[clientSearchs[i]] = hitsTotalValue;
       }
     }
 
-    // console.log(roomTag);
-
     const roomTagKeys = Object.keys(roomTag);
     const roomTagValues = Object.values(roomTag);
 
-    // for (let i = 0; i < roomTagKeys.length; i++) {
-    //   const conditions = {
-    //     roomNumericId: chats.roomNumericId,
-    //     tag: roomTagKeys[i],
-    //   };
+    for (let i = 0; i < roomTagKeys.length; i++) {
+      const conditions = {
+        roomNumericId: chats.roomNumericId,
+        tag: roomTagKeys[i],
+      };
 
-    //   let roomTagPair = await TagRoom.find(conditions);
+      let roomTagPair = await TagRoom.find(conditions);
 
-    //   if (roomTagPair.length > 0) {
-    //     const update = { $inc: { tagCount: 1 } };
-    //     await TagRoom.findOneAndUpdate(conditions, update, { upsert: true });
-    //   } else {
-    //     const saveTag = new TagRoom({
-    //       roomNumericId: chats.roomNumericId,
-    //       tag: roomTagKeys[i],
-    //       tagCount: roomTagValues[i],
-    //     });
-    //     await saveTag.save();
-    //   }
-    // }
+      if (roomTagPair.length > 0) {
+        const update = { $inc: { tagCount: 1 } };
+        await TagRoom.findOneAndUpdate(conditions, update, { upsert: true });
+      } else {
+        const saveTag = new TagRoom({
+          roomNumericId: chats.roomNumericId,
+          tag: roomTagKeys[i],
+          tagCount: roomTagValues[i],
+        });
+        await saveTag.save();
+      }
+    }
   }
-  // console.log(await TagRoom.find({}));
-
-  // if searched, tagSearched=1
-  // set function interval = 1000
-
-  // let boulderingIndex = "test0903";
-  // // createBulkCn(client, oneChatRoom, boulderingIndex);
-  // let roomTage = {};
-  // const clientSearchs = ["起攀", "V3", "V2", "V1", "指力", "體感"];
-  // for (let i = 0; i < clientSearchs.length; i++) {
-  //   const result = await searchKeyCn(client, boulderingIndex, clientSearchs[i]);
-  //   const hitsTotalValue = result.hits.total.value;
-  //   roomTage[clientSearchs[i]] = hitsTotalValue;
-  // }
-  // console.log(roomTage);
 }
 
 async function getAllDocuments(client, indexName) {
@@ -151,6 +122,7 @@ async function getAllDocuments(client, indexName) {
 
     // Extract and log the documents
     console.log("All documents:", body.hits.hits);
+    return body.hits.hits;
   } catch (error) {
     console.error("Error retrieving documents:", error);
   }
@@ -159,7 +131,6 @@ async function getAllDocuments(client, indexName) {
 export async function searchKeyCn(client, index, searchWord) {
   const response = await client.search({
     index: index,
-    scroll: "30s",
     _source: [],
     query: {
       match_phrase: {
@@ -167,11 +138,12 @@ export async function searchKeyCn(client, index, searchWord) {
       },
     },
   });
+
   return response;
 }
 
 export async function createIndex(client, myindex) {
-  client.indices.create({
+  await client.indices.create({
     index: myindex,
     mappings: {
       properties: {
@@ -189,10 +161,18 @@ export async function createIndex(client, myindex) {
 }
 
 export async function addDocumentToIndex(client, documents, myindex) {
-  await client.index({
-    index: myindex,
-    body: documents,
-  });
+  try {
+    const result = await client.index({
+      index: myindex,
+      body: documents,
+    });
+
+    console.log(`Document indexed successfully: ${result}`);
+    console.log(result);
+  } catch (error) {
+    console.error("Error indexing document:", error);
+    throw error; // Rethrow the error to handle it in the calling code
+  }
 }
 
 export async function createBulkCn(client, documents, myindex) {
