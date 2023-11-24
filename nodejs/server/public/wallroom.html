@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Room</title>
+  </head>
+  <body>
+    <div id="chat-container">
+      <div id="room-info"></div>
+      <h3 id="room-name">岩館一 CD牆 綠色</h3>
+      <ul id="messages"></ul>
+      <input id="input" " autocomplete="off" />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      const socket = io(); // URL of your server
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const tagRoomId = "655f3b8abc05f95428102e21"; // Replace with the actual tagRoomId
+        await fetchChatHistory(tagRoomId);
+        await fetchRoomInfo(tagRoomId);
+      });
+
+      socket.on("connect", () => {
+        console.log(`You connect with id ${socket.id}`);
+      });
+
+      socket.on("talk", (response) => {
+        const { message, roomId, userId } = response;
+        appendMessage(message, roomId, userId);
+      });
+
+      function sendMessage() {
+        const parentElement = event.currentTarget.closest("#chat-container");
+        const input = parentElement.querySelector("input");
+        const roomId = parentElement.querySelector("#room-name").innerText;
+        let userIdentify = { userId: "user2", roomId: roomId };
+        if (input.value) {
+          socket.emit("talk", input.value, userIdentify);
+          input.value = "";
+        }
+      }
+
+      function appendMessage(message, roomId, userId) {
+        const p = document.createElement("p");
+        p.textContent = `${userId}: ${message}`;
+        const chatContainer = document.querySelector("#chat-container");
+        chatContainer.querySelector("#messages").appendChild(p);
+      }
+
+      function fetchChatHistory(tagRoomId) {
+        const data = { tagRoomId: tagRoomId };
+        fetch("/api/chat/history", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const chatContainer = document.querySelector("#chat-container");
+
+            data.forEach((message) => {
+              const p = document.createElement("p");
+              p.textContent = `${message.userId}: ${message.content}`;
+              chatContainer.querySelector("#messages").appendChild(p);
+            });
+          })
+          .catch((error) =>
+            console.error(`Error fetching chat history: ${error}`)
+          );
+      }
+
+      async function fetchRoomInfo(tagRoomId) {
+        try {
+          const response = await fetch("/api/wallchatroom/detail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ tagRoomId }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const roomInfo = await response.json();
+
+          // Display the room info in the "room-info" div
+          const roomInfoDiv = document.getElementById("room-info");
+          roomInfoDiv.innerHTML = `
+            <strong>Room Information:</strong><br>
+            <strong>Room Name:</strong> ${roomInfo.roomName}<br>
+            <strong>Official Level:</strong> ${roomInfo.officialLevel}<br>
+            <strong>Tags:</strong> ${roomInfo.tags.join(", ")}<br>
+            <img src="${
+              roomInfo.wallImage
+            }" alt="Room Image" style="max-width: 300px;">
+          `;
+        } catch (error) {
+          console.error(`Error fetching room info: ${error}`);
+        }
+      }
+    </script>
+  </body>
+</html>

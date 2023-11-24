@@ -6,8 +6,11 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 router.post("/history", async (req, res) => {
-  let roomId = req.body.roomId;
-  let roomChatHist = await BoulderingChat.find({ roomId: roomId });
+  let tagRoomId = req.body.tagRoomId;
+  console.log(tagRoomId);
+  let roomChatHist = await BoulderingChat.find({
+    roomNumericId: tagRoomId,
+  });
   res.status(200).json(roomChatHist);
 });
 

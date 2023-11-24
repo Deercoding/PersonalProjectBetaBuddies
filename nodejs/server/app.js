@@ -9,6 +9,7 @@ import * as dotenv from "dotenv";
 import { BoulderingChat, RoomCounter } from "./models/chat-model.js";
 import chatRouter from "./routes/chat-api.js";
 import wallUpdateRouter from "./routes/wallupload-api.js";
+import roomRouter from "./routes/wallroom-api.js";
 import searchKeyWord from "./utils/elasticsearch.js";
 
 const app = express();
@@ -19,6 +20,7 @@ dotenv.config();
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
+app.use("/api/wallchatroom", roomRouter);
 app.use("/search", searchKeyWord);
 
 app.listen(3000, () => {
@@ -64,6 +66,7 @@ io.on("connection", (socket) => {
       await saveMessage.save();
       console.log(roomExist);
     } else {
+      // we might remove the save room portion
       const saveRoom = new RoomCounter({
         roomId: roomId,
       });
@@ -85,6 +88,15 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     io.emit("talk", { message: msg, roomId: roomId, userId: userId });
   });
+
+  //add to test front end - remove before production
+  io.emit("wallcolor", [
+    "yellow_LM wall crop.jpg_1700748931781.jpg",
+    "green_LM wall crop.jpg_1700748931781.jpg",
+    "light_blue_LM wall crop.jpg_1700748931781.jpg",
+    "dark_blue_AB wall crop new.jpg_1700748617487.jpg",
+    "green_AB wall crop new.jpg_1700748617487.jpg",
+  ]);
 });
 
 server.listen(4000, () => {

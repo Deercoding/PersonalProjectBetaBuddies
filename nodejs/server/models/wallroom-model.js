@@ -1,0 +1,42 @@
+import { pool } from "../utils/sqlpool.js";
+
+export async function createRoom(
+  wallimage,
+  official_level,
+  gym_id,
+  wall,
+  color,
+  tag_room_id
+) {
+  let result = await pool.query(
+    `insert into wallrooms(wallimage,official_level,gym_id,wall,color,tag_room_id) values(?,?,?,?,?,?)`,
+    [wallimage, official_level, gym_id, wall, color, tag_room_id]
+  );
+  console.log(result);
+}
+
+export async function saveWallOriginal(wallimage_original, gym_id, wall) {
+  let result = await pool.query(
+    `insert into walls(wallimage_original,gym_id,wall) values(?,?,?)`,
+    [wallimage_original, gym_id, wall]
+  );
+  console.log(result);
+}
+
+export async function getRoom(tag_room_id) {
+  let [rows, fields] = await pool.query(
+    `select * from wallrooms where tag_room_id = ? `,
+    [tag_room_id]
+  );
+  return rows[0];
+}
+
+// export async function getRole(user_id) {
+//   let [rows, fields] = await pool.query(
+//     `select * from user_admin where user_id = ? `,
+//     [user_id]
+//   );
+//   return rows;
+// }
+
+// CREATE TABLE wallrooms (wallroomId int PRIMARY KEY AUTO_INCREMENT,wallimage varchar(255),official_level varchar(255),gym_id varchar(255),wall varchar(255),color varchar(255));

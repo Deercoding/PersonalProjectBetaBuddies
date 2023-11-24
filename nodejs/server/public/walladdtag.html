@@ -7,6 +7,9 @@
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
       const socket = io(); // URL of your server
+      const imageFormData = []; // Array to store image data
+      let storeValue; // Variable to store the selected store
+      let branchValue; // Variable to store the selected branch
 
       socket.on("connect", () => {
         console.log(`You connect with id ${socket.id}`);
@@ -14,22 +17,183 @@
 
       socket.on("wallcolor", (response) => {
         console.log(response);
+        const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
+
+        // Create the store input
+        const storeInput = createDropdownInput("store", "Store", [
+          "岩館一",
+          "store2",
+          "store3",
+        ]);
+        storeValue = storeInput.querySelector("select").value; // Save the selected store value
+
+        // Create the branch input
+        const branchInput = createDropdownInput("branch", "Branch", [
+          "AB牆",
+          "CD牆",
+          "branch3",
+        ]);
+        branchValue = branchInput.querySelector("select").value; // Save the selected branch value
+
+        document.getElementById("image-form").appendChild(storeInput);
+        document.getElementById("image-form").appendChild(branchInput);
+
         for (let i = 0; i < response.length; i++) {
-          const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
           let imageProcessed = cloudfrontUrl + response[i];
           appendImage(imageProcessed);
         }
       });
+
       function appendImage(imageProcessed) {
+        const imgContainer = document.createElement("div");
+        imgContainer.classList.add("image-container");
+
         const img = document.createElement("img");
         img.src = imageProcessed;
-        var src = document.getElementById("header");
-        src.appendChild(img);
+        imgContainer.appendChild(img);
+
+        // Default value for "color" input
+        const defaultColor = imageProcessed.split("_")[0].split("/").pop(); // Extracting the color from the imageProcessed string
+
+        // Inputs for each image
+        const colorInput = createInput(
+          "text",
+          "color",
+          "Color",
+          defaultColor,
+          "Color:"
+        );
+        const officialLevelInput = createInput(
+          "text",
+          "official-level",
+          "Official Level",
+          undefined,
+          "Official Level:"
+        );
+        const tagsInput = createInput(
+          "text",
+          "tags",
+          "Tags",
+          "指力/動態/勾腳",
+          "Tags (separated by /):"
+        );
+        const keepImageLabel = document.createElement("label");
+        keepImageLabel.textContent = "Keep Image";
+        const keepImageInput = createInput(
+          "checkbox",
+          "keep-image",
+          undefined,
+          undefined,
+          "Keep Image:"
+        );
+
+        imgContainer.appendChild(colorInput);
+        imgContainer.appendChild(officialLevelInput);
+        imgContainer.appendChild(tagsInput);
+        imgContainer.appendChild(keepImageLabel);
+        imgContainer.appendChild(keepImageInput);
+
+        // Save image data to the array
+        imageFormData.push({
+          imageProcessed: imageProcessed,
+          colorInput: colorInput,
+          officialLevelInput: officialLevelInput,
+          tagsInput: tagsInput,
+          keepImageInput: keepImageInput,
+        });
+
+        document.getElementById("image-form").appendChild(imgContainer);
+      }
+
+      function createInput(type, name, placeholder, defaultValue, title) {
+        const inputContainer = document.createElement("div");
+
+        // Add title for the input
+        const titleLabel = document.createElement("label");
+        titleLabel.textContent = title;
+
+        const input = document.createElement("input");
+        input.type = type;
+        input.name = name;
+        if (placeholder) {
+          input.placeholder = placeholder;
+        }
+        if (defaultValue) {
+          input.value = defaultValue;
+        }
+
+        inputContainer.appendChild(titleLabel);
+        inputContainer.appendChild(input);
+
+        return inputContainer;
+      }
+
+      function createDropdownInput(name, title, options) {
+        const inputContainer = document.createElement("div");
+
+        // Add title for the input
+        const titleLabel = document.createElement("label");
+        titleLabel.textContent = title;
+
+        const select = document.createElement("select");
+        select.name = name;
+
+        // Add options to the dropdown
+        options.forEach((option) => {
+          const optionElement = document.createElement("option");
+          optionElement.value = option;
+          optionElement.textContent = option;
+          select.appendChild(optionElement);
+        });
+
+        // Set the value to the selected option
+        select.addEventListener("change", () => {
+          if (name === "store") {
+            storeValue = select.value;
+          } else if (name === "branch") {
+            branchValue = select.value;
+          }
+        });
+
+        inputContainer.appendChild(titleLabel);
+        inputContainer.appendChild(select);
+
+        return inputContainer;
+      }
+
+      function submitAllImages() {
+        const formData = imageFormData.map((imageData) => ({
+          wallImage: imageData.imageProcessed,
+          color: imageData.colorInput.querySelector("input").value,
+          officialLevel:
+            imageData.officialLevelInput.querySelector("input").value,
+          tags: imageData.tagsInput.querySelector("input").value.split("/"), // Split tags by empty space into an array
+          gym: storeValue,
+          wall: branchValue,
+          keepImage: imageData.keepImageInput.querySelector("input").checked,
+        }));
+
+        // Simulate a POST request
+        fetch("/api/wallchatroom", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((error) => console.error("Error:", error));
       }
     </script>
   </head>
   <body>
-    <div><h3>this page is setup to add tag to images</h3></div>
-    <div id="header"></div>
+    <div><h3>this page is set up to add tags to images</h3></div>
+
+    <!-- Form for store and branch input and all images -->
+    <div id="image-form"></div>
+
+    <!-- Submit button for all images -->
+    <button type="button" onclick="submitAllImages()">Submit All Images</button>
   </body>
 </html>

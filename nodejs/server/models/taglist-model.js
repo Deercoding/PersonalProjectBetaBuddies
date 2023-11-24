@@ -39,7 +39,7 @@ const TagList = mongoose.model("TagList", tagListSchema); //singular + lower cas
 // const saveTag = new TagList({
 //   addTime: new Date(),
 //   userId: "defualt",
-//   tag: "指力",
+//   tag: "起攀",
 //   usedCount: 0,
 // });
 // saveTag.save().then();

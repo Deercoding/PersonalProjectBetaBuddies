@@ -108,25 +108,14 @@ async function searchKeyword() {
   }
 }
 
-async function getAllDocuments(client, indexName) {
-  try {
-    // Search for all documents in the specified index
-    const body = await client.search({
-      index: indexName,
-      body: {
-        query: {
-          match_all: {}, // Match all documents
-        },
-      },
-    });
-
-    // Extract and log the documents
-    console.log("All documents:", body.hits.hits);
-    return body.hits.hits;
-  } catch (error) {
-    console.error("Error retrieving documents:", error);
-  }
-}
+// test ik analyzer
+// let response = await client.indices.analyze({
+//   body: {
+//     analyzer: "ik_max_word",
+//     text: "dyno在後面倒掛起攀完攀!",
+//   },
+// });
+// console.log(response);
 
 export async function searchKeyCn(client, index, searchWord) {
   const response = await client.search({
@@ -142,24 +131,6 @@ export async function searchKeyCn(client, index, searchWord) {
   return response;
 }
 
-export async function createIndex(client, myindex) {
-  await client.indices.create({
-    index: myindex,
-    mappings: {
-      properties: {
-        roomId: {
-          type: "text",
-          analyzer: "ik_max_word",
-        },
-        content: {
-          type: "text",
-          analyzer: "ik_max_word",
-        },
-      },
-    },
-  });
-}
-
 export async function addDocumentToIndex(client, documents, myindex) {
   try {
     const result = await client.index({
@@ -173,53 +144,6 @@ export async function addDocumentToIndex(client, documents, myindex) {
     console.error("Error indexing document:", error);
     throw error; // Rethrow the error to handle it in the calling code
   }
-}
-
-export async function createBulkCn(client, documents, myindex) {
-  client.indices.create({
-    index: myindex,
-    mappings: {
-      properties: {
-        roomId: {
-          type: "text",
-          analyzer: "ik_max_word",
-        },
-        content: {
-          type: "text",
-          analyzer: "ik_max_word",
-        },
-      },
-    },
-  });
-  const dataset = documents;
-  console.log(dataset, myindex);
-  console.log(typeof dataset);
-
-  const operations = dataset.flatMap((doc) => [
-    { index: { _index: myindex } },
-    doc,
-  ]);
-
-  const bulkResponse = await client.bulk({ refresh: true, operations });
-
-  if (bulkResponse.errors) {
-    const erroredDocuments = [];
-    bulkResponse.items.forEach((action, i) => {
-      const operation = Object.keys(action)[0];
-      if (action[operation].error) {
-        erroredDocuments.push({
-          status: action[operation].status,
-          error: action[operation].error,
-          operation: operations[i * 2],
-          document: operations[i * 2 + 1],
-        });
-      }
-    });
-    console.log(erroredDocuments);
-  }
-
-  const count = await client.count({ index: myindex });
-  console.log(count);
 }
 
 export default router;

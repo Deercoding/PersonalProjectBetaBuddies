@@ -56,3 +56,5 @@ bat hang
 bat-hang
 動態
 指力
+起攀
+完攀
