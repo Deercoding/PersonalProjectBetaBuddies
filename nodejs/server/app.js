@@ -10,21 +10,24 @@ import { BoulderingChat, RoomCounter } from "./models/chat-model.js";
 import chatRouter from "./routes/chat-api.js";
 import wallUpdateRouter from "./routes/wallupload-api.js";
 import roomRouter from "./routes/wallroom-api.js";
+import betaRouter from "./routes/beta-api.js";
 import searchKeyWord from "./utils/elasticsearch.js";
 
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
+app.use(cors()); //temporary for local developement
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
 app.use("/api/wallchatroom", roomRouter);
 app.use("/search", searchKeyWord);
+app.use("/api/beta", betaRouter);
 
-app.listen(3000, () => {
-  console.log(`Server is running on port 3000`);
+app.listen(8080, () => {
+  console.log(`Server is running on port 8080`);
 });
 
 mongoose
@@ -49,44 +52,31 @@ io.on("connection", (socket) => {
   console.log("Socket-connect");
 
   socket.on("talk", async (msg, userIdentify) => {
+    console.log(userIdentify);
     const userId = userIdentify.userId;
-    const roomId = userIdentify.roomId;
+    const roomNumericId = userIdentify.roomNumericId;
+    const roomName = userIdentify.roomName;
 
-    const roomExist = await RoomCounter.find({ roomId: roomId });
+    const roomExist = await RoomCounter.find({ _id: roomNumericId });
 
-    if (roomExist.length > 0) {
-      const saveMessage = new BoulderingChat({
-        sendTime: new Date(),
-        userId: userId,
-        roomId: roomId,
-        content: msg,
-        tagSearched: 0,
-        roomNumericId: roomExist[0]._id,
-      });
-      await saveMessage.save();
-      console.log(roomExist);
-    } else {
-      // we might remove the save room portion
-      const saveRoom = new RoomCounter({
-        roomId: roomId,
-      });
-      const newRoom = await saveRoom.save();
-      console.log(newRoom);
-      const saveMessage = new BoulderingChat({
-        sendTime: new Date(),
-        userId: userId,
-        roomId: roomId,
-        content: msg,
-        tagSearched: 0,
-        roomNumericId: newRoom._id,
-      });
-      await saveMessage.save();
-    }
+    const saveMessage = new BoulderingChat({
+      sendTime: new Date(),
+      userId: userId,
+      roomId: roomName,
+      content: msg,
+      tagSearched: 0,
+      roomNumericId: roomExist[0]._id,
+    });
+    await saveMessage.save();
 
     // const room = io.sockets.adapter.rooms.get("admin");
     // const roomUsers = await io.in("admin").fetchSockets();
-    socket.join(roomId);
-    io.emit("talk", { message: msg, roomId: roomId, userId: userId });
+    socket.join(roomNumericId);
+    io.emit("talk", {
+      message: msg,
+      roomNumericId: roomNumericId,
+      userId: userId,
+    });
   });
 
   //add to test front end - remove before production

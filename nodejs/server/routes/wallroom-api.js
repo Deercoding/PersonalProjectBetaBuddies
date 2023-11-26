@@ -33,39 +33,45 @@ router.post("/", async (req, res) => {
   const parts = responses[0].wallImage.split("/");
   const originalImage =
     originalCdn + parts[parts.length - 1].split("_").slice(1).join("_");
-  saveWallOriginal(originalImage, responses[0].gym, responses[0].wall);
 
-  for (let i = 0; i < responses.length; i++) {
-    const response = responses[i];
-    const roomId = `${response.gym}_${response.wall}_${response.color}`;
+  try {
+    await saveWallOriginal(originalImage, responses[0].gym, responses[0].wall);
 
-    if (response.keepImage) {
-      //save room id and tags in mongoDB
-      const saveRoom = new RoomCounter({
-        roomId: roomId,
-      });
-      let newRoom = await saveRoom.save();
-      newRoomId = newRoom._id.toString();
+    for (let i = 0; i < responses.length; i++) {
+      const response = responses[i];
+      const roomId = `${response.gym}_${response.wall}_${response.color}`;
 
-      for (let i = 0; i < response.tags.length; i++) {
-        const saveTag = new TagRoom({
-          roomNumericId: newRoomId,
-          tag: response.tags[i],
-          tagCount: 1,
+      if (response.keepImage) {
+        const saveRoom = new RoomCounter({
+          unique_id: roomId + "_" + new Date(),
+          roomId: roomId,
         });
-        await saveTag.save();
-      }
 
-      //save the other in mysql
-      await createRoom(
-        response.wallImage,
-        response.officialLevel,
-        response.gym,
-        response.wall,
-        response.color,
-        newRoomId
-      );
+        let newRoom = await saveRoom.save();
+        newRoomId = newRoom._id.toString();
+
+        //save the other in mysql
+        await createRoom(
+          response.wallImage,
+          response.officialLevel,
+          response.gym,
+          response.wall,
+          response.color,
+          newRoomId
+        );
+
+        for (let i = 0; i < response.tags.length; i++) {
+          const saveTag = new TagRoom({
+            roomNumericId: newRoomId,
+            tag: response.tags[i],
+            tagCount: 1,
+          });
+          await saveTag.save();
+        }
+      }
     }
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -78,7 +84,6 @@ router.post("/detail", async (req, res) => {
   // }
 
   let tagRoomId = req.body.tagRoomId;
-  tagRoomId = "6560a3e10af62270d916eeb4"; //for tesing - remove after production
   const roomInformation = await getRoom(tagRoomId);
 
   let roomTagPair = await TagRoom.find({
@@ -113,20 +118,6 @@ router.post("/detail", async (req, res) => {
   //     _id: new ObjectId('6560a3e10af62270d916eeb6'),
   //     roomNumericId: '6560a3e10af62270d916eeb4',
   //     tag: '指力',
-  //     tagCount: 1,
-  //     __v: 0
-  //   },
-  //   {
-  //     _id: new ObjectId('6560a3e10af62270d916eeb8'),
-  //     roomNumericId: '6560a3e10af62270d916eeb4',
-  //     tag: '動態',
-  //     tagCount: 1,
-  //     __v: 0
-  //   },
-  //   {
-  //     _id: new ObjectId('6560a3e10af62270d916eeba'),
-  //     roomNumericId: '6560a3e10af62270d916eeb4',
-  //     tag: '勾腳',
   //     tagCount: 1,
   //     __v: 0
   //   }

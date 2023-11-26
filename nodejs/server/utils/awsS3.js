@@ -37,3 +37,36 @@ export async function uploadObject(bucketName, imageFiles, REGION, toFolder) {
     console.error("Error uploading image", err);
   }
 }
+
+// upload video
+export async function uploadVideo(
+  bucketName,
+  oneVideo,
+  videoSaveName,
+  REGION,
+  toFolder
+) {
+  const client = new S3Client({
+    region: REGION,
+    credentials: {
+      accessKeyId: process.env.S3_ACCESSKEY,
+      secretAccessKey: process.env.S3_SECRETACCESSKEY,
+    },
+  });
+
+  const params = {
+    Bucket: bucketName,
+    Key: videoSaveName,
+    Body: fs.createReadStream(
+      path.resolve(toFolder, "..//public//videos//", oneVideo.filename) + ""
+    ),
+  };
+
+  try {
+    let data = await client.send(new PutObjectCommand(params));
+    console.log("Video uploaded successfully:", data);
+    return data;
+  } catch (err) {
+    console.error("Error uploading video", err);
+  }
+}

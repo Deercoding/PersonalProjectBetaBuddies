@@ -1,6 +1,7 @@
-import mongoose, { now } from "mongoose";
+import mongoose from "mongoose";
 
 const roomCounterSchema = new mongoose.Schema({
+  unique_id: { type: String },
   roomId: { type: String },
 });
 
