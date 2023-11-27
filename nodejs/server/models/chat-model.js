@@ -10,7 +10,7 @@ const RoomCounter = mongoose.model("RoomCounter", roomCounterSchema);
 const boulderingChatSchema = new mongoose.Schema({
   sendTime: { type: Date },
   roomId: { type: String },
-  userId: { type: String },
+  userName: { type: String },
   content: { type: String },
   tagSearched: { type: Boolean },
   roomNumericId: {

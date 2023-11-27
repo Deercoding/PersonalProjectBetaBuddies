@@ -15,8 +15,6 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 router.post("/", upload.single("video"), async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
   const { roomNumericId, userId, userName, comments, levelByAuthor, tags } =
     req.body;
   const { originalname } = req.file;
@@ -72,12 +70,10 @@ router.post("/", upload.single("video"), async (req, res) => {
 });
 
 router.post("/detail", async (req, res) => {
-  console.log(req.body);
   let tagRoomId = req.body.tagRoomId;
   const roomInformation = await getRoom(tagRoomId);
   const wallroomId = roomInformation["wallroomId"];
   const videos = await getVideos(wallroomId);
-
   res.status(200).json(videos);
 });
 

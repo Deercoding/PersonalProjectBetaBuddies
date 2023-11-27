@@ -1,17 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const BetaUploadComponent = () => {
+const BetaUploadComponent = ({ roomId }) => {
   const [file, setFile] = useState(null);
   const [comments, setComments] = useState("");
   const [levelByAuthor, setLevelByAuthor] = useState("");
   const [tags, setTags] = useState([]);
   const [videoPreview, setVideoPreview] = useState(null);
   const [error, setError] = useState(null);
+  let navigate = useNavigate();
 
-  //pass roomId to Beta upload page - local storage
-  const roomNumericId = "6563229f5a5158b0bd6b5f71";
-  const userId = "user1";
-  const userName = "anna";
+  const roomNumericId = roomId;
+  const jwtToken = localStorage.getItem("Authorization");
+  const userinfo = localStorage.getItem("userInfo").split(",");
+  const userId = userinfo[0];
+  const userName = userinfo[1];
 
   const handleFileChange = (event) => {
     const maxSize = 30 * 1024 * 1024; // 30MB in bytes
@@ -79,6 +82,7 @@ const BetaUploadComponent = () => {
 
       if (response.ok) {
         console.log("Form data sent successfully!");
+        navigate("/");
       } else {
         console.error(`Error: ${response.status} - ${response.statusText}`);
       }

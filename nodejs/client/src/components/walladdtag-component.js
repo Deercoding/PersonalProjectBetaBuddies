@@ -2,9 +2,18 @@ import React, { useState, useEffect } from "react";
 import { socket } from "../socketio.js";
 
 const WalladdtagComponent = () => {
+  const currentDate = new Date();
+  const defaultWallUpdateTime = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
+  const futureDate = new Date();
+  futureDate.setDate(currentDate.getDate() + 60); //change wall in 2 monthes
+  const defaultWallChangeTime = futureDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
   const [imageFormData, setImageFormData] = useState([]);
   const [storeValue, setStoreValue] = useState("岩館一");
   const [branchValue, setBranchValue] = useState("AB牆");
+  const [wallUpdateTime, setWallUpdateTime] = useState(defaultWallUpdateTime);
+  const [wallChangeTime, setWallChangeTime] = useState(defaultWallChangeTime);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -113,6 +122,8 @@ const WalladdtagComponent = () => {
       tags: imageData.tags.split("/"),
       gym: storeValue,
       wall: branchValue,
+      wallUpdateTime: wallUpdateTime,
+      wallChangeTime: wallChangeTime,
       keepImage: imageData.keepImage,
     }));
     console.log(formData);
@@ -177,6 +188,21 @@ const WalladdtagComponent = () => {
         ["AB牆", "CD牆", "branch3"],
         branchValue,
         (e) => handleDropdownChange("branch", e.target.value)
+      )}
+
+      {createInput(
+        "text",
+        "wallUpdateTime",
+        "Wall Update Time",
+        wallUpdateTime,
+        (e) => setWallUpdateTime(e.target.value)
+      )}
+      {createInput(
+        "text",
+        "wallChangeTime",
+        "Wall Change Time",
+        wallChangeTime,
+        (e) => setWallChangeTime(e.target.value)
       )}
 
       <button type="button" onClick={submitAllImages}>

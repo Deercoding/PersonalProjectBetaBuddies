@@ -11,6 +11,9 @@ import chatRouter from "./routes/chat-api.js";
 import wallUpdateRouter from "./routes/wallupload-api.js";
 import roomRouter from "./routes/wallroom-api.js";
 import betaRouter from "./routes/beta-api.js";
+import searchRouter from "./routes/search-api.js";
+import signRouter from "./routes/sign-api.js";
+import gameRouter from "./routes/game-api.js";
 import searchKeyWord from "./utils/elasticsearch.js";
 
 const app = express();
@@ -25,6 +28,9 @@ app.use("/api/wallupload", wallUpdateRouter);
 app.use("/api/wallchatroom", roomRouter);
 app.use("/search", searchKeyWord);
 app.use("/api/beta", betaRouter);
+app.use("/api/search", searchRouter);
+app.use("/api/sign", signRouter);
+app.use("/api/game", gameRouter);
 
 app.listen(8080, () => {
   console.log(`Server is running on port 8080`);
@@ -53,7 +59,7 @@ io.on("connection", (socket) => {
 
   socket.on("talk", async (msg, userIdentify) => {
     console.log(userIdentify);
-    const userId = userIdentify.userId;
+    const userName = userIdentify.userName;
     const roomNumericId = userIdentify.roomNumericId;
     const roomName = userIdentify.roomName;
 
@@ -61,7 +67,7 @@ io.on("connection", (socket) => {
 
     const saveMessage = new BoulderingChat({
       sendTime: new Date(),
-      userId: userId,
+      userName: userName,
       roomId: roomName,
       content: msg,
       tagSearched: 0,
@@ -75,7 +81,7 @@ io.on("connection", (socket) => {
     io.emit("talk", {
       message: msg,
       roomNumericId: roomNumericId,
-      userId: userId,
+      userName: userName,
     });
   });
 

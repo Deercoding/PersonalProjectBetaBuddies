@@ -6,13 +6,23 @@ export async function createRoom(
   gym_id,
   wall,
   color,
-  tag_room_id
+  tag_room_id,
+  wall_update_time,
+  wall_change_time
 ) {
   let result = await pool.query(
-    `insert into wallrooms(wallimage,official_level,gym_id,wall,color,tag_room_id) values(?,?,?,?,?,?)`,
-    [wallimage, official_level, gym_id, wall, color, tag_room_id]
+    `insert into wallrooms(wallimage,official_level,gym_id,wall,color,tag_room_id, wall_update_time, wall_change_time) values(?,?,?,?,?,?,?,?)`,
+    [
+      wallimage,
+      official_level,
+      gym_id,
+      wall,
+      color,
+      tag_room_id,
+      wall_update_time,
+      wall_change_time,
+    ]
   );
-  console.log(result);
 }
 
 export async function saveWallOriginal(wallimage_original, gym_id, wall) {
@@ -20,7 +30,6 @@ export async function saveWallOriginal(wallimage_original, gym_id, wall) {
     `insert into walls(wallimage_original,gym_id,wall) values(?,?,?)`,
     [wallimage_original, gym_id, wall]
   );
-  console.log(result);
 }
 
 export async function getRoom(tag_room_id) {
@@ -29,6 +38,13 @@ export async function getRoom(tag_room_id) {
     [tag_room_id]
   );
   return rows[0];
+}
+
+export async function getRoombySearch(search) {
+  let [rows, fields] = await pool.query(
+    `select * from wallrooms where ${search}`
+  );
+  return rows;
 }
 
 // export async function getRole(user_id) {

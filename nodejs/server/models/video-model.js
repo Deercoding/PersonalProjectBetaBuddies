@@ -22,3 +22,11 @@ export async function getVideos(wallroomId) {
   );
   return rows;
 }
+
+export async function countVideos(wallroomId) {
+  let [rows, fields] = await pool.query(
+    `select count(*) as videoCount from betavideos where wallroomId = ? `,
+    [wallroomId]
+  );
+  return rows[0];
+}

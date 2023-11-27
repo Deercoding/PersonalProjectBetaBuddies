@@ -1,16 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { socket } from "../socketio.js";
+import { useNavigate } from "react-router-dom";
 
-const WallroomComponent = () => {
+const WallroomComponent = ({ roomId }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [newMessages, setNewMessages] = useState([]);
   const [roomInfo, setRoomInfo] = useState({});
   const [inputValue, setInputValue] = useState("");
   const [videoDetail, setVideoDetail] = useState([]);
 
+  let navigate = useNavigate();
+  const jwtToken = localStorage.getItem("Authorization");
+  const userinfo = localStorage.getItem("userInfo").split(",");
+
   // Local storage
-  const tagRoomId = "6563229f5a5158b0bd6b5f71"; // Replace with the actual tagRoomId
-  const userId = "userId";
+  const tagRoomId = roomId;
+  const userName = userinfo[1];
+
+  const BetaUpload = () => {
+    navigate("/betaupload");
+  };
 
   useEffect(() => {
     fetchChatHistory(tagRoomId);
@@ -21,10 +30,10 @@ const WallroomComponent = () => {
       console.log(`You connect with id ${socket.id}`);
     });
     socket.on("talk", (response) => {
-      const { message, userId } = response;
+      const { message, userName } = response;
       setNewMessages((prevMessages) => [
         ...prevMessages,
-        { userId: userId, message: message },
+        { userName: userName, message: message },
       ]);
     });
     return () => {
@@ -35,7 +44,7 @@ const WallroomComponent = () => {
 
   const sendMessage = () => {
     const userIdentify = {
-      userId: userId,
+      userName: userName,
       roomNumericId: tagRoomId,
       roomName: roomInfo.roomName,
     };
@@ -64,7 +73,7 @@ const WallroomComponent = () => {
       const chatHistory = await response.json();
       setChatHistory(
         chatHistory.map((message) => ({
-          userId: message.userId,
+          userName: message.userName,
           message: message.content,
         }))
       );
@@ -121,7 +130,6 @@ const WallroomComponent = () => {
       }
 
       const betaDetailData = await response.json();
-      console.log(betaDetailData);
       setVideoDetail(
         betaDetailData.map((video) => ({
           video_link: video.video_link,
@@ -154,16 +162,16 @@ const WallroomComponent = () => {
         <h3>Chat History</h3>
         <p>
           {chatHistory.map((message, index) => (
-            <li key={`chat_${index}`}>
-              {message.userId}: {message.message}
-            </li>
+            <p key={`chat_${index}`}>
+              {message.userName}: {message.message}
+            </p>
           ))}
         </p>
         <p>
           {newMessages.map((message, index) => (
-            <li key={`new_${index}`}>
-              {message.userId}: {message.message}
-            </li>
+            <p key={`new_${index}`}>
+              {message.userName}: {message.message}
+            </p>
           ))}
         </p>
       </div>
@@ -178,6 +186,9 @@ const WallroomComponent = () => {
 
       <div id="beta-detail">
         <h3>Beta Detail</h3>
+        <div id="navigate-to-beta-upload">
+          <button onClick={BetaUpload}>Go to Beta Upload</button>
+        </div>
         <ul>
           {videoDetail.map((video, index) => (
             <li key={`video_${index}`}>

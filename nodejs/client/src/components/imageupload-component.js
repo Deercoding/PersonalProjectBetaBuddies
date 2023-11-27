@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ImageuploadComponent = () => {
   const [fileList, setFileList] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
+  let navigate = useNavigate();
   const updateList = (event) => {
     const input = event.target;
     const newFileList = [];
@@ -11,14 +13,11 @@ const ImageuploadComponent = () => {
 
     for (let i = 0; i < input.files.length; ++i) {
       newFileList.push(input.files.item(i).name);
-
       const reader = new FileReader();
-
       reader.onload = function (e) {
         newImagePreviews.push(e.target.result);
         setImagePreviews([...newImagePreviews]); // Update image previews state
       };
-
       reader.readAsDataURL(input.files[i]);
     }
 

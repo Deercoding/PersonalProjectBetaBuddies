@@ -7,17 +7,33 @@ import BetaUploadComponent from "./components/betaupload-component.js";
 import WallroomComponent from "./components/wallroom-component.js";
 import ImageuploadComponent from "./components/imageupload-component.js";
 import WalladdtagComponent from "./components/walladdtag-component.js";
+import SignComponent from "./components/sign-component.js";
 
 function App() {
+  const [roomId, setRoomId] = useState("65632fcdd34ccada8196e449");
+
   return (
     <div>
       <NavComponent />
       <Routes>
-        <Route path="/" exact element={<HomeComponent />} />
-        <Route path="/betaupload" exact element={<BetaUploadComponent />} />
-        <Route path="/wallroom" exact element={<WallroomComponent />} />
+        <Route
+          path="/"
+          exact
+          element={<HomeComponent setRoomId={setRoomId} />}
+        />
+        <Route
+          path="/betaupload"
+          exact
+          element={<BetaUploadComponent roomId={roomId} />}
+        />
+        <Route
+          path="/wallroom"
+          exact
+          element={<WallroomComponent roomId={roomId} />}
+        />
         <Route path="/imageupload" exact element={<ImageuploadComponent />} />
         <Route path="/walladdtag" exact element={<WalladdtagComponent />} />
+        <Route path="/sign" exact element={<SignComponent />} />
       </Routes>
       <FootComponent />
     </div>

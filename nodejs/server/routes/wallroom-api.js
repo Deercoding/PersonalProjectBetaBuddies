@@ -40,6 +40,8 @@ router.post("/", async (req, res) => {
     for (let i = 0; i < responses.length; i++) {
       const response = responses[i];
       const roomId = `${response.gym}_${response.wall}_${response.color}`;
+      const wallUpdateTime = new Date(response.wallUpdateTime);
+      const wallChangeTime = new Date(response.wallChangeTime);
 
       if (response.keepImage) {
         const saveRoom = new RoomCounter({
@@ -57,7 +59,9 @@ router.post("/", async (req, res) => {
           response.gym,
           response.wall,
           response.color,
-          newRoomId
+          newRoomId,
+          wallUpdateTime,
+          wallChangeTime
         );
 
         for (let i = 0; i < response.tags.length; i++) {
@@ -95,7 +99,6 @@ router.post("/detail", async (req, res) => {
 
   const sortedData = roomTagPair.sort((a, b) => b.tagCount - a.tagCount); //not validate yet
   const tagsArray = sortedData.map((item) => item.tag);
-  console.log(tagsArray);
 
   const tags = tagsArray;
 
