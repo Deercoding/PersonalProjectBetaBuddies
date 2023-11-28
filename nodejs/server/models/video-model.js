@@ -6,11 +6,12 @@ export async function createVideo(
   comments,
   user_level,
   userId,
-  userName
+  userName,
+  tag_room_id
 ) {
   let result = await pool.query(
-    `insert into betavideos(wallroomId,video_link,comments,user_level,userId, userName) values(?,?,?,?,?,?)`,
-    [wallroomId, video_link, comments, user_level, userId, userName]
+    `insert into betavideos(wallroomId,video_link,comments,user_level,userId, userName,tag_room_id) values(?,?,?,?,?,?,?)`,
+    [wallroomId, video_link, comments, user_level, userId, userName,tag_room_id]
   );
   console.log(result);
 }

@@ -70,3 +70,45 @@ export async function uploadVideo(
     console.error("Error uploading video", err);
   }
 }
+
+// upload video
+export async function uploadObjectGame(
+  bucketName,
+  imageFiles,
+  REGION,
+  toFolder
+) {
+  const client = new S3Client({
+    region: REGION,
+    credentials: {
+      accessKeyId: process.env.S3_ACCESSKEY,
+      secretAccessKey: process.env.S3_SECRETACCESSKEY,
+    },
+  });
+
+  const resultArray = [
+    ...imageFiles.second_image,
+    ...imageFiles.main_image,
+    ...imageFiles.advertise_image,
+  ];
+  const params = resultArray.map((image) => {
+    return {
+      Bucket: bucketName,
+      Key: image.filename,
+      Body: fs.createReadStream(
+        path.resolve(toFolder, "..//public//images//", image.filename) + ""
+      ),
+    };
+  });
+  try {
+    let data = await Promise.all(
+      params.map((uploadParam) =>
+        client.send(new PutObjectCommand(uploadParam))
+      )
+    );
+    console.log("Image uploaded successfully:", data);
+    return data;
+  } catch (err) {
+    console.error("Error uploading image", err);
+  }
+}

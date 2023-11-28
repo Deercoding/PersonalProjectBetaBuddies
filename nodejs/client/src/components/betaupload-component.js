@@ -81,7 +81,7 @@ const BetaUploadComponent = ({ roomId }) => {
       });
 
       if (response.ok) {
-        console.log("Form data sent successfully!");
+        console.log(response.json());
         navigate("/");
       } else {
         console.error(`Error: ${response.status} - ${response.statusText}`);
