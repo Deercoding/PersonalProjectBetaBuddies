@@ -14,6 +14,7 @@ import betaRouter from "./routes/beta-api.js";
 import searchRouter from "./routes/search-api.js";
 import signRouter from "./routes/sign-api.js";
 import gameRouter from "./routes/game-api.js";
+import adRouter from "./routes/ad-api.js";
 import searchKeyWord from "./utils/elasticsearch.js";
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api/beta", betaRouter);
 app.use("/api/search", searchRouter);
 app.use("/api/sign", signRouter);
 app.use("/api/game", gameRouter);
+app.use("/api/ad", adRouter);
 
 app.listen(8080, () => {
   console.log(`Server is running on port 8080`);

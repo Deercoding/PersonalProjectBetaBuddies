@@ -92,6 +92,11 @@ export async function getgamebyId(game_id) {
   return rows;
 }
 
+export async function getGames() {
+  let [rows, fields] = await pool.query(`select * from games;`);
+  return rows;
+}
+
 export async function checkWallinGame(wallroom_id) {
   let [rows, fields] = await pool.query(
     `select game_id from game_walls where wallrooms_id = ?;`,
@@ -111,6 +116,14 @@ export async function checkUserinGame(game_ids) {
 export async function getgamewallsbyId(game_id) {
   let [rows, fields] = await pool.query(
     `select * from game_walls where game_id = ?;`,
+    [game_id]
+  );
+  return rows;
+}
+
+export async function countgGamewallsbyId(game_id) {
+  let [rows, fields] = await pool.query(
+    `select count(*) as count_walls from game_walls where game_id = ?;`,
     [game_id]
   );
   return rows;
@@ -165,11 +178,12 @@ export async function updateAdStatus(
   game_id,
   start_time,
   end_time,
+  ad_image,
   connection
 ) {
   let [rows, fields] = await connection.query(
-    `insert into  ad_status (ad_location_id, ad_status, game_id,  start_date, end_date) values (?, ?, ?, ?, ?);`,
-    [ad_location_id, ad_status, game_id, start_time, end_time]
+    `insert into  ad_status (ad_location_id, ad_status, game_id,  start_date, end_date, ad_image) values (?, ?, ?, ?, ?,?);`,
+    [ad_location_id, ad_status, game_id, start_time, end_time, ad_image]
   );
   return rows;
 }
@@ -190,15 +204,46 @@ export async function oneGameUserStatus(game_id, user_id, connection) {
   return rows[0];
 }
 
-export async function updateUserWalls(
-  complete_walls,
-  game_id,
-  user_id,
+export async function gameMaxRank(game_id, connection) {
+  let [rows, fields] = await connection.query(
+    `select max( user_rank) as max_rank from game_users where game_id = ? ;`,
+    [game_id]
+  );
+  return rows[0];
+}
+
+export async function checkGameUserWalls(game_user_id, connection) {
+  let [rows, fields] = await connection.query(
+    `select * from game_user_walls where game_user_id = ? ;`,
+    [game_user_id]
+  );
+  return rows;
+}
+
+export async function updateUserWallStatus(game_user_id, wall_id, connection) {
+  let [rows, fields] = await connection.query(
+    `insert into  game_user_walls (game_user_id, wall_id) values (?, ?);`,
+    [game_user_id, wall_id]
+  );
+  return rows;
+}
+
+export async function updateUserWallsCount(game_user_id, connection) {
+  let [rows, fields] = await connection.query(
+    `update game_users set complete_walls_count = complete_walls_count +1 where game_users_id = ?;`,
+    [game_user_id]
+  );
+  return rows;
+}
+
+export async function updateUserWallsComplete(
+  max_rank,
+  game_user_id,
   connection
 ) {
   let [rows, fields] = await connection.query(
-    `update game_users set complete_walls = ? where game_id = ? and user_id = ?;`,
-    [complete_walls, game_id, user_id]
+    `update game_users set is_complete = 1,user_rank = ? where game_users_id = ?;`,
+    [max_rank, game_user_id]
   );
   return rows;
 }

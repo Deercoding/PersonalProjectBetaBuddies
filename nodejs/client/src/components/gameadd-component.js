@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const GameAddComponent = () => {
   let game_wallrooms_id = localStorage.getItem("choosedImage");
   game_wallrooms_id = game_wallrooms_id.split(",");
   let roomImage = localStorage.getItem("imageInfo");
   roomImage = JSON.parse(roomImage);
+  let navigate = useNavigate();
 
   const [adLocation, setAdLocation] = useState([]);
   const [adStatus, setAdStatus] = useState([]);
@@ -59,6 +61,7 @@ const GameAddComponent = () => {
 
       const data = await response.json();
       console.log("Post request successful:", data);
+      navigate("/gamelist")
     } catch (error) {
       console.error("Error:", error);
     }

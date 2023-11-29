@@ -3,7 +3,7 @@ import React from "react";
 const FootComponent = () => {
   return (
     <div>
-      <p>this is Foot</p>
+      <p>Foot</p>
     </div>
   );
 };

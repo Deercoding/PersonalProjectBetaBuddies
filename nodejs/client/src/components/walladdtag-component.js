@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../socketio.js";
+import { useNavigate } from "react-router-dom";
 
 const WalladdtagComponent = () => {
+  let navigate = useNavigate();
+
   const currentDate = new Date();
   const defaultWallUpdateTime = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
@@ -136,8 +139,11 @@ const WalladdtagComponent = () => {
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then((data) => console.log(data))
+      .then((data) => {
+        console.log(data);
+      })
       .catch((error) => console.error("Error:", error));
+    navigate("/");
   };
 
   return (
@@ -147,7 +153,11 @@ const WalladdtagComponent = () => {
       <div>
         {imageFormData.map((imageData, index) => (
           <div key={index} className="image-container">
-            <img src={imageData.imageProcessed} alt={`Image ${index}`} />
+            <img
+              src={imageData.imageProcessed}
+              alt={`Image ${index}`}
+              style={{ maxWidth: "30%" }}
+            />
 
             {createInput("text", "color", "Color", imageData.color, (e) =>
               handleColorChange(index, e.target.value)

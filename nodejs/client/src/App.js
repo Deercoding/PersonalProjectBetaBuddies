@@ -15,7 +15,7 @@ import GameDetailComponent from "./components/gamedetail-component.js";
 
 function App() {
   const [roomId, setRoomId] = useState("65632fcdd34ccada8196e449");
-
+  const [gameId, setGameId] = useState("");
   return (
     <div>
       <NavComponent />
@@ -40,8 +40,18 @@ function App() {
         <Route path="/sign" exact element={<SignComponent />} />
         <Route path="/gamewall" exact element={<GameWallComponent />} />
         <Route path="/gameadd" exact element={<GameAddComponent />} />
-        <Route path="/gamelist" exact element={<GameListComponent />} />
-        <Route path="/gamedetail" exact element={<GameDetailComponent />} />
+        <Route
+          path="/gamelist"
+          exact
+          element={<GameListComponent setGameId={setGameId} />}
+        />
+        <Route
+          path="/gamedetail"
+          exact
+          element={
+            <GameDetailComponent gameId={gameId} setRoomId={setRoomId} />
+          }
+        />
       </Routes>
       <FootComponent />
     </div>

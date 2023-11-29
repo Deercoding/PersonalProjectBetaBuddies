@@ -19,6 +19,7 @@ import {
   getgamewallsbyId,
   createGameUsers,
   getGameUser,
+  getGames,
 } from "../models/game-model.js";
 import { getRoombySearch } from "../models/wallroom-model.js";
 import path from "path";
@@ -89,14 +90,19 @@ router.post("/user", async (req, res) => {
 
 router.get("/user", async (req, res) => {
   let { gameId } = req.query;
+  console.log(gameId);
   const result = await getGameUser(gameId);
+  console.log(result);
   res.status(200).json(result);
 });
 
-router.get("/list", async (req, res) => {});
+router.get("/list", async (req, res) => {
+  const gameList = await getGames();
+  res.status(200).json(gameList);
+});
 
 router.get("/detail", async (req, res) => {
-  const gameId = "51";
+  const gameId = req.query.gameId;
   const gameInfo = await getgamebyId(gameId);
   const gameWalls = await getgamewallsbyId(gameId);
   let wallroomsId = gameWalls.map((gameWall) => {
@@ -212,6 +218,7 @@ router.post(
         result[0].insertId,
         adStartDate,
         adEndDate,
+        req.files["advertise_image"][0].filename,
         connection
       );
 
