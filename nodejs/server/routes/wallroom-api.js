@@ -89,6 +89,7 @@ router.post("/detail", async (req, res) => {
 
   let tagRoomId = req.body.tagRoomId;
   const roomInformation = await getRoom(tagRoomId);
+  console.log(roomInformation);
 
   let roomTagPair = await TagRoom.find({
     roomNumericId: tagRoomId,
@@ -96,13 +97,22 @@ router.post("/detail", async (req, res) => {
   const wallImage = roomInformation.wallimage;
   const roomName = `${roomInformation.gym_id} ${roomInformation.wall} ${roomInformation.color}`;
   const officialLevel = roomInformation.official_level;
+  const wallUpdateDate = roomInformation.wall_update_time;
+  const wallChangeDate = roomInformation.wall_change_time;
 
   const sortedData = roomTagPair.sort((a, b) => b.tagCount - a.tagCount); //not validate yet
   const tagsArray = sortedData.map((item) => item.tag);
 
   const tags = tagsArray;
 
-  const response = { wallImage, roomName, officialLevel, tags };
+  const response = {
+    wallImage,
+    roomName,
+    officialLevel,
+    tags,
+    wallUpdateDate,
+    wallChangeDate,
+  };
   res.status(200).json(response);
 
   // [

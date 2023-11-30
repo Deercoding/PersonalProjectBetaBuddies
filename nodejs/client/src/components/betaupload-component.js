@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button, Card, Input } from "antd";
 
 const BetaUploadComponent = ({ roomId }) => {
   const [file, setFile] = useState(null);
@@ -98,33 +99,41 @@ const BetaUploadComponent = ({ roomId }) => {
   };
 
   return (
-    <div>
-      <p>This is BetaUploadComponent</p>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <form onSubmit={handleSubmit}>
-        <label>
-          Select a video file:
-          <input type="file" onChange={handleFileChange} accept="video/*" />
-        </label>
-
-        {videoPreview && (
-          <video width="320" height="240" controls>
-            <source src={videoPreview} type="video/mp4" />
-          </video>
-        )}
-
+    <div id="outside-video-upload-container">
+      <Card id="video-upload-container" title="分享Beta區">
         <br></br>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <strong>上傳Beta影片:</strong>
+        <input
+          type="file"
+          onChange={handleFileChange}
+          accept="video/*"
+          style={{
+            // Add your styles here
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            marginTop: "5px",
+          }}
+        />
         <br></br>
-        <br></br>
+        <div>
+          {videoPreview && (
+            <video width="180" controls>
+              <source src={videoPreview} type="video/mp4" />
+            </video>
+          )}
+        </div>
+
         <label>
           Comments:
-          <input type="text" value={comments} onChange={handleCommentsChange} />
+          <Input type="text" value={comments} onChange={handleCommentsChange} />
         </label>
 
         <label>
-          Level by Author:
-          <input
+          體感等級:
+          <Input
             type="text"
             value={levelByAuthor}
             onChange={handleLevelByAuthorChange}
@@ -132,16 +141,18 @@ const BetaUploadComponent = ({ roomId }) => {
         </label>
 
         <label>
-          Tags (seperate by "/"):
-          <input
+          #tags (EX: 指力/動態) :
+          <Input
             type="text"
             value={tags.join("/")}
             onChange={handleTagsChange}
           />
         </label>
 
-        <button type="submit">Upload</button>
-      </form>
+        <Button type="text" onClick={(e) => handleSubmit(e)}>
+          Upload
+        </Button>
+      </Card>
     </div>
   );
 };

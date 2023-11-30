@@ -1,0 +1,9 @@
+#home-wall-info {
+  margin: 10px;
+}
+#home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

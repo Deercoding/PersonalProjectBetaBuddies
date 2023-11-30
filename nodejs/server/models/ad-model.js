@@ -5,5 +5,5 @@ export async function checkAdStatus(ad_location_id) {
     `select * from ad_status where ad_location_id = ?;`,
     [ad_location_id]
   );
-  return rows[0];
+  return rows;
 }

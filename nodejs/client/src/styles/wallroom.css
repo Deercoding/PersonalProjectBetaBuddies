@@ -1,0 +1,43 @@
+#outer-wallroom-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#wallroom-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 600px;
+}
+
+#wallroom-container-upper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#chat-history-card {
+  height: 250px;
+  overflow-y: scroll;
+}
+
+#carousel-container {
+  text-align: center;
+  height: 400px;
+  line-height: 450px;
+  width: auto;
+}
+
+.ant-carousel .slick-dots li button {
+  background-color: #e74c3c;
+}
+.ant-carousel .slick-dots li.slick-active button {
+  background-color: #e74c3c;
+}
+
+.ant-carousel .slick-slider .slick-track {
+  height: auto !important;
+}

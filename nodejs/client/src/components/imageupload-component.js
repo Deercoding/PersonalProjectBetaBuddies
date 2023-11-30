@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button, Card, Input } from "antd";
 
 const ImageuploadComponent = () => {
   const [fileList, setFileList] = useState([]);
@@ -32,42 +33,50 @@ const ImageuploadComponent = () => {
         <title>Image upload</title>
       </head>
       <body>
-        <div>
-          <form
-            action="http://localhost:8080/api/wallupload"
-            method="post"
-            encType="multipart/form-data"
-          >
-            <label htmlFor="file">Upload 1 image</label>
-            <input
-              id="file"
-              type="file"
-              name="file"
-              onChange={updateList}
-              multiple
-            />
-            <div id="fileList">
-              <ul>
-                {fileList.map((fileName, index) => (
-                  <li key={index}>{fileName}</li>
+        <div id="outside-video-upload-container">
+          <Card id="video-upload-container" title="上傳影片">
+            <form
+              action="http://localhost:8080/api/wallupload"
+              method="post"
+              encType="multipart/form-data"
+            >
+              <label htmlFor="file">上傳岩牆: </label>
+              <Input
+                id="file"
+                type="file"
+                name="file"
+                onChange={updateList}
+                multiple
+              />
+
+              <br />
+              <div id="preview">
+                {imagePreviews.map((preview, index) => (
+                  <img
+                    key={index}
+                    src={preview}
+                    alt={`Preview ${index + 1}`}
+                    style={{ maxWidth: "200px", marginRight: "10px" }}
+                  />
                 ))}
-              </ul>
-            </div>
-            <br />
-            <div id="preview">
-              {imagePreviews.map((preview, index) => (
-                <img
-                  key={index}
-                  src={preview}
-                  alt={`Preview ${index + 1}`}
-                  style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
-              ))}
-            </div>
-            <br />
-            <button type="submit">Send</button>
-          </form>
+              </div>
+              <br />
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: "#e74c3c",
+                  color: "#ffffff",
+                  borderColor: "#ffffff",
+                  borderRadius: "8px",
+                  padding: "7px 20px",
+                }}
+              >
+                Send
+              </button>
+            </form>
+          </Card>
         </div>
+
         <div id="header"></div>
       </body>
     </html>

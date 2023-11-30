@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import "./styles/style.css";
+import "react-chat-elements/dist/main.css";
 import NavComponent from "./components/nav-component.js";
 import FootComponent from "./components/footer-component.js";
 import HomeComponent from "./components/home-component.js";
@@ -15,7 +17,7 @@ import GameDetailComponent from "./components/gamedetail-component.js";
 
 function App() {
   const [roomId, setRoomId] = useState("65632fcdd34ccada8196e449");
-  const [gameId, setGameId] = useState("");
+  const [gameId, setGameId] = useState("63");
   return (
     <div>
       <NavComponent />

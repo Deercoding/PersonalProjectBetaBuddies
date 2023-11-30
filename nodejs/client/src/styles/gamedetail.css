@@ -1,0 +1,10 @@
+#gamedetail-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+#gamedetail-second-image {
+  margin-left: 40px;
+}

@@ -1,0 +1,14 @@
+* {
+  font-family: "Noto Sans TC";
+  font-size: 16px;
+}
+.ant-btn {
+  background-color: #e74c3c;
+  color: #ffff;
+}
+
+@import "wallroom.css";
+@import "home.css";
+@import "gamedetail.css";
+@import "gamelist.css";
+@import "videoupload.css";

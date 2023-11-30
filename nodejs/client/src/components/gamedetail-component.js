@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Image, Card, Input, Space, Button, Row, Col, Table } from "antd";
 
 const GameDetailComponent = ({ gameId, setRoomId }) => {
   const [data, setData] = useState(null);
@@ -65,74 +66,111 @@ const GameDetailComponent = ({ gameId, setRoomId }) => {
     setRoomId(roomNumericId);
     navigate("/wallroom");
   };
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+  const columns = [
+    {
+      title: "參賽者",
+      dataIndex: "userId",
+      key: "userId",
+    },
+    {
+      title: "排名",
+      dataIndex: "rank",
+      key: "rank",
+    },
+    {
+      title: "已完成的牆面數量",
+      dataIndex: "completeWalls",
+      key: "completeWalls",
+    },
+  ];
+
+  const dataSource = userRankResults?.map((user) => {
+    return {
+      userId: user.user_id,
+      rank: user.user_rank ?? "已參賽",
+      completeWalls: user.complete_walls_count,
+    };
+  });
 
   return (
-    <div>
-      <h2>Game Detail</h2>
-      <button onClick={handleJoinActivity}>Join Activity</button>
-      {joinActivityStatus && <p>{joinActivityStatus}</p>}
+    <div id="gamedetail-container">
       {data ? (
         <div>
-          <h3>Game Information</h3>
-          <p>GameId : {data.gameInfo[0].game_id}</p>
-          <p>Name: {data.gameInfo[0].name}</p>
-          <p>Short Description: {data.gameInfo[0].short_description}</p>
-          <p>Long Description: {data.gameInfo[0].long_description}</p>
-          <p>Start Date: {data.gameInfo[0].date_start}</p>
-          <p>End Date: {data.gameInfo[0].date_end}</p>
-          <p>Member Count: {data.gameInfo[0].member_count}</p>
-          <p>Winners: {data.gameInfo[0].game_winners}</p>
-          <p>Award: {data.gameInfo[0].game_award}</p>
           <img
             src={
               "https://d23j097i06b1t0.cloudfront.net/" +
               data.gameInfo[0].main_image
             }
-            alt="Main Game Image"
-            style={{ maxWidth: "10%" }}
+            style={{ maxWidth: "1920px", maxHeight: "500px" }}
           />
-          <img
-            src={
-              "https://d23j097i06b1t0.cloudfront.net/" +
-              data.gameInfo[0].second_image
-            }
-            alt="Second Game Image"
-            style={{ maxWidth: "10%" }}
-          />
+          <br></br>
 
-          <h3>Wall Room Information</h3>
-          {data.wallroomInfo.map((wallroom) => (
-            <div
-              key={wallroom.wallroomId}
-              onClick={() => handleResultClick(wallroom.tag_room_id)}
-            >
-              <p>WallroomId : {wallroom.tag_room_id}</p>
-              <p>Official Level: {wallroom.official_level}</p>
-              <p>Gym ID: {wallroom.gym_id}</p>
-              <p>Wall: {wallroom.wall}</p>
-              <p>Color: {wallroom.color}</p>
-              <p>Wall Update Time: {wallroom.wall_update_time}</p>
-              <p>Wall Change Time: {wallroom.wall_change_time}</p>
-              <img
-                src={wallroom.wallimage}
-                alt={`Wall Image ${wallroom.wallroomId}`}
-                style={{ maxWidth: "10%" }}
-              />
-            </div>
-          ))}
-          {userRankResults && (
-            <div>
-              <h3>User Rank</h3>
-              <ul>
-                {userRankResults.map((user) => (
-                  <li key={user.game_users_id}>
-                    User ID: {user.user_id}, Rank: {user.user_rank}, Complete
-                    walls: {user.complete_walls_count}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <Card title="比賽資訊">
+            <Row>
+              <div>
+                <p>比賽序號 : {data.gameInfo[0].game_id}</p>
+                <p>比賽名稱: {data.gameInfo[0].name}</p>
+                <p>比賽內容: {data.gameInfo[0].long_description}</p>
+                <p>開始日期: {formatDate(data.gameInfo[0].date_start)}</p>
+                <p>結束日期: {formatDate(data.gameInfo[0].date_end)}</p>
+                <p>獲勝人數: {data.gameInfo[0].game_winners}</p>
+                <p>精美獎品: {data.gameInfo[0].game_award}</p>
+              </div>
+              <div>
+                <img
+                  id="gamedetail-second-image"
+                  src={
+                    "https://d23j097i06b1t0.cloudfront.net/" +
+                    data.gameInfo[0].second_image
+                  }
+                  style={{ maxWidth: "800px", maxHeight: "600px" }}
+                />
+              </div>
+            </Row>
+          </Card>
+          <br></br>
+          <Button
+            block
+            size="large"
+            type="primary"
+            onClick={handleJoinActivity}
+          >
+            參加比賽
+          </Button>
+          <br></br>
+          <br></br>
+          <br></br>
+          <Card title="挑戰賽線">
+            <Row>
+              {data.wallroomInfo.map((wallroom) => (
+                <Col
+                  key={wallroom.wallroomId}
+                  onClick={() => handleResultClick(wallroom.tag_room_id)}
+                  span={12}
+                >
+                  <Card>
+                    <div>
+                      {/* <p>WallroomId : {wallroom.tag_room_id}</p> */}
+                      <strong>點擊進入聊天室</strong>
+                      <p>
+                        岩牆: {wallroom.gym_id} {wallroom.wall} {wallroom.color}
+                      </p>
+                      <p>Official Level: {wallroom.official_level}</p>
+                    </div>
+                    <div>
+                      <Image height={300} src={wallroom.wallimage} />
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </Card>
+          <br></br>
+          <Table dataSource={dataSource} columns={columns} size="small" />
         </div>
       ) : (
         <p>Loading...</p>
