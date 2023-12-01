@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Image, Card, Button, Row, Form, Select } from "antd";
 
 const GameWallComponent = ({ setRoomId }) => {
   const [officialLevel, setOfficialLevel] = useState("");
@@ -7,16 +8,18 @@ const GameWallComponent = ({ setRoomId }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
   let navigate = useNavigate();
+  const { Option } = Select;
 
   const handleOfficialLevelChange = (event) => {
-    setOfficialLevel(event.target.value);
+    setOfficialLevel(event);
   };
 
   const handleGymChange = (event) => {
-    setGym(event.target.value);
+    setGym(event);
   };
 
   const handleSearch = () => {
+    console.log(`official_level=${officialLevel}&gym=${gym}`);
     fetch(
       `http://localhost:8080/api/search?official_level=${officialLevel}&gym=${gym}`
     )
@@ -65,68 +68,109 @@ const GameWallComponent = ({ setRoomId }) => {
     navigate("/gameadd");
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleSearch();
+  };
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
-    <div>
-      <p>選擇參加挑戰賽的牆面</p>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSearch();
-        }}
-      >
-        <label>
-          Official Level:
-          <input
-            type="text"
-            value={officialLevel}
-            onChange={handleOfficialLevelChange}
-          />
-        </label>
-        <br />
-        <label>
-          Gym:
-          <input type="text" value={gym} onChange={handleGymChange} />
-        </label>
-        <br />
-        <button type="submit">Search</button>
-      </form>
+    <div id="outer-gamewall-container">
+      <div id="gamewall-container">
+        <Form>
+          <Form.Item name="gym" label="岩館">
+            <Select
+              placeholder="合作岩館"
+              onChange={handleGymChange}
+              allowClear
+            >
+              <Option value="岩館一">攀岩石樂樂合作岩館</Option>
+              <Option value="快樂岩館">快樂岩館</Option>
+              <Option value="岩壁探險谷">岩壁探險谷</Option>
+              <Option value="岩漫天地">岩漫天地</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item name="officialLevel" label="官方等級">
+            <Select
+              placeholder="VB-V9"
+              onChange={handleOfficialLevelChange}
+              allowClear
+            >
+              <Option value="B">VB</Option>
+              <Option value="0">V0</Option>
+              <Option value="1">V1</Option>
+              <Option value="2">V2</Option>
+              <Option value="3">V3</Option>
+              <Option value="4">V4</Option>
+              <Option value="5">V5</Option>
+              <Option value="6">V6</Option>
+              <Option value="7">V7</Option>
+              <Option value="8">V8</Option>
+              <Option value="9">V9</Option>
+            </Select>
+          </Form.Item>
 
-      {/* Display search results */}
-      {searchResults.length > 0 && (
-        <div>
-          <h2>Search Results:</h2>
-          <button onClick={handleAllSubmissions}>Submit Selected Images</button>
-          <ul>
-            {searchResults.map((result, index) => (
-              <li key={index}>
-                <input
-                  type="checkbox"
-                  id={`chooseImage-${index}`}
-                  name={`chooseImage-${index}`}
-                  checked={selectedImages[index]}
-                  onChange={() => handleCheckboxChange(index)}
-                />
-                <label htmlFor={`chooseImage-${index}`}>Choose Image</label>
+          <Form.Item>
+            <Button
+              type="text"
+              htmlType="submit"
+              onClick={(e) => handleSubmit(e)}
+            >
+              Search
+            </Button>
+          </Form.Item>
+        </Form>
 
-                <p>Official Level: {result.official_level}</p>
-                <p>Gym ID: {result.gym_id}</p>
-                <p>Wall: {result.wall}</p>
-                <p>Color: {result.color}</p>
-                <p>Room Chat Count: {result.roomChatCount}</p>
-                <p>Video Count: {result.videoCount}</p>
-                <p>Wall update date: {result.wallUpdateDate}</p>
-                <p>Wall change date: {result.wallChangeDate}</p>
-                {/* Display image */}
-                <img
-                  src={result.wallimage}
-                  alt={`Wall Image for ${result.wall}`}
-                  style={{ maxWidth: "30%" }}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {searchResults.length > 0 && (
+          <div>
+            <h2>選擇參加挑戰賽的牆面</h2>
+            <Button block type="text" onClick={handleAllSubmissions}>
+              送出牆面
+            </Button>
+            <div>
+              {searchResults.map((result, index) => (
+                <Card key={index} title="選擇牆面">
+                  <div id="gamewall-wall-container">
+                    <div>
+                      <input
+                        type="checkbox"
+                        id={`chooseImage-${index}`}
+                        name={`chooseImage-${index}`}
+                        checked={selectedImages[index]}
+                        onChange={() => handleCheckboxChange(index)}
+                      />
+                      <label
+                        id="gamewall-choose-image"
+                        htmlFor={`chooseImage-${index}`}
+                      >
+                        選擇
+                      </label>
+                    </div>
+                    <div>
+                      <p>
+                        岩牆: {result.gym_id} {result.wall} {result.color}
+                      </p>
+                      <p>官方等級: {result.official_level}</p>
+                      <p>聊天熱度: {result.roomChatCount}</p>
+                      <p>Beta影片: {result.videoCount}</p>
+                      <p>更新時間: {formatDate(result.wallUpdateDate)}</p>
+                      <p>換線時間: {formatDate(result.wallChangeDate)}</p>
+                    </div>
+                    <Image
+                      src={result.wallimage}
+                      alt={`Wall Image for ${result.wall}`}
+                      width={250}
+                    />
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

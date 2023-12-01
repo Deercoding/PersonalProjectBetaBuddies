@@ -208,7 +208,9 @@ const WallroomComponent = ({ roomId }) => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
-              <Button onClick={() => sendMessage()}>Submit</Button>
+              <Button type="text" onClick={() => sendMessage()}>
+                Submit
+              </Button>
             </Space.Compact>
           </Card>
 
@@ -238,7 +240,9 @@ const WallroomComponent = ({ roomId }) => {
               </Carousel>
             </div>
             <div id="navigate-to-beta-upload">
-              <Button onClick={BetaUpload}>上傳我的Beta</Button>
+              <Button type="text" onClick={BetaUpload}>
+                上傳我的Beta
+              </Button>
             </div>
           </Card>
         </div>

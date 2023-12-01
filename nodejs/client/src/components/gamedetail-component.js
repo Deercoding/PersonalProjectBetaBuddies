@@ -133,12 +133,7 @@ const GameDetailComponent = ({ gameId, setRoomId }) => {
             </Row>
           </Card>
           <br></br>
-          <Button
-            block
-            size="large"
-            type="primary"
-            onClick={handleJoinActivity}
-          >
+          <Button block size="large" type="text" onClick={handleJoinActivity}>
             參加比賽
           </Button>
           <br></br>

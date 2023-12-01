@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Card, Col, Input, Button } from "antd";
 
 const SignComponent = ({}) => {
   console.log("Signin page");
@@ -81,87 +82,56 @@ const SignComponent = ({}) => {
   }
 
   return (
-    <div class="sign-container-wrap">
-      <div id="server"></div>
-      <div class="sign-container">
-        <div class="sign-form-container">
-          <h1>Sign up</h1>
-          <div class="mb-3">
-            <label for="username" class="form-label">
-              Username
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="signup-username"
-            ></input>
-          </div>
+    <Col gutter={16} justify="center" align="middle">
+      <Card span={8} id="sign">
+        <div id="server"></div>
+        <div className="sign-container">
+          <div className="sign-form-container">
+            <h1>Sign up</h1>
+            <div className="mb-3">
+              <label htmlFor="signup-username">Username</label>
+              <Input id="signup-username" />
+            </div>
 
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">
-              Email address
-            </label>
-            <input
-              type="email"
-              class="form-control"
-              id="signup-email"
-              aria-describedby="emailHelp"
-            ></input>
-          </div>
+            <div className="mb-3">
+              <label htmlFor="signup-email">Email address</label>
+              <Input type="email" id="signup-email" />
+            </div>
 
-          <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              class="form-control"
-              id="signup-password"
-            ></input>
+            <div className="mb-3">
+              <label htmlFor="signup-password">Password</label>
+              <Input.Password id="signup-password" />
+            </div>
+            <br></br>
+            <Button type="text" onClick={signup}>
+              Submit
+            </Button>
           </div>
-
-          <button
-            type="submit"
-            class="btn btn-primary"
-            onClick={() => signup()}
-          >
-            Submit
-          </button>
         </div>
-        <br></br>
-
-        <div class="sign-form-container">
+      </Card>
+      <br></br>
+      <br></br>
+      <Card id="sign">
+        <div className="sign-form-container">
           <h1>Sign in</h1>
 
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">
-              Email address
-            </label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              aria-describedby="emailHelp"
-            ></input>
+          <div className="mb-3">
+            <label htmlFor="email">Email address</label>
+            <Input type="email" id="email" />
           </div>
 
-          <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">
-              Password
-            </label>
-            <input type="password" class="form-control" id="password"></input>
+          <div className="mb-3">
+            <label htmlFor="password">Password</label>
+            <Input.Password id="password" />
           </div>
+          <br></br>
 
-          <button
-            type="submit"
-            class="btn btn-primary"
-            onClick={() => signin()}
-          >
+          <Button type="text" onClick={signin}>
             Submit
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </Card>
+    </Col>
   );
 };
 

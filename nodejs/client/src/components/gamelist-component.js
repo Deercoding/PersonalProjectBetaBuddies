@@ -44,6 +44,9 @@ const GameListComponent = ({ setGameId }) => {
           />
         </div>
         <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
         {gameList.map((game) => (
           <Row
             key={game.game_id}

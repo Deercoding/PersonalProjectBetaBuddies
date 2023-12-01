@@ -201,7 +201,6 @@ router.post(
         req.body.long_description,
         new Date(req.body.date_start),
         new Date(req.body.date_end),
-        req.body.member_count,
         req.body.game_winners,
         req.body.game_award,
         req.files["main_image"][0].filename,

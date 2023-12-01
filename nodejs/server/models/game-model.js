@@ -6,7 +6,6 @@ export async function createGame(
   long_description,
   date_start,
   date_end,
-  member_count,
   game_winners,
   game_award,
   main_image,
@@ -16,14 +15,13 @@ export async function createGame(
   advertise_image
 ) {
   let result = await pool.query(
-    `insert into games(name,short_description,long_description,date_start,date_end,member_count,game_winners,game_award,main_image, second_image,ad_location_id,ad_start_date, advertise_image) values(?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+    `insert into games(name,short_description,long_description,date_start,date_end,game_winners,game_award,main_image, second_image,ad_location_id,ad_start_date, advertise_image) values(?,?,?,?,?,?,?,?,?,?,?,?);`,
     [
       name,
       short_description,
       long_description,
       date_start,
       date_end,
-      member_count,
       game_winners,
       game_award,
       main_image,

@@ -2,8 +2,16 @@
   font-family: "Noto Sans TC";
   font-size: 16px;
 }
+
+
+/* html,
+body {
+  height: 100%;
+  margin: 0;
+} */
+
 .ant-btn {
-  background-color: #e74c3c;
+  background-color: rgb(213, 52, 35);
   color: #ffff;
 }
 
@@ -12,3 +20,4 @@
 @import "gamedetail.css";
 @import "gamelist.css";
 @import "videoupload.css";
+@import "walladdtag.css";

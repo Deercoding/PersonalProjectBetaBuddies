@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image, Card, Button, Row, Form, Select } from "antd";
 
@@ -6,8 +6,8 @@ const HomeComponent = ({ setRoomId }) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  const [officialLevel, setOfficialLevel] = useState("");
-  const [gym, setGym] = useState("");
+  const [officialLevel, setOfficialLevel] = useState("5");
+  const [gym, setGym] = useState("岩館一");
   const [searchResults, setSearchResults] = useState([]);
   let navigate = useNavigate();
 
@@ -24,6 +24,10 @@ const HomeComponent = ({ setRoomId }) => {
   const handleGymChange = (event) => {
     setGym(event);
   };
+
+  useEffect(() => {
+    handleSearch();
+  }, []);
 
   const handleSearch = () => {
     fetch(
@@ -107,7 +111,7 @@ const HomeComponent = ({ setRoomId }) => {
               </div>
               <br></br>
               <div>
-                <Image width={250} src={result.wallimage} />
+                <Image width={250} src={result.wallimage} preview={false} />
               </div>
             </Row>
           </Card>

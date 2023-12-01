@@ -7,3 +7,34 @@
   align-items: center;
   justify-content: center;
 }
+
+#footer {
+  display: flex;
+  flex-direction: row;
+  background-color: rgb(213, 52, 35);
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+  color: #ffff;
+  margin-top: 50px;
+}
+
+#nav {
+  display: flex;
+  flex-direction: row;
+  background-color: #ffff;
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+  padding: 20px;
+  font-size: large;
+}
+
+#nav a {
+  color: rgb(213, 52, 35);
+}
+
+#sign {
+  width: 600px;
+}

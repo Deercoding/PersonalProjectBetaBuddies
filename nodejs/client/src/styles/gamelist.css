@@ -6,7 +6,50 @@
 }
 
 #gamelist-container {
+  width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#gamelist-card {
+  margin: 10px;
+}
+
+#home-wall-info {
+  width: 300px;
+}
+
+/* game wall choose */
+#gamewall-choose-image {
+  font-size: large;
+}
+
+#gamewall-wall-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  gap: 30px;
+}
+
+#gamewall-container {
+  width: 700px;
+}
+
+#outer-gamewall-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#gameadd-container {
   width: 1000px;
+}
+#outer-gameadd-container {
   display: flex;
   flex-direction: column;
   align-items: center;

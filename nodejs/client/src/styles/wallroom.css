@@ -32,10 +32,10 @@
 }
 
 .ant-carousel .slick-dots li button {
-  background-color: #e74c3c;
+  background-color: rgb(213, 52, 35);
 }
 .ant-carousel .slick-dots li.slick-active button {
-  background-color: #e74c3c;
+  background-color: rgb(213, 52, 35);
 }
 
 .ant-carousel .slick-slider .slick-track {
