@@ -21,7 +21,7 @@ const GameDetailComponent = () => {
   const fetchGame = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/game/detail?gameId=${gameId}`
+        `${process.env.REACT_APP_SERVER_URL}api/game/detail?gameId=${gameId}`
       );
       const result = await response.json();
       setData(result);
@@ -33,7 +33,7 @@ const GameDetailComponent = () => {
   const getUserRank = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/game/user?gameId=${gameId}`
+        `${process.env.REACT_APP_SERVER_URL}api/game/user?gameId=${gameId}`
       );
       const result = await response.json();
       const sortedResults = result.sort((a, b) => a.user_rank - b.user_rank);
@@ -46,16 +46,19 @@ const GameDetailComponent = () => {
     try {
       const userId = localStorage.getItem("userInfo").split(",")[0];
 
-      const response = await fetch("http://localhost:8080/api/game/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-          gameId: gameId,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/game/user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+            gameId: gameId,
+          }),
+        }
+      );
 
       const result = await response.json();
 

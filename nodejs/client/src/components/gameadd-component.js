@@ -30,7 +30,7 @@ const GameAddComponent = () => {
   });
   const [isAdmin, setIsAdmin] = useState(false);
   const checkRole = async (authorization) => {
-    await fetch("http://localhost:8080/api/role", {
+    await fetch(`${process.env.REACT_APP_SERVER_URL}api/role`, {
       headers: {
         "content-type": "application/json",
         authorization: authorization,
@@ -72,10 +72,13 @@ const GameAddComponent = () => {
       });
       console.log(formData);
 
-      const response = await fetch("http://localhost:8080/api/game/detail", {
-        method: "POST",
-        body: formDataForUpload,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/game/detail`,
+        {
+          method: "POST",
+          body: formDataForUpload,
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -90,7 +93,7 @@ const GameAddComponent = () => {
   };
 
   const handleAdLocation = () => {
-    fetch(`http://localhost:8080/api/game/adlocation`)
+    fetch(`${process.env.REACT_APP_SERVER_URL}api/game/adlocation`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

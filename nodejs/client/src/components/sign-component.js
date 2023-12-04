@@ -9,7 +9,7 @@ const SignComponent = ({}) => {
   function signin() {
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
-    postData("http://localhost:8080/api/sign/signin", {
+    postData(process.env.REACT_APP_SERVER_URL + "api/sign/signin", {
       email: email,
       password: password,
     })
@@ -40,7 +40,7 @@ const SignComponent = ({}) => {
     let email = document.getElementById("signup-email").value;
     let password = document.getElementById("signup-password").value;
     console.log(username, email, password);
-    postData("http://localhost:8080/api/sign/signup", {
+    postData(process.env.REACT_APP_SERVER_URL + "api/sign/signup", {
       name: username,
       email: email,
       password: password,

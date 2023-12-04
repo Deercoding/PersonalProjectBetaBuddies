@@ -23,7 +23,7 @@ const GameWallComponent = () => {
   };
 
   const checkRole = async (authorization) => {
-    await fetch("http://localhost:8080/api/role", {
+    await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
       headers: {
         "content-type": "application/json",
         authorization: authorization,
@@ -49,7 +49,7 @@ const GameWallComponent = () => {
   const handleSearch = async () => {
     setIsLoading(true);
     await fetch(
-      `http://localhost:8080/api/search?official_level=${officialLevel}&gym=${gym}&searchtags=`
+      `${process.env.REACT_APP_SERVER_URL}api/search?official_level=${officialLevel}&gym=${gym}&searchtags=`
     )
       .then((response) => response.json())
       .then((data) => {

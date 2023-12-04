@@ -8,7 +8,7 @@ const ImageuploadComponent = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const checkRole = async (authorization) => {
-    await fetch("http://localhost:8080/api/role", {
+    await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
       headers: {
         "content-type": "application/json",
         authorization: authorization,
@@ -66,7 +66,7 @@ const ImageuploadComponent = () => {
             <div id="outside-video-upload-container">
               <Card id="video-upload-container" title="上傳影片">
                 <form
-                  action="http://localhost:8080/api/wallupload"
+                  action={process.env.REACT_APP_SERVER_URL + "api/wallupload"}
                   method="post"
                   encType="multipart/form-data"
                 >

@@ -40,7 +40,7 @@ const AddNewRoomComponent = () => {
   const handleSearch = async () => {
     setIsLoading(true);
     await fetch(
-      `http://localhost:8080/api/wallchatroom?wall=${wall}&gym=${gym}`
+      `${process.env.REACT_APP_SERVER_URL}api/wallchatroom?wall=${wall}&gym=${gym}`
     )
       .then((response) => response.json())
       .then((data) => {

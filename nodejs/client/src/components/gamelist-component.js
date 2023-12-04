@@ -25,11 +25,13 @@ const GameListComponent = () => {
 
   const fetchData = async () => {
     try {
-      let gameList = await fetch("http://localhost:8080/api/game/list");
+      let gameList = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/game/list`
+      );
       gameList = await gameList.json();
 
       let gameAd = await fetch(
-        `http://localhost:8080/api/ad/?ad_location_id=2`
+        `${process.env.REACT_APP_SERVER_URL}api/ad/?ad_location_id=2`
       );
       gameAd = await gameAd.json();
 

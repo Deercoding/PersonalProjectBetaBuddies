@@ -45,7 +45,7 @@ const HomeComponent = () => {
   const fetchAdData = async () => {
     try {
       let gameAd = await fetch(
-        `http://localhost:8080/api/ad/?ad_location_id=1`
+        `${process.env.REACT_APP_SERVER_URL}api/ad/?ad_location_id=1`
       );
       gameAd = await gameAd.json();
       if (gameAd.length > 0) {
@@ -64,7 +64,7 @@ const HomeComponent = () => {
   const handleSearch = () => {
     setIsLoading(true);
     fetch(
-      `http://localhost:8080/api/search?official_level=${officialLevel}&gym=${gym}&searchtags=${input}`
+      `${process.env.REACT_APP_SERVER_URL}api/search?official_level=${officialLevel}&gym=${gym}&searchtags=${input}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -90,15 +90,18 @@ const HomeComponent = () => {
 
   const fetchAutocompleteResults = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/search/tags", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mysearch: input,
-        }),
-      });
+      const response = await fetch(
+        process.env.REACT_APP_SERVER_URL + "api/search/tags",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mysearch: input,
+          }),
+        }
+      );
       const data = await response.json();
       setSuggestions(data);
     } catch (error) {
@@ -232,37 +235,3 @@ const HomeComponent = () => {
 };
 
 export default HomeComponent;
-
-// split
-// <p>This is Home</p>
-
-// {/* Display search results */}
-
-// {searchResults.length > 0 && (
-//   <div>
-//     <h2>Search Results:</h2>
-//     <ul>
-//       {searchResults.map((result, index) => (
-//         <li
-//           key={index}
-//           onClick={() => handleResultClick(result.roomNumericId)}
-//         >
-//           <p>Official Level: {result.official_level}</p>
-//           <p>Gym ID: {result.gym_id}</p>
-//           <p>Wall: {result.wall}</p>
-//           <p>Color: {result.color}</p>
-//           <p>Room Chat Count: {result.roomChatCount}</p>
-//           <p>Video Count: {result.videoCount}</p>
-//           <p>Wall update date: {result.wallUpdateDate}</p>
-//           <p>Wall change date: {result.wallChangeDate}</p>
-//           {/* Display image */}
-//           <img
-//             src={result.wallimage}
-//             alt={`Wall Image for ${result.wall}`}
-//             style={{ maxWidth: "30%" }}
-//           />
-//         </li>
-//       ))}
-//     </ul>
-//   </div>
-// )}
