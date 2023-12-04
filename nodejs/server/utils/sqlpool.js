@@ -14,8 +14,8 @@ import mysql from "mysql2";
 
 const pool = mysql
   .createPool({
-    host: "127.0.0.1",
-    user: "root",
+    host: process.env.SQLHOST,
+    user: process.env.SQLUSER,
     database: "bouldering",
     password: process.env.SQLPASSWORD,
   })

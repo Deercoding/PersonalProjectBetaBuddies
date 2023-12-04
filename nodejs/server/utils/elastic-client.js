@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 const client = new Client({
   node: "https://localhost:9200",
   auth: {
-    username: "elastic",
+    username: process.env.ELASTIC_USERNAME,
     password: process.env.ELASTIC_PASSWORD,
   },
   tls: {
