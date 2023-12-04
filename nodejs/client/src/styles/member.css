@@ -1,0 +1,19 @@
+#outer-member-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#member-container {
+  width: 800px;
+}
+
+#member-admin-links {
+  display: flex;
+  flex-direction: column;
+}
+
+#member-admin-links button {
+  margin: 10px;
+}

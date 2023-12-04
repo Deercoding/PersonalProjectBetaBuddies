@@ -52,7 +52,6 @@ router.post("/signup", async (req, res) => {
       },
     };
 
-    // res.cookie("token", respond, { signed: true });
     return res.status(200).json(respond);
   } catch (error) {
     res.status(500).json("Server Error:" + error.message);
@@ -103,10 +102,9 @@ router.post("/signin", async (req, res) => {
           },
         },
       };
-      console.log(respond);
+
       return res.status(200).json(respond);
     }
-    // res.cookie("token", respond, { signed: true });
   } catch (error) {
     res.status(500).json("Server Error:" + error.message);
     console.error(error);

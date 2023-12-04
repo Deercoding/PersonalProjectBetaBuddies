@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Card, Input } from "antd";
 
-const BetaUploadComponent = ({ roomId }) => {
+const BetaUploadComponent = () => {
   const [file, setFile] = useState(null);
   const [comments, setComments] = useState("");
   const [levelByAuthor, setLevelByAuthor] = useState("");
@@ -10,6 +10,7 @@ const BetaUploadComponent = ({ roomId }) => {
   const [videoPreview, setVideoPreview] = useState(null);
   const [error, setError] = useState(null);
   let navigate = useNavigate();
+  const { roomId } = useParams();
 
   const roomNumericId = roomId;
   const jwtToken = localStorage.getItem("Authorization");

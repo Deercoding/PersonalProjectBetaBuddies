@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Image, Card, Input, Space, Button, Row, Col, Table } from "antd";
 
-const GameDetailComponent = ({ gameId, setRoomId }) => {
+const GameDetailComponent = () => {
   const [data, setData] = useState(null);
   const [joinActivityStatus, setJoinActivityStatus] = useState(null);
   const [userRankResults, setUserRankResults] = useState(null);
   let navigate = useNavigate();
+  const { gameId } = useParams();
 
   useEffect(() => {
-    fetchGame();
-    getUserRank();
-  }, []);
+    if (gameId) {
+      fetchGame();
+      getUserRank();
+    } else {
+      navigate("/");
+    }
+  }, [gameId]);
 
   const fetchGame = async () => {
     try {
@@ -20,7 +25,6 @@ const GameDetailComponent = ({ gameId, setRoomId }) => {
       );
       const result = await response.json();
       setData(result);
-      console.log(result);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -28,8 +32,6 @@ const GameDetailComponent = ({ gameId, setRoomId }) => {
 
   const getUserRank = async () => {
     try {
-      gameId = gameId;
-
       const response = await fetch(
         `http://localhost:8080/api/game/user?gameId=${gameId}`
       );
@@ -43,7 +45,6 @@ const GameDetailComponent = ({ gameId, setRoomId }) => {
   const handleJoinActivity = async () => {
     try {
       const userId = localStorage.getItem("userInfo").split(",")[0];
-      gameId = gameId;
 
       const response = await fetch("http://localhost:8080/api/game/user", {
         method: "POST",
@@ -65,8 +66,7 @@ const GameDetailComponent = ({ gameId, setRoomId }) => {
     }
   };
   const handleResultClick = (roomNumericId) => {
-    setRoomId(roomNumericId);
-    navigate("/wallroom");
+    navigate(`/wallroom/${roomNumericId}`);
   };
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };

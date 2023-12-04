@@ -87,7 +87,7 @@ router.post("/detail", async (req, res) => {
   // tags: [ '指力', '動態', '勾腳' ],
   // }
 
-  let tagRoomId = req.body.tagRoomId;
+  let tagRoomId = req.body.roomId;
   const roomInformation = await getRoom(tagRoomId);
   console.log(roomInformation);
 

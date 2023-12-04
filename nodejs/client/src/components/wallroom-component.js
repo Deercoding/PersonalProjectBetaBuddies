@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { socket } from "../socketio.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Image, Card, Input, Space, Button, Carousel } from "antd";
 import { MessageBox } from "react-chat-elements";
 
-const WallroomComponent = ({ roomId }) => {
+const WallroomComponent = () => {
   const [chatHistory, setChatHistory] = useState([]);
   const [newMessages, setNewMessages] = useState([]);
   const [roomInfo, setRoomInfo] = useState({});
@@ -14,19 +14,17 @@ const WallroomComponent = ({ roomId }) => {
   let navigate = useNavigate();
   const jwtToken = localStorage.getItem("Authorization");
   const userinfo = localStorage.getItem("userInfo").split(",");
-
-  // Local storage
-  const tagRoomId = roomId;
+  const { roomId } = useParams();
   const userName = userinfo[1];
 
   const BetaUpload = () => {
-    navigate("/betaupload");
+    navigate(`/betaupload/${roomId}`);
   };
 
   useEffect(() => {
-    fetchChatHistory(tagRoomId);
-    fetchRoomInfo(tagRoomId);
-    fetchVideoDetail(tagRoomId);
+    fetchChatHistory(roomId);
+    fetchRoomInfo(roomId);
+    fetchVideoDetail(roomId);
 
     socket.on("connect", (response) => {
       console.log(`You connect with id ${socket.id}`);
@@ -42,12 +40,12 @@ const WallroomComponent = ({ roomId }) => {
       socket.off("connect"); //clean up the connection
       socket.off("talk");
     };
-  }, []);
+  }, [roomId]);
 
   const sendMessage = () => {
     const userIdentify = {
       userName: userName,
-      roomNumericId: tagRoomId,
+      roomNumericId: roomId,
       roomName: roomInfo.roomName,
     };
     if (inputValue) {
@@ -56,7 +54,7 @@ const WallroomComponent = ({ roomId }) => {
     }
   };
 
-  const fetchChatHistory = async (tagRoomId) => {
+  const fetchChatHistory = async (roomId) => {
     try {
       const response = await fetch(
         process.env.REACT_APP_SERVER_URL + "api/chat/history",
@@ -65,7 +63,7 @@ const WallroomComponent = ({ roomId }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ tagRoomId }),
+          body: JSON.stringify({ roomId }),
         }
       );
 
@@ -83,7 +81,7 @@ const WallroomComponent = ({ roomId }) => {
       console.error(`Error fetching chat history: ${error}`);
     }
   };
-  const fetchRoomInfo = async (tagRoomId) => {
+  const fetchRoomInfo = async (roomId) => {
     try {
       const response = await fetch(
         process.env.REACT_APP_SERVER_URL + "api/wallchatroom/detail",
@@ -92,7 +90,7 @@ const WallroomComponent = ({ roomId }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ tagRoomId }),
+          body: JSON.stringify({ roomId }),
         }
       );
 
@@ -116,7 +114,7 @@ const WallroomComponent = ({ roomId }) => {
     }
   };
 
-  const fetchVideoDetail = async (tagRoomId) => {
+  const fetchVideoDetail = async (roomId) => {
     try {
       const response = await fetch(
         process.env.REACT_APP_SERVER_URL + "api/beta/detail",
@@ -125,7 +123,7 @@ const WallroomComponent = ({ roomId }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ tagRoomId }),
+          body: JSON.stringify({ roomId }),
         }
       );
 
@@ -239,11 +237,9 @@ const WallroomComponent = ({ roomId }) => {
                 ))}
               </Carousel>
             </div>
-            <div id="navigate-to-beta-upload">
-              <Button type="text" onClick={BetaUpload}>
-                上傳我的Beta
-              </Button>
-            </div>
+            <Button type="text" onClick={BetaUpload}>
+              上傳我的Beta
+            </Button>
           </Card>
         </div>
       </div>

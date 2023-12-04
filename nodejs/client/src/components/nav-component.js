@@ -32,7 +32,7 @@ const NavComponent = () => {
             ),
           },
           {
-            href: "/sign",
+            href: "/member",
             title: (
               <>
                 <SmileOutlined />

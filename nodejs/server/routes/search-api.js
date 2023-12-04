@@ -94,7 +94,6 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/tags", async (req, res) => {
-  console.log(req.body.mysearch);
   const searchResults = await searchTags(
     client,
     "autocomplete-tagsearch-12030744",

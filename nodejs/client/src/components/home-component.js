@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image, Card, Button, Row, Form, Select, Input, List } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 const { Search } = Input;
 
-const HomeComponent = ({ setRoomId, setGameId }) => {
+const HomeComponent = () => {
   const { Option } = Select;
 
   const [officialLevel, setOfficialLevel] = useState("");
@@ -12,12 +13,12 @@ const HomeComponent = ({ setRoomId, setGameId }) => {
   const [gameAd, setGameAd] = useState([]);
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   let navigate = useNavigate();
 
   const handleResultClick = (roomNumericId) => {
-    setRoomId(roomNumericId);
-    navigate("/wallroom");
+    navigate(`/wallroom/${roomNumericId}`);
   };
 
   const handleOfficialLevelChange = (event) => {
@@ -31,8 +32,7 @@ const HomeComponent = ({ setRoomId, setGameId }) => {
 
   const handleAdClick = () => {
     if (gameAd.game_id) {
-      setGameId(gameAd.game_id);
-      navigate("/gamedetail");
+      navigate(`/gamedetail/${gameAd.game_id}`);
     } else {
       navigate("/");
     }
@@ -62,14 +62,17 @@ const HomeComponent = ({ setRoomId, setGameId }) => {
   };
 
   const handleSearch = () => {
+    setIsLoading(true);
     fetch(
       `http://localhost:8080/api/search?official_level=${officialLevel}&gym=${gym}&searchtags=${input}`
     )
       .then((response) => response.json())
       .then((data) => {
+        setIsLoading(false);
         setSearchResults(data.data || []);
       })
       .catch((error) => {
+        setIsLoading(false);
         console.error("Error fetching data:", error);
       });
   };
@@ -191,35 +194,39 @@ const HomeComponent = ({ setRoomId, setGameId }) => {
           </Button>
         </Form.Item>
       </Form>
-
       <br></br>
-
-      {searchResults.map((result, index) => (
-        <Row
-          key={index}
-          onClick={() => handleResultClick(result.roomNumericId)}
-        >
-          <Card>
-            <Row>
-              <div id="home-wall-info">
-                <strong>
-                  岩牆: {result.gym_id} {result.wall} {result.color}
-                </strong>
-                <p>官方等級: {result.official_level}</p>
-                <p>聊天熱度: {result.roomChatCount}</p>
-                <p>Beta影片: {result.videoCount}</p>
-                <p>更新時間: {formatDate(result.wallUpdateDate)}</p>
-                <p>換線時間: {formatDate(result.wallChangeDate)}</p>
-                <p>#tags: {result.tags.join("/")}</p>
-              </div>
-              <br></br>
-              <div>
-                <Image width={250} src={result.wallimage} preview={false} />
-              </div>
-            </Row>
-          </Card>
-        </Row>
-      ))}
+      {isLoading ? (
+        <p>
+          Searching <LoadingOutlined />
+        </p>
+      ) : (
+        searchResults?.map((result, index) => (
+          <Row
+            key={index}
+            onClick={() => handleResultClick(result.roomNumericId)}
+          >
+            <Card>
+              <Row>
+                <div id="home-wall-info">
+                  <strong>
+                    岩牆: {result.gym_id} {result.wall} {result.color}
+                  </strong>
+                  <p>官方等級: {result.official_level}</p>
+                  <p>聊天熱度: {result.roomChatCount}</p>
+                  <p>Beta影片: {result.videoCount}</p>
+                  <p>更新時間: {formatDate(result.wallUpdateDate)}</p>
+                  <p>換線時間: {formatDate(result.wallChangeDate)}</p>
+                  <p>#tags: {result.tags.join("/")}</p>
+                </div>
+                <br></br>
+                <div>
+                  <Image width={250} src={result.wallimage} preview={false} />
+                </div>
+              </Row>
+            </Card>
+          </Row>
+        ))
+      )}
     </div>
   );
 };

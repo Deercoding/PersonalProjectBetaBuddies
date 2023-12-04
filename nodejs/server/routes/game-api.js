@@ -129,7 +129,6 @@ router.post(
     { name: "second_image", maxCount: 3 },
     { name: "advertise_image", maxCount: 1 },
   ]),
-
   async (req, res) => {
     const __filename = url.fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);

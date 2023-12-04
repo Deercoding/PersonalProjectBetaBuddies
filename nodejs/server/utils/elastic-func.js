@@ -38,6 +38,7 @@ export async function searchKeyword() {
       { content: chats.content },
       chats.roomNumericId
     );
+    console.log(chats.roomNumericId);
 
     let roomTag = {};
     const clientSearchs = tags;
@@ -140,6 +141,16 @@ export async function addDocumentToIndex(client, documents, myindex) {
   try {
     const result = await client.index({
       index: myindex,
+      body: {
+        mappings: {
+          properties: {
+            content: {
+              type: "text",
+              analyzer: "ik_max_word",
+            },
+          },
+        },
+      },
       body: documents,
     });
 

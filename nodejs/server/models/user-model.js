@@ -15,3 +15,11 @@ export async function checkUser(email) {
   );
   return rows;
 }
+
+export async function checkRole(userId) {
+  let [rows, fields] = await pool.query(
+    `select role from users where id = ?;`,
+    [userId]
+  );
+  return rows;
+}

@@ -19,8 +19,29 @@ const WalladdtagComponent = () => {
   const [branchValue, setBranchValue] = useState("AB牆");
   const [wallUpdateTime, setWallUpdateTime] = useState(defaultWallUpdateTime);
   const [wallChangeTime, setWallChangeTime] = useState(defaultWallChangeTime);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const checkRole = async (authorization) => {
+    await fetch("http://localhost:8080/api/role", {
+      headers: {
+        "content-type": "application/json",
+        authorization: authorization,
+      },
+      method: "POST",
+    }).then(async (response) => {
+      const role = await response.json();
+      if (role == "admin") {
+        setIsAdmin(true);
+      } else {
+        navigate("/");
+      }
+    });
+  };
 
   useEffect(() => {
+    const authorization = localStorage.getItem("Authorization");
+    checkRole(authorization);
+
     socket.on("connect", () => {
       console.log(`You connect with id ${socket.id}`);
     });
@@ -162,114 +183,118 @@ const WalladdtagComponent = () => {
 
   return (
     <div id="outer-walladdtag-image-container">
-      <div id="walladdtag-image-container">
-        <Card title="牆面基本資訊">
-          {createDropdownInput(
-            "storeValue",
-            "選擇岩館",
-            [
-              { key: "岩館一", value: "岩館一", label: "攀岩石樂樂合作岩館" },
-              { key: "快樂岩館", value: "快樂岩館", label: "快樂岩館" },
-              { key: "岩壁探險谷", value: "岩壁探險谷", label: "岩壁探險谷" },
-              { key: "岩漫天地", value: "岩漫天地", label: "岩漫天地" },
-            ],
-            storeValue,
-            (e) => {
-              handleDropdownChange("store", e.target.value);
-            }
-          )}
-          {createDropdownInput(
-            "branch",
-            "選擇牆面",
-            [
-              { key: "AB牆", value: "AB牆", label: "AB牆" },
-              { key: "CD牆", value: "CD牆", label: "CD牆" },
-              { key: "EF牆", value: "EF牆", label: "EF牆" },
-            ],
-            branchValue,
-            (e) => handleDropdownChange("branch", e.target.value)
-          )}
+      {!isAdmin ? (
+        <p>Authorization...</p>
+      ) : (
+        <div id="walladdtag-image-container">
+          <Card title="牆面基本資訊">
+            {createDropdownInput(
+              "storeValue",
+              "選擇岩館",
+              [
+                { key: "岩館一", value: "岩館一", label: "攀岩石樂樂合作岩館" },
+                { key: "快樂岩館", value: "快樂岩館", label: "快樂岩館" },
+                { key: "岩壁探險谷", value: "岩壁探險谷", label: "岩壁探險谷" },
+                { key: "岩漫天地", value: "岩漫天地", label: "岩漫天地" },
+              ],
+              storeValue,
+              (e) => {
+                handleDropdownChange("store", e.target.value);
+              }
+            )}
+            {createDropdownInput(
+              "branch",
+              "選擇牆面",
+              [
+                { key: "AB牆", value: "AB牆", label: "AB牆" },
+                { key: "CD牆", value: "CD牆", label: "CD牆" },
+                { key: "EF牆", value: "EF牆", label: "EF牆" },
+              ],
+              branchValue,
+              (e) => handleDropdownChange("branch", e.target.value)
+            )}
 
-          {createInput(
-            "text",
-            "wallUpdateTime",
-            "Wall Update Time",
-            wallUpdateTime,
-            (e) => setWallUpdateTime(e.target.value),
-            "更新時間"
-          )}
-          {createInput(
-            "text",
-            "wallChangeTime",
-            "Wall Change Time",
-            wallChangeTime,
-            (e) => setWallChangeTime(e.target.value),
-            "換線時間"
-          )}
-        </Card>
-        <br></br>
-        <br></br>
-        <div>
-          {imageFormData.map((imageData, index) => (
-            <Card key={index} title="圖片辨識結果">
-              <Row>
-                <div>
-                  {createInput(
-                    "text",
-                    "color",
-                    "Color",
-                    imageData.color,
-                    (e) => handleColorChange(index, e.target.value),
-                    "線路顏色"
-                  )}
+            {createInput(
+              "text",
+              "wallUpdateTime",
+              "Wall Update Time",
+              wallUpdateTime,
+              (e) => setWallUpdateTime(e.target.value),
+              "更新時間"
+            )}
+            {createInput(
+              "text",
+              "wallChangeTime",
+              "Wall Change Time",
+              wallChangeTime,
+              (e) => setWallChangeTime(e.target.value),
+              "換線時間"
+            )}
+          </Card>
+          <br></br>
+          <br></br>
+          <div>
+            {imageFormData.map((imageData, index) => (
+              <Card key={index} title="圖片辨識結果">
+                <Row>
+                  <div>
+                    {createInput(
+                      "text",
+                      "color",
+                      "Color",
+                      imageData.color,
+                      (e) => handleColorChange(index, e.target.value),
+                      "線路顏色"
+                    )}
 
-                  {createDropdownInput(
-                    "officialLevel",
-                    "官方等級",
-                    [
-                      { key: "B", value: "B", label: "VB" },
-                      { key: "0", value: "0", label: "V0" },
-                      { key: "1", value: "1", label: "V1" },
-                      { key: "2", value: "2", label: "V2" },
-                      { key: "3", value: "3", label: "V3" },
-                      { key: "4", value: "4", label: "V4" },
-                      { key: "5", value: "5", label: "V5" },
-                      { key: "6", value: "6", label: "V6" },
-                      { key: "7", value: "7", label: "V7" },
-                      { key: "8", value: "8", label: "V8" },
-                      { key: "9", value: "9", label: "V9" },
-                    ],
-                    imageData.officialLevel,
-                    (e) => handleOfficialLevelChange(index, e.target.value)
-                  )}
-                  {createInput(
-                    "text",
-                    "tags",
-                    "Tags",
-                    imageData.tags,
-                    (e) => handleTagsChange(index, e.target.value),
-                    "#tags"
-                  )}
-                  <label>保留圖片</label>
-                  <input
-                    type="checkbox"
-                    name="keep-image"
-                    checked={imageData.keepImage}
-                    onChange={(e) =>
-                      handleKeepImageChange(index, e.target.checked)
-                    }
-                  />
-                </div>
-                <Image src={imageData.imageProcessed} width={250} />
-              </Row>
-            </Card>
-          ))}
+                    {createDropdownInput(
+                      "officialLevel",
+                      "官方等級",
+                      [
+                        { key: "B", value: "B", label: "VB" },
+                        { key: "0", value: "0", label: "V0" },
+                        { key: "1", value: "1", label: "V1" },
+                        { key: "2", value: "2", label: "V2" },
+                        { key: "3", value: "3", label: "V3" },
+                        { key: "4", value: "4", label: "V4" },
+                        { key: "5", value: "5", label: "V5" },
+                        { key: "6", value: "6", label: "V6" },
+                        { key: "7", value: "7", label: "V7" },
+                        { key: "8", value: "8", label: "V8" },
+                        { key: "9", value: "9", label: "V9" },
+                      ],
+                      imageData.officialLevel,
+                      (e) => handleOfficialLevelChange(index, e.target.value)
+                    )}
+                    {createInput(
+                      "text",
+                      "tags",
+                      "Tags",
+                      imageData.tags,
+                      (e) => handleTagsChange(index, e.target.value),
+                      "#tags"
+                    )}
+                    <label>保留圖片</label>
+                    <input
+                      type="checkbox"
+                      name="keep-image"
+                      checked={imageData.keepImage}
+                      onChange={(e) =>
+                        handleKeepImageChange(index, e.target.checked)
+                      }
+                    />
+                  </div>
+                  <Image src={imageData.imageProcessed} width={250} />
+                </Row>
+              </Card>
+            ))}
+          </div>
+
+          <Button type="text" onClick={submitAllImages}>
+            Submit All Images
+          </Button>
         </div>
-
-        <Button type="text" onClick={submitAllImages}>
-          Submit All Images
-        </Button>
-      </div>
+      )}
     </div>
   );
 };

@@ -8,12 +8,12 @@
   color: #ffff;
 }
 
-/* .app {
+.app {
   display: flex;
   flex-direction: column;
   position: relative;
-  height: 100vh;
-} */
+  min-height: calc(100vh - 260px);
+}
 
 @import "wallroom.css";
 @import "home.css";
@@ -21,3 +21,4 @@
 @import "gamelist.css";
 @import "videoupload.css";
 @import "walladdtag.css";
+@import "member.css";

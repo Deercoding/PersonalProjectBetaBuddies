@@ -2,20 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image, Card, Button, Row, Form, Select } from "antd";
 
-const GameListComponent = ({ setGameId }) => {
+const GameListComponent = () => {
   const [gameList, setGameList] = useState([]);
   const [gameAd, setGameAd] = useState([]);
   let navigate = useNavigate();
 
   const handleResultClick = (game_id) => {
-    setGameId(game_id);
-    navigate("/gamedetail");
+    navigate(`/gamedetail/${game_id}`);
   };
 
   const handleAdClick = () => {
     if (gameAd.game_id) {
-      setGameId(gameAd.game_id);
-      navigate("/gamedetail");
+      navigate(`/gamedetail/${gameAd.game_id}`);
     } else {
       navigate("/");
     }

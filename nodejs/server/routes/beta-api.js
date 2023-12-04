@@ -162,7 +162,7 @@ router.post("/", upload.single("video"), async (req, res) => {
 });
 
 router.post("/detail", async (req, res) => {
-  let tagRoomId = req.body.tagRoomId;
+  let tagRoomId = req.body.roomId;
   const roomInformation = await getRoom(tagRoomId);
   const wallroomId = roomInformation["wallroomId"];
   const videos = await getVideos(wallroomId);

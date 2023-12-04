@@ -87,7 +87,7 @@ const SignComponent = ({}) => {
         <div id="server"></div>
         <div className="sign-container">
           <div className="sign-form-container">
-            <h1>登入</h1>
+            <h1>註冊</h1>
             <div className="mb-3">
               <label htmlFor="signup-username">Username</label>
               <Input id="signup-username" />
@@ -113,7 +113,7 @@ const SignComponent = ({}) => {
       <br></br>
       <Card id="sign">
         <div className="sign-form-container">
-          <h1>註冊</h1>
+          <h1>登入</h1>
 
           <div className="mb-3">
             <label htmlFor="email">Email address</label>

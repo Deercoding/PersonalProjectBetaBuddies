@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import "./styles/style.css";
 import "react-chat-elements/dist/main.css";
 import NavComponent from "./components/nav-component.js";
@@ -14,52 +14,43 @@ import GameWallComponent from "./components/gamewall-component.js";
 import GameAddComponent from "./components/gameadd-component.js";
 import GameListComponent from "./components/gamelist-component.js";
 import GameDetailComponent from "./components/gamedetail-component.js";
+import MemberComponent from "./components/member-component.js";
+import AddNewRoomComponent from "./components/addnewroom-component.js";
 
 function App() {
-  const [roomId, setRoomId] = useState("65632fcdd34ccada8196e449");
-  const [gameId, setGameId] = useState("64");
-  
   return (
-    <div className="app">
+    <>
       <NavComponent />
-      <Routes>
-        <Route
-          path="/"
-          exact
-          element={
-            <HomeComponent setRoomId={setRoomId} setGameId={setGameId} />
-          }
-        />
-        <Route
-          path="/betaupload"
-          exact
-          element={<BetaUploadComponent roomId={roomId} />}
-        />
-        <Route
-          path="/wallroom"
-          exact
-          element={<WallroomComponent roomId={roomId} />}
-        />
-        <Route path="/imageupload" exact element={<ImageuploadComponent />} />
-        <Route path="/walladdtag" exact element={<WalladdtagComponent />} />
-        <Route path="/sign" exact element={<SignComponent />} />
-        <Route path="/gamewall" exact element={<GameWallComponent />} />
-        <Route path="/gameadd" exact element={<GameAddComponent />} />
-        <Route
-          path="/gamelist"
-          exact
-          element={<GameListComponent setGameId={setGameId} />}
-        />
-        <Route
-          path="/gamedetail"
-          exact
-          element={
-            <GameDetailComponent gameId={gameId} setRoomId={setRoomId} />
-          }
-        />
-      </Routes>
+      <div className="app">
+        <Routes>
+          <Route path="/" exact element={<HomeComponent />} />
+          <Route
+            path="/betaupload/:roomId"
+            exact
+            element={<BetaUploadComponent />}
+          />
+          <Route
+            path="/wallroom/:roomId"
+            exact
+            element={<WallroomComponent />}
+          />
+          <Route path="/imageupload" exact element={<ImageuploadComponent />} />
+          <Route path="/walladdtag" exact element={<WalladdtagComponent />} />
+          <Route path="/sign" exact element={<SignComponent />} />
+          <Route path="/gamewall" exact element={<GameWallComponent />} />
+          <Route path="/gameadd" exact element={<GameAddComponent />} />
+          <Route path="/gamelist" exact element={<GameListComponent />} />
+          <Route
+            path="/gamedetail/:gameId"
+            exact
+            element={<GameDetailComponent />}
+          />
+          <Route path="/member" exact element={<MemberComponent />} />
+          <Route path="/addnewroom" exact element={<AddNewRoomComponent />} />
+        </Routes>
+      </div>
       <FootComponent />
-    </div>
+    </>
   );
 }
 
