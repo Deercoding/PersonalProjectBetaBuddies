@@ -51,6 +51,7 @@ const GameAddComponent = () => {
       Object.entries(formData).forEach(([key, value]) => {
         formDataForUpload.append(key, value);
       });
+      console.log(formData);
 
       const response = await fetch("http://localhost:8080/api/game/detail", {
         method: "POST",
@@ -207,7 +208,7 @@ const GameAddComponent = () => {
           </Card>
         )}
 
-        <Card style={{ width: "600px" }}>
+        <Card style={{ width: "600px" }} title="已被挑戰賽預定的廣告ID (請勿選擇) ">
           <Calendar
             fullscreen={false}
             disabledDate={(date) => new Date(date) < Date.now()}
@@ -218,13 +219,13 @@ const GameAddComponent = () => {
                   new Date(date) <= new Date(adstat.end_date)
               );
               if (matchingAd) {
-                return <p>已預定ID {matchingAd.ad_location_id}</p>;
+                return <p style={{color:"red"}}>ID{matchingAd.ad_location_id}</p>;
               }
             }}
           />
         </Card>
 
-        <Card title="已選擇線路">
+        <Card title="挑戰賽線路">
           {roomImage.length > 0 && (
             <Row>
               {roomImage.map((result, index) => {
@@ -249,15 +250,3 @@ const GameAddComponent = () => {
 };
 
 export default GameAddComponent;
-// {adStatus.length > 0 && (
-//   <div>
-//     <h3>Ad Used Status Information:</h3>
-//     {adStatus.map((adstat) => (
-//       <div key={adstat.ad_status_id}>
-//         <p>ID: {adstat.ad_location_id}</p>
-//         <p>Start_date: {adstat.start_date}</p>
-//         <p>End_date: {adstat.end_date}</p>
-//       </div>
-//     ))}
-//   </div>
-// )}

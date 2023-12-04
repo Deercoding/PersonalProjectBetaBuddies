@@ -1,40 +1,13 @@
-import { Client } from "@elastic/elasticsearch";
-import fs from "fs";
-import express from "express";
-import dotenv from "dotenv";
-import path from "path";
-import url from "url";
+import client from "./elastic-client.js";
 import TagList from "../models/taglist-model.js";
 import { BoulderingChat } from "../models/chat-model.js";
 import TagRoom from "../models/tagroom-model.js";
-import schedule from "node-schedule";
 
-dotenv.config({ path: "./.env" });
-const router = express.Router();
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const client = new Client({
-  node: "https://localhost:9200",
-  auth: {
-    username: "elastic",
-    password: process.env.ELASTIC_PASSWORD,
-  },
-  tls: {
-    ca: fs.readFileSync(path.join(__dirname, "./http_ca.crt")),
-    rejectUnauthorized: true,
-  },
-});
-
-//schedule tag creation every 6am
-const job = schedule.scheduleJob("0 6 * * *", function () {
-  searchKeyword();
-});
-
-async function searchKeyword() {
+export async function searchKeyword() {
   let notTaggedChats = await BoulderingChat.find({ tagSearched: false }).select(
     "content roomId tagSearched roomNumericId -_id "
   );
+
   await BoulderingChat.updateMany(
     { tagSearched: false },
     { $set: { tagSearched: true } }
@@ -108,6 +81,38 @@ async function searchKeyword() {
   }
 }
 
+export async function searchTags(client, myindex, mysearch) {
+  const autocomplete = await searchDocuments(client, myindex, mysearch);
+  return autocomplete;
+}
+
+// create auto-complete index
+// 1. create index
+//await createAutocompleteIndex(client, "autocomplete-tagsearch-12030744");
+// 2. put in document
+// let dataset = fs
+//   .readFileSync(path.join(__dirname, "./boulderingTerms.txt"))
+//   .toString()
+//   .split("\n");
+// dataset = dataset.map((item) => item.replace(/\r/g, ""));
+// const datasetArray = [];
+
+// for (const line of dataset) {
+//   if (line.trim() === "") {
+//     continue;
+//   }
+//   const obj = { text: line.trim() };
+//   datasetArray.push(obj);
+// }
+
+// await addDocumentinAutocomplete(
+//   client,
+//   datasetArray,
+//   "autocomplete-tagsearch-12030744"
+// );
+
+// await searchDocuments(client, "autocomplete-tagsearch-12030744", "指");
+
 // test ik analyzer
 // let response = await client.indices.analyze({
 //   body: {
@@ -146,4 +151,79 @@ export async function addDocumentToIndex(client, documents, myindex) {
   }
 }
 
-export default router;
+export async function createAutocompleteIndex(client, myindex) {
+  await client.indices.create({
+    index: myindex,
+    body: {
+      settings: {
+        analysis: {
+          filter: {
+            autocomplete_filter: {
+              type: "edge_ngram",
+              min_gram: 1,
+              max_gram: 20,
+            },
+          },
+          analyzer: {
+            autocomplete: {
+              type: "custom",
+              tokenizer: "standard",
+              filter: ["lowercase", "autocomplete_filter"],
+            },
+          },
+        },
+      },
+      mappings: {
+        properties: {
+          text: {
+            type: "text",
+            analyzer: "autocomplete",
+            search_analyzer: "standard",
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function addDocumentinAutocomplete(client, documents, myindex) {
+  const operations = documents.flatMap((doc) => [
+    { index: { _index: myindex } },
+    doc,
+  ]);
+  const bulkResponse = await client.bulk({ refresh: true, operations });
+  if (bulkResponse.errors) {
+    const erroredDocuments = [];
+    bulkResponse.items.forEach((action, i) => {
+      const operation = Object.keys(action)[0];
+      if (action[operation].error) {
+        erroredDocuments.push({
+          status: action[operation].status,
+          error: action[operation].error,
+          operation: operations[i * 2],
+          document: operations[i * 2 + 1],
+        });
+      }
+    });
+    console.log(erroredDocuments);
+  }
+  console.log(bulkResponse);
+}
+
+export async function searchDocuments(client, myindex, mysearch) {
+  const response = await client.search({
+    index: myindex,
+    body: {
+      query: {
+        match: {
+          text: {
+            query: mysearch,
+            // operator: "and",
+          },
+        },
+      },
+    },
+  });
+
+  return response.hits.hits;
+}

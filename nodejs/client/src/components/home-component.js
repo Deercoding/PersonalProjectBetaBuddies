@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Image, Card, Button, Row, Form, Select } from "antd";
+import { Image, Card, Button, Row, Form, Select, Input, List } from "antd";
+const { Search } = Input;
 
-const HomeComponent = ({ setRoomId }) => {
-  const [form] = Form.useForm();
+const HomeComponent = ({ setRoomId, setGameId }) => {
   const { Option } = Select;
 
-  const [officialLevel, setOfficialLevel] = useState("5");
-  const [gym, setGym] = useState("岩館一");
+  const [officialLevel, setOfficialLevel] = useState("");
+  const [gym, setGym] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [gameAd, setGameAd] = useState([]);
+  const [input, setInput] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+
   let navigate = useNavigate();
 
   const handleResultClick = (roomNumericId) => {
@@ -25,13 +29,41 @@ const HomeComponent = ({ setRoomId }) => {
     setGym(event);
   };
 
+  const handleAdClick = () => {
+    if (gameAd.game_id) {
+      setGameId(gameAd.game_id);
+      navigate("/gamedetail");
+    } else {
+      navigate("/");
+    }
+  };
+
   useEffect(() => {
-    handleSearch();
+    fetchAdData();
   }, []);
+
+  const fetchAdData = async () => {
+    try {
+      let gameAd = await fetch(
+        `http://localhost:8080/api/ad/?ad_location_id=1`
+      );
+      gameAd = await gameAd.json();
+      if (gameAd.length > 0) {
+        setGameAd(gameAd[0]);
+      } else {
+        setGameAd({
+          ad_image: "game-main-image.jpg_1701348260614.jpg",
+          // game_id: 67,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleSearch = () => {
     fetch(
-      `http://localhost:8080/api/search?official_level=${officialLevel}&gym=${gym}`
+      `http://localhost:8080/api/search?official_level=${officialLevel}&gym=${gym}&searchtags=${input}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -41,17 +73,67 @@ const HomeComponent = ({ setRoomId }) => {
         console.error("Error fetching data:", error);
       });
   };
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     handleSearch();
+    setSuggestions([]);
+  };
+
+  const fetchAutocompleteResults = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/search/tags", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mysearch: input,
+        }),
+      });
+      const data = await response.json();
+      setSuggestions(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (input.length > 0) {
+      fetchAutocompleteResults();
+    } else {
+      setSuggestions([]);
+    }
+  }, [input]);
+
+  const handleInputChange = (value) => {
+    setInput(value);
+  };
+
+  const handleSelectOption = (value) => {
+    setInput(value.target.textContent);
+    setSuggestions([]);
   };
 
   return (
     <div id="home-container">
+      <div>
+        <Image
+          style={{ maxHeight: "400px" }}
+          src={`https://d23j097i06b1t0.cloudfront.net/${gameAd.ad_image}`}
+          preview={false}
+          onClick={() => handleAdClick()}
+        />
+      </div>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
       <Form>
         <Form.Item name="gym" label="岩館">
           <Select placeholder="合作岩館" onChange={handleGymChange} allowClear>
@@ -81,6 +163,24 @@ const HomeComponent = ({ setRoomId }) => {
           </Select>
         </Form.Item>
 
+        <div>
+          <Input
+            placeholder="找找標籤 EX:動態/指力/flag"
+            value={input}
+            onChange={(e) => handleInputChange(e.target.value)}
+          />
+          {suggestions.length > 0 && (
+            <List
+              size="small"
+              dataSource={suggestions}
+              renderItem={(option) => <List.Item>{option}</List.Item>}
+              onClick={(e) => handleSelectOption(e)}
+            />
+          )}
+        </div>
+
+        <br></br>
+
         <Form.Item>
           <Button
             type="text"
@@ -91,6 +191,8 @@ const HomeComponent = ({ setRoomId }) => {
           </Button>
         </Form.Item>
       </Form>
+
+      <br></br>
 
       {searchResults.map((result, index) => (
         <Row
@@ -108,6 +210,7 @@ const HomeComponent = ({ setRoomId }) => {
                 <p>Beta影片: {result.videoCount}</p>
                 <p>更新時間: {formatDate(result.wallUpdateDate)}</p>
                 <p>換線時間: {formatDate(result.wallChangeDate)}</p>
+                <p>#tags: {result.tags.join("/")}</p>
               </div>
               <br></br>
               <div>

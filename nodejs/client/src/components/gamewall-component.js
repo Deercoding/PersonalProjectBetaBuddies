@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image, Card, Button, Row, Form, Select } from "antd";
 
 const GameWallComponent = ({ setRoomId }) => {
-  const [officialLevel, setOfficialLevel] = useState("");
+  const [officialLevel, setOfficialLevel] = useState("4");
   const [gym, setGym] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -18,9 +18,13 @@ const GameWallComponent = ({ setRoomId }) => {
     setGym(event);
   };
 
-  const handleSearch = () => {
+  useEffect(() => {
+    handleSearch();
+  }, []);
+
+  const handleSearch = async () => {
     console.log(`official_level=${officialLevel}&gym=${gym}`);
-    fetch(
+    await fetch(
       `http://localhost:8080/api/search?official_level=${officialLevel}&gym=${gym}`
     )
       .then((response) => response.json())
@@ -80,7 +84,7 @@ const GameWallComponent = ({ setRoomId }) => {
   return (
     <div id="outer-gamewall-container">
       <div id="gamewall-container">
-        <Form>
+        <Form id="gamewall-form">
           <Form.Item name="gym" label="岩館">
             <Select
               placeholder="合作岩館"

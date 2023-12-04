@@ -64,6 +64,23 @@ export async function updateGamesTableWithWallsId(game_wallrooms_id, game_id) {
   );
   return result;
 }
+
+export async function updateGameStatus(today) {
+  let result = await pool.query(
+    `Update games set game_status = 1 where date_end > ? and date_start <= ?;`,
+    [today, today]
+  );
+  return result;
+}
+
+export async function updateGameStatusFuture(today) {
+  let result = await pool.query(
+    `Update games set game_status = 2 where date_start > ?;`,
+    [today, today]
+  );
+  return result;
+}
+
 export async function getAdStatus() {
   let [rows, fields] = await pool.query(`select * from ad_status;`);
   return rows;
@@ -91,7 +108,9 @@ export async function getgamebyId(game_id) {
 }
 
 export async function getGames() {
-  let [rows, fields] = await pool.query(`select * from games;`);
+  let [rows, fields] = await pool.query(
+    `select * from games where game_status>0 order by date_end;`
+  );
   return rows;
 }
 

@@ -12,7 +12,6 @@ import {
   lockAdLocation,
   updateAdStatus,
   checkAdInfo,
-  updateGamesTableWithWallsId,
   getAdStatus,
   getAdInfo,
   getgamebyId,
@@ -20,6 +19,7 @@ import {
   createGameUsers,
   getGameUser,
   getGames,
+  checkUserinGame,
 } from "../models/game-model.js";
 import { getRoombySearch } from "../models/wallroom-model.js";
 import path from "path";
@@ -80,19 +80,22 @@ router.get("/adlocation", async (req, res) => {
 router.post("/user", async (req, res) => {
   const { gameId, userId } = req.body;
   try {
-    //if user not in game alread -> add in logic
+    let userIds = await checkUserinGame(gameId);
+    userIds = userIds.map((userId) => userId.user_id);
+    if (userIds.includes(Number(userId))) {
+      return res.status(400).json("User already joined game.");
+    }
     await createGameUsers(gameId, userId);
     res.status(200).json("Success create user!");
   } catch (err) {
-    res.status(400).json(err);
+    console.log(err);
+    res.status(500).json(err);
   }
 });
 
 router.get("/user", async (req, res) => {
   let { gameId } = req.query;
-  console.log(gameId);
   const result = await getGameUser(gameId);
-  console.log(result);
   res.status(200).json(result);
 });
 
@@ -126,6 +129,7 @@ router.post(
     { name: "second_image", maxCount: 3 },
     { name: "advertise_image", maxCount: 1 },
   ]),
+
   async (req, res) => {
     const __filename = url.fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -155,24 +159,21 @@ router.post(
       let adStartDate = new Date(req.body.ad_start_date);
       let adEndDate = new Date(adStartDate);
       adEndDate.setDate(adStartDate.getDate() + Number(adTimeLimit));
-      adEndDate = new Date(
-        adEndDate.getUTCFullYear(),
-        adEndDate.getUTCMonth(),
-        adEndDate.getUTCDate(),
-        0,
-        0,
-        0,
-        0
-      );
-      adStartDate = new Date(
-        adStartDate.getUTCFullYear(),
-        adStartDate.getUTCMonth(),
-        adStartDate.getUTCDate(),
-        0,
-        0,
-        0,
-        0
-      );
+
+      //change input to UTC
+      function dateToUtc(localDate) {
+        const utcDate = new Date(
+          localDate.getUTCFullYear(),
+          localDate.getUTCMonth(),
+          localDate.getUTCDate(),
+          localDate.getUTCHours(),
+          localDate.getUTCMinutes(),
+          localDate.getUTCSeconds()
+        );
+        return utcDate;
+      }
+      adEndDate = dateToUtc(adEndDate);
+      adStartDate = dateToUtc(adStartDate);
 
       // 3. check overlap
       let hasOverlap = false;
@@ -195,18 +196,23 @@ router.post(
       }
 
       // create game
+      let dateStart = new Date(req.body.date_start);
+      let dateEnd = new Date(req.body.date_end);
+      dateStart = dateToUtc(dateStart);
+      dateEnd = dateToUtc(dateEnd);
+
       let result = await createGame(
         req.body.name,
         req.body.short_description,
         req.body.long_description,
-        new Date(req.body.date_start),
-        new Date(req.body.date_end),
+        dateStart,
+        dateEnd,
         req.body.game_winners,
         req.body.game_award,
         req.files["main_image"][0].filename,
         req.files["second_image"][0].filename,
         req.body.ad_location_id,
-        req.body.ad_start_date,
+        adStartDate,
         req.files["advertise_image"][0].filename
       );
 
@@ -246,4 +252,5 @@ router.post(
     }
   }
 );
+
 export default router;

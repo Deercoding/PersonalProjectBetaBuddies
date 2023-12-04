@@ -55,11 +55,13 @@ const GameDetailComponent = ({ gameId, setRoomId }) => {
           gameId: gameId,
         }),
       });
+
       const result = await response.json();
+
       setJoinActivityStatus(result.status);
       getUserRank();
     } catch (error) {
-      console.error("Error joining activity:", error);
+      console.log("Error", error);
     }
   };
   const handleResultClick = (roomNumericId) => {

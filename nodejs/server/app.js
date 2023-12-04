@@ -15,7 +15,7 @@ import searchRouter from "./routes/search-api.js";
 import signRouter from "./routes/sign-api.js";
 import gameRouter from "./routes/game-api.js";
 import adRouter from "./routes/ad-api.js";
-import searchKeyWord from "./utils/elasticsearch.js";
+import scheduleRouter from "./routes/schedule.js";
 
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
@@ -27,12 +27,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
 app.use("/api/wallchatroom", roomRouter);
-app.use("/search", searchKeyWord);
 app.use("/api/beta", betaRouter);
 app.use("/api/search", searchRouter);
 app.use("/api/sign", signRouter);
 app.use("/api/game", gameRouter);
 app.use("/api/ad", adRouter);
+app.use("/api/schedule", scheduleRouter);
 
 app.listen(8080, () => {
   console.log(`Server is running on port 8080`);

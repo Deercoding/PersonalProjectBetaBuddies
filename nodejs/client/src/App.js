@@ -17,15 +17,18 @@ import GameDetailComponent from "./components/gamedetail-component.js";
 
 function App() {
   const [roomId, setRoomId] = useState("65632fcdd34ccada8196e449");
-  const [gameId, setGameId] = useState("63");
+  const [gameId, setGameId] = useState("64");
+  
   return (
-    <div>
+    <div className="app">
       <NavComponent />
       <Routes>
         <Route
           path="/"
           exact
-          element={<HomeComponent setRoomId={setRoomId} />}
+          element={
+            <HomeComponent setRoomId={setRoomId} setGameId={setGameId} />
+          }
         />
         <Route
           path="/betaupload"
