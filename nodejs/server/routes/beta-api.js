@@ -103,7 +103,7 @@ router.post("/", upload.single("video"), async (req, res) => {
         console.log("begin");
         await beginSQL(connection);
         const allUserOneGame = await lockGameUser(oneGameId, connection);
-        const oneUserOneGame = await oneGameUserStatus(
+        let oneUserOneGame = await oneGameUserStatus(
           oneGameId,
           userId,
           connection
@@ -129,8 +129,9 @@ router.post("/", upload.single("video"), async (req, res) => {
         console.log("start handle rank");
         let countgGamewalls = await countgGamewallsbyId(oneGameId);
         countgGamewalls = countgGamewalls[0].count_walls;
+        oneUserOneGame = await oneGameUserStatus(oneGameId, userId, connection);
 
-        if (oneUserOneGame.complete_walls_count + 1 == countgGamewalls) {
+        if (oneUserOneGame.complete_walls_count == countgGamewalls) {
           let maxRank = await gameMaxRank(oneGameId, connection);
           maxRank = maxRank.max_rank;
           console.log(maxRank);

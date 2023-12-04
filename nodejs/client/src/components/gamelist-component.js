@@ -94,10 +94,7 @@ const GameListComponent = () => {
         {gameList
           .filter((game) => game.game_status == 2)
           .map((game) => (
-            <Row
-              key={game.game_id}
-              onClick={() => handleResultClick(game.game_id)}
-            >
+            <Row key={game.game_id}>
               <Card id="gamelist-card">
                 <Row>
                   <div id="home-wall-info">

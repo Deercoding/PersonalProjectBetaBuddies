@@ -163,6 +163,7 @@ const WalladdtagComponent = () => {
       wallUpdateTime: wallUpdateTime,
       wallChangeTime: wallChangeTime,
       keepImage: imageData.keepImage,
+      isOriginImage: false,
     }));
     console.log(formData);
 

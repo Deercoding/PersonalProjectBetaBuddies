@@ -7,6 +7,7 @@ import {
   createRoom,
   saveWallOriginal,
   getRoom,
+  getWallOriginal,
 } from "../models/wallroom-model.js";
 
 const router = express.Router();
@@ -16,15 +17,6 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 router.post("/", async (req, res) => {
-  // {
-  //   wallImage: 'https://d3ebcb0pef2qqe.cloudfront.net/green_AB wall crop new.jpg_1700748617487.jpg',
-  //   color: 'green',
-  //   officialLevel: '',
-  //   tags: [ '指力', '動態', '勾腳' ],
-  //   gym: '岩館一',
-  //   wall: 'AB牆',
-  //   keepImage: false
-  // }
   const responses = req.body;
   let newRoomId;
 
@@ -35,7 +27,13 @@ router.post("/", async (req, res) => {
     originalCdn + parts[parts.length - 1].split("_").slice(1).join("_");
 
   try {
-    await saveWallOriginal(originalImage, responses[0].gym, responses[0].wall);
+    if (!responses[0].isOriginImage) {
+      await saveWallOriginal(
+        originalImage,
+        responses[0].gym,
+        responses[0].wall
+      );
+    }
 
     for (let i = 0; i < responses.length; i++) {
       const response = responses[i];
@@ -80,13 +78,6 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/detail", async (req, res) => {
-  //{ tagRoomId: '岩館一 AB牆 green' }
-  //   {wallImage: 'https://d3ebcb0pef2qqe.cloudfront.net/green_AB wall crop new.jpg_1700748617487.jpg',
-  // roomName: "岩館一 AB牆 green"
-  // officialLevel: '2',
-  // tags: [ '指力', '動態', '勾腳' ],
-  // }
-
   let tagRoomId = req.body.roomId;
   const roomInformation = await getRoom(tagRoomId);
   console.log(roomInformation);
@@ -114,26 +105,32 @@ router.post("/detail", async (req, res) => {
     wallChangeDate,
   };
   res.status(200).json(response);
-
-  // [
-  //   {
-  //     wallroomId: 4,
-  //     wallimage: 'https://d3ebcb0pef2qqe.cloudfront.net/light_blue_LM wall crop.jpg_1700748931781.jpg',
-  //     official_level: '',
-  //     gym_id: '岩館一',
-  //     wall: 'AB牆',
-  //     color: 'light',
-  //     tag_room_id: '6560a3e10af62270d916eeb4'
-  //   }
-  // ]
-  // [
-  //   {
-  //     _id: new ObjectId('6560a3e10af62270d916eeb6'),
-  //     roomNumericId: '6560a3e10af62270d916eeb4',
-  //     tag: '指力',
-  //     tagCount: 1,
-  //     __v: 0
-  //   }
-  // ]
 });
+
+router.get("/", async (req, res) => {
+  //gym_id and wall
+  const { wall, gym } = req.query;
+
+  console.log(wall, gym);
+
+  let search;
+  switch (true) {
+    case wall === "" && gym === "":
+      search = `1=1`;
+      break;
+    case wall === "":
+      search = `wall=wall and gym_id="${gym}"`;
+      break;
+    case gym === "":
+      search = `wall="${wall}" and gym_id=gym_id`;
+      break;
+    default:
+      search = `wall="${wall}" and gym_id="${gym}"`;
+      break;
+  }
+
+  const originalwall = await getWallOriginal(search);
+  res.status(200).json(originalwall);
+});
+
 export default router;

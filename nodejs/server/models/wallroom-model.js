@@ -32,6 +32,14 @@ export async function saveWallOriginal(wallimage_original, gym_id, wall) {
   );
 }
 
+export async function getWallOriginal(search) {
+  let [rows, fields] = await pool.query(
+    `select *  from walls where ${search}`,
+    [search]
+  );
+  return rows;
+}
+
 export async function getRoom(tag_room_id) {
   let [rows, fields] = await pool.query(
     `select * from wallrooms where tag_room_id = ? `,

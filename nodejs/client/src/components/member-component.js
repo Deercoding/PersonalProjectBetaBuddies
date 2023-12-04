@@ -31,7 +31,7 @@ const MemberComponent = () => {
         {!isAdmin ? (
           <Card title="我的主頁" style={{ textAlign: "center" }}>
             <p></p>
-            <Link to="/">
+            <Link to="/addnewroom">
               <Button block type="text">
                 新增聊天室
               </Button>
@@ -50,7 +50,7 @@ const MemberComponent = () => {
                   上傳多條線路聊天室
                 </Button>
               </Link>
-              <Link to="/">
+              <Link to="/addnewroom">
                 <Button block type="text">
                   新增聊天室
                 </Button>
