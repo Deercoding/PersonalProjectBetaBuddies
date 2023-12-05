@@ -34,8 +34,15 @@ const GameListComponent = () => {
         `${process.env.REACT_APP_SERVER_URL}api/ad/?ad_location_id=2`
       );
       gameAd = await gameAd.json();
+     
+      if (gameAd.length > 0) {
+        setGameAd(gameAd[0]);
+      } else {
+        setGameAd({
+          ad_image: "game-main-image.jpg_1701348260614.jpg",
+        });
+      }
 
-      setGameAd(gameAd[0]);
       setGameList(gameList);
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -25,7 +25,6 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 app.use(cors()); //temporary for local developement
 
-app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
 app.use("/api/wallchatroom", roomRouter);
@@ -37,6 +36,11 @@ app.use("/api/ad", adRouter);
 app.use("/api/schedule", scheduleRouter);
 app.use("/api/member", memberRouter);
 app.use("/api/role", roleRouter);
+
+app.use(express.static(path.join(__dirname, "public")));
+app.get("/*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "public", "index.html"));
+});
 
 app.listen(8080, () => {
   console.log(`Server is running on port 8080`);
@@ -89,15 +93,6 @@ io.on("connection", (socket) => {
       userName: userName,
     });
   });
-
-  //add to test front end - remove before production
-  io.emit("wallcolor", [
-    "yellow_LM wall crop.jpg_1700748931781.jpg",
-    "green_LM wall crop.jpg_1700748931781.jpg",
-    "light_blue_LM wall crop.jpg_1700748931781.jpg",
-    "dark_blue_AB wall crop new.jpg_1700748617487.jpg",
-    "green_AB wall crop new.jpg_1700748617487.jpg",
-  ]);
 });
 
 server.listen(4000, () => {
