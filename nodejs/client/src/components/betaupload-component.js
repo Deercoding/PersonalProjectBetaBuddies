@@ -78,7 +78,7 @@ const BetaUploadComponent = () => {
 
       // Send a POST request to the backend
       const response = await fetch(
-        `{process.env.REACT_APP_SERVER_URL}api/beta`,
+        `${process.env.REACT_APP_SERVER_URL}api/beta`,
         {
           method: "POST",
           body: formData,
