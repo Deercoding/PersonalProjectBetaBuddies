@@ -38,7 +38,7 @@ const imageUpload = multer({
 router.post("/", imageUpload.array("file", 12), async (req, res) => {
   let toFolder = __dirname;
   uploadObject("boulderingproject", req.files, "ap-southeast-1", toFolder);
-  res.redirect("http://localhost:3000/walladdtag");
+  res.redirect("http://13.55.105.122:8080/walladdtag");
 });
 
 router.post("/response", async (req, res) => {
