@@ -7,6 +7,7 @@ export async function searchKeyword() {
   let notTaggedChats = await BoulderingChat.find({ tagSearched: false }).select(
     "content roomId tagSearched roomNumericId -_id "
   );
+  console.log(notTaggedChats);
 
   await BoulderingChat.updateMany(
     { tagSearched: false },
@@ -33,12 +34,13 @@ export async function searchKeyword() {
 
   for (let i = 0; i < chatsByRoomGroupContent.length; i++) {
     let chats = chatsByRoomGroupContent[i];
-    await addDocumentToIndex(
+    let addresult = await addDocumentToIndex(
       client,
       { content: chats.content },
       chats.roomNumericId
     );
     console.log(chats.roomNumericId);
+    console.log(addresult);
 
     let roomTag = {};
     const clientSearchs = tags;
@@ -49,6 +51,7 @@ export async function searchKeyword() {
         chats.roomNumericId,
         clientSearchs[i]
       );
+      console.log(result);
 
       const hitsTotalValue = result.hits.total.value;
       if (hitsTotalValue > 0) {
