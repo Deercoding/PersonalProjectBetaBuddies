@@ -51,7 +51,7 @@ export async function searchKeyword() {
         chats.roomNumericId,
         clientSearchs[i]
       );
-      console.log(result);
+      console.log(result?.hits?.total?.value);
 
       const hitsTotalValue = result.hits.total.value;
       if (hitsTotalValue > 0) {
