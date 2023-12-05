@@ -72,7 +72,7 @@ router.get("/test", async (req, res) => {
 });
 
 router.get("/elastic", async (req, res) => {
-  let myindex = "autocomplete-tagsearch-12050913";
+  let myindex = "autocomplete-tagsearch-12030744";
 
   await createAutocompleteIndex(client, myindex);
 
