@@ -87,42 +87,6 @@ export async function searchTags(client, myindex, mysearch) {
   return autocomplete;
 }
 
-// create auto-complete index
-// 1. create index
-//await createAutocompleteIndex(client, "autocomplete-tagsearch-12030744");
-// 2. put in document
-// let dataset = fs
-//   .readFileSync(path.join(__dirname, "./boulderingTerms.txt"))
-//   .toString()
-//   .split("\n");
-// dataset = dataset.map((item) => item.replace(/\r/g, ""));
-// const datasetArray = [];
-
-// for (const line of dataset) {
-//   if (line.trim() === "") {
-//     continue;
-//   }
-//   const obj = { text: line.trim() };
-//   datasetArray.push(obj);
-// }
-
-// await addDocumentinAutocomplete(
-//   client,
-//   datasetArray,
-//   "autocomplete-tagsearch-12030744"
-// );
-
-// await searchDocuments(client, "autocomplete-tagsearch-12030744", "指");
-
-// test ik analyzer
-// let response = await client.indices.analyze({
-//   body: {
-//     analyzer: "ik_max_word",
-//     text: "dyno在後面倒掛起攀完攀!",
-//   },
-// });
-// console.log(response);
-
 export async function searchKeyCn(client, index, searchWord) {
   const response = await client.search({
     index: index,

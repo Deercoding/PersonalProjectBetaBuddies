@@ -5,8 +5,19 @@ import {
   updateGameStatus,
   updateGameStatusFuture,
 } from "../models/game-model.js";
-import { searchKeyword } from "../utils/elastic-func.js";
+import {
+  searchKeyword,
+  createAutocompleteIndex,
+  addDocumentinAutocomplete,
+  searchDocuments,
+} from "../utils/elastic-func.js";
 import client from "../utils/elastic-client.js";
+import path from "path";
+import url from "url";
+import fs from "fs";
+
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 router.use(express.json());
@@ -58,6 +69,43 @@ router.get("/test", async (req, res) => {
     text: "核心力量蠻重要的,fall 了好幾次, 超可怕",
   });
   console.log(bodyAnalyze);
+});
+
+router.get("/elastic", async (req, res) => {
+  let myindex = "autocomplete-tagsearch-12050913";
+
+  await createAutocompleteIndex(client, myindex);
+
+  let dataset = fs
+    .readFileSync(path.join(__dirname, "../utils/boulderingTerms.txt"))
+    .toString()
+    .split("\n");
+  dataset = dataset.map((item) => item.replace(/\r/g, ""));
+  const datasetArray = [];
+
+  for (const line of dataset) {
+    if (line.trim() === "") {
+      continue;
+    }
+    const obj = { text: line.trim() };
+    datasetArray.push(obj);
+  }
+
+  await addDocumentinAutocomplete(client, datasetArray, myindex);
+
+  const autosearch = await searchDocuments(client, myindex, "指");
+  console.log(autosearch);
+
+  // test ik analyzer
+  let iktest = await client.indices.analyze({
+    body: {
+      analyzer: "ik_max_word",
+      text: "dyno在後面倒掛起攀完攀!",
+    },
+  });
+  console.log(iktest);
+
+  res.send("initial elastic index success");
 });
 
 export default router;
