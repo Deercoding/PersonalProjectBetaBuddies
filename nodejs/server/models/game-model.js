@@ -73,6 +73,14 @@ export async function updateGameStatus(today) {
   return result;
 }
 
+export async function updatePastGameStatus(today) {
+  let result = await pool.query(
+    `Update games set game_status = 0 where date_end <= ?;`,
+    [today]
+  );
+  return result;
+}
+
 export async function updateGameStatusFuture(today) {
   let result = await pool.query(
     `Update games set game_status = 2 where date_start > ?;`,

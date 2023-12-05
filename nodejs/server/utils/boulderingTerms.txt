@@ -53,10 +53,10 @@ Lock
 Match
 Traversing
 bat hang
-bat-hang
 動態
 指力
 起攀
 完攀
 新手
 肌力
+bat-hang

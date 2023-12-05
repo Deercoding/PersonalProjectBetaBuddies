@@ -4,6 +4,7 @@ import { redisClient } from "../utils/cache.js";
 import {
   updateGameStatus,
   updateGameStatusFuture,
+  updatePastGameStatus,
 } from "../models/game-model.js";
 import {
   searchKeyword,
@@ -44,6 +45,7 @@ router.get("/", async (req, res) => {
     const today = new Date(Date.now());
     await updateGameStatus(today);
     await updateGameStatusFuture(today);
+    await updatePastGameStatus(today);
 
     // search keyword
     await searchKeyword();
