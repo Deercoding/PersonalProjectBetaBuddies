@@ -8,7 +8,7 @@ router.use(express.urlencoded({ extended: true }));
 
 router.get("/", async (req, res) => {
   let ad_location_id = req.query.ad_location_id;
-  const redisDefualtExpriation = 60 * 60 * 24 * 7;
+  const redisDefualtExpriation = 60 * 60 * 24 * 1;
   let adResult;
 
   if (!redisClient.isReady) {
@@ -34,12 +34,7 @@ router.get("/", async (req, res) => {
     }
     return res.status(200).json(adResult);
   }
-
   res.status(200).json(JSON.parse(adResult));
-
-  // render information on component
-  // if user click ad - ad location click + 1
-  // update ad_location
 });
 
 export default router;

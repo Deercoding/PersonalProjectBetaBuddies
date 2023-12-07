@@ -157,17 +157,20 @@ router.post("/", upload.single("video"), async (req, res) => {
     }
     res.status(200).json("Beta video upload success");
   } catch (err) {
-    console.log(err);
-    res.status(400).json(err);
+    res.status(500).json(err);
   }
 });
 
 router.post("/detail", async (req, res) => {
-  let tagRoomId = req.body.roomId;
-  const roomInformation = await getRoom(tagRoomId);
-  const wallroomId = roomInformation["wallroomId"];
-  const videos = await getVideos(wallroomId);
-  res.status(200).json(videos);
+  try {
+    let tagRoomId = req.body.roomId;
+    const roomInformation = await getRoom(tagRoomId);
+    const wallroomId = roomInformation["wallroomId"];
+    const videos = await getVideos(wallroomId);
+    res.status(200).json(videos);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 export default router;
