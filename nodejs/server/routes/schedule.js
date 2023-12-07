@@ -56,23 +56,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/test", async (req, res) => {
-  const testIndex = "6566b2f2b119df255098b304";
-  const body = await client.indices.getMapping({
-    index: testIndex,
-  });
-  console.log(body[testIndex].mappings.properties.content);
-  const bodySearch = await client.search({ index: "6566b2f2b119df255098b304" });
-  console.log(bodySearch.hits.hits);
-
-  const bodyAnalyze = await client.indices.analyze({
-    analyzer: "ik_max_word",
-    index: testIndex,
-    text: "核心力量蠻重要的,fall 了好幾次, 超可怕",
-  });
-  console.log(bodyAnalyze);
-});
-
 router.get("/elastic", async (req, res) => {
   let myindex = "autocomplete-tagsearch-12030744";
 

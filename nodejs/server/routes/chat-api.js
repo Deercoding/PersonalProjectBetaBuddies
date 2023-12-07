@@ -5,9 +5,8 @@ const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-router.post("/history", async (req, res) => {
-  let tagRoomId = req.body.roomId;
-  console.log(tagRoomId);
+router.get("/", async (req, res) => {
+  let tagRoomId = req.query.roomId;
   let roomChatHist = await BoulderingChat.find({
     roomNumericId: tagRoomId,
   });

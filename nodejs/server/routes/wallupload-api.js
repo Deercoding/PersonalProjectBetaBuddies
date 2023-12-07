@@ -36,17 +36,30 @@ const imageUpload = multer({
 });
 
 router.post("/", imageUpload.array("file", 12), async (req, res) => {
-  let toFolder = __dirname;
-  uploadObject("boulderingproject", req.files, "ap-southeast-1", toFolder);
-  res.redirect("http://13.55.105.122:8080/walladdtag");
+  try {
+    let toFolder = __dirname;
+    await uploadObject(
+      "boulderingproject",
+      req.files,
+      "ap-southeast-1",
+      toFolder
+    );
+    res.redirect("http://13.55.105.122:8080/walladdtag");
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.post("/response", async (req, res) => {
-  const imageNames = req.body;
-  const io = req.app.get("socketio");
-  io.emit("wallcolor", imageNames.imageNames);
-  console.log("Get image result");
-  res.status(200).send("Success");
+  try {
+    const imageNames = req.body;
+    const io = req.app.get("socketio");
+    io.emit("wallcolor", imageNames.imageNames);
+    console.log("Get color detection image result");
+    res.status(200).send("Color detection success.");
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 export default router;

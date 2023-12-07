@@ -91,16 +91,7 @@ const HomeComponent = () => {
   const fetchAutocompleteResults = async () => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_SERVER_URL + "api/search/tags",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            mysearch: input,
-          }),
-        }
+        `${process.env.REACT_APP_SERVER_URL}api/search/tags?mysearch=${input}`
       );
       const data = await response.json();
       setSuggestions(data);

@@ -28,10 +28,8 @@ router.post("/", async (req, res) => {
   }
 
   if (userRole[0].role != "admin") {
-    console.log("user");
     return res.status(200).json("user");
   }
-  console.log("admin");
 
   res.status(200).json("admin");
 });

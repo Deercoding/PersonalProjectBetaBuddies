@@ -16,7 +16,6 @@ import signRouter from "./routes/sign-api.js";
 import gameRouter from "./routes/game-api.js";
 import adRouter from "./routes/ad-api.js";
 import scheduleRouter from "./routes/schedule.js";
-import memberRouter from "./routes/member-api.js";
 import roleRouter from "./routes/rolevalid-api.js";
 
 const app = express();
@@ -34,7 +33,6 @@ app.use("/api/sign", signRouter);
 app.use("/api/game", gameRouter);
 app.use("/api/ad", adRouter);
 app.use("/api/schedule", scheduleRouter);
-app.use("/api/member", memberRouter);
 app.use("/api/role", roleRouter);
 
 app.use(express.static(path.join(__dirname, "public")));

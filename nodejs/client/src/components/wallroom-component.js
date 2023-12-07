@@ -57,14 +57,7 @@ const WallroomComponent = () => {
   const fetchChatHistory = async (roomId) => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_SERVER_URL + "api/chat/history",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ roomId }),
-        }
+        `${process.env.REACT_APP_SERVER_URL}api/chat?roomId=${roomId}`
       );
 
       if (!response.ok) {
@@ -84,14 +77,7 @@ const WallroomComponent = () => {
   const fetchRoomInfo = async (roomId) => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_SERVER_URL + "api/wallchatroom/detail",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ roomId }),
-        }
+        `${process.env.REACT_APP_SERVER_URL}api/wallchatroom?roomId=${roomId}`
       );
 
       if (!response.ok) {
@@ -117,14 +103,7 @@ const WallroomComponent = () => {
   const fetchVideoDetail = async (roomId) => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_SERVER_URL + "api/beta/detail",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ roomId }),
-        }
+        `${process.env.REACT_APP_SERVER_URL}api/beta?roomId=${roomId}`
       );
 
       if (!response.ok) {

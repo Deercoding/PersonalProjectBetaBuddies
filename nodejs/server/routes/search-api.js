@@ -93,11 +93,11 @@ router.get("/", async (req, res) => {
   res.status(200).json(results);
 });
 
-router.post("/tags", async (req, res) => {
+router.get("/tags", async (req, res) => {
   const searchResults = await searchTags(
     client,
     "autocomplete-tagsearch-12030744",
-    req.body.mysearch
+    req.query.mysearch
   );
 
   let results;

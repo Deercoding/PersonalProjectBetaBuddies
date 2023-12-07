@@ -73,45 +73,46 @@ router.post("/", async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
+    res.status(500).json(err);
   }
 });
 
-router.post("/detail", async (req, res) => {
-  let tagRoomId = req.body.roomId;
-  const roomInformation = await getRoom(tagRoomId);
-  console.log(roomInformation);
+router.get("/", async (req, res) => {
+  try {
+    let tagRoomId = req.query.roomId;
+    const roomInformation = await getRoom(tagRoomId);
 
-  let roomTagPair = await TagRoom.find({
-    roomNumericId: tagRoomId,
-  }).select("tag tagCount -_id");
-  const wallImage = roomInformation.wallimage;
-  const roomName = `${roomInformation.gym_id} ${roomInformation.wall} ${roomInformation.color}`;
-  const officialLevel = roomInformation.official_level;
-  const wallUpdateDate = roomInformation.wall_update_time;
-  const wallChangeDate = roomInformation.wall_change_time;
+    let roomTagPair = await TagRoom.find({
+      roomNumericId: tagRoomId,
+    }).select("tag tagCount -_id");
+    const wallImage = roomInformation.wallimage;
+    const roomName = `${roomInformation.gym_id} ${roomInformation.wall} ${roomInformation.color}`;
+    const officialLevel = roomInformation.official_level;
+    const wallUpdateDate = roomInformation.wall_update_time;
+    const wallChangeDate = roomInformation.wall_change_time;
 
-  const sortedData = roomTagPair.sort((a, b) => b.tagCount - a.tagCount); //not validate yet
-  const tagsArray = sortedData.map((item) => item.tag);
+    const sortedData = roomTagPair.sort((a, b) => b.tagCount - a.tagCount); //not validate yet
+    const tagsArray = sortedData.map((item) => item.tag);
 
-  const tags = tagsArray;
+    const tags = tagsArray;
 
-  const response = {
-    wallImage,
-    roomName,
-    officialLevel,
-    tags,
-    wallUpdateDate,
-    wallChangeDate,
-  };
-  res.status(200).json(response);
+    const response = {
+      wallImage,
+      roomName,
+      officialLevel,
+      tags,
+      wallUpdateDate,
+      wallChangeDate,
+    };
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-router.get("/", async (req, res) => {
+router.get("/originalwall", async (req, res) => {
   //gym_id and wall
   const { wall, gym } = req.query;
-
-  console.log(wall, gym);
 
   let search;
   switch (true) {
