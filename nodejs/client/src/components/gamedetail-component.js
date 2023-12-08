@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Image, Card, Input, Space, Button, Row, Col, Table } from "antd";
+import { TrophyOutlined } from "@ant-design/icons";
 
 const GameDetailComponent = () => {
   const [data, setData] = useState(null);
@@ -42,28 +43,37 @@ const GameDetailComponent = () => {
       console.error("Error fetching user rank:", error);
     }
   };
+  function sendData(result) {
+    document.getElementById("server").innerHTML = JSON.stringify(result);
+  }
   const handleJoinActivity = async () => {
     try {
-      const userId = localStorage.getItem("userInfo").split(",")[0];
+      let userId = localStorage.getItem("userInfo");
+      if (userId) {
+        const response = await fetch(
+          `${process.env.REACT_APP_SERVER_URL}api/game/user`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: userId,
+              gameId: gameId,
+            }),
+          }
+        );
 
-      const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}api/game/user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: userId,
-            gameId: gameId,
-          }),
+        if (response.ok) {
+          const result = await response.json();
+          setJoinActivityStatus(result.status);
+          getUserRank();
+          sendData(`成功加入挑戰賽, 請查看底下挑戰賽排名`);
+        } else {
+          const result = await response.json();
+          sendData(`Error: ${result}`);
         }
-      );
-
-      const result = await response.json();
-
-      setJoinActivityStatus(result.status);
-      getUserRank();
+      }
     } catch (error) {
       console.log("Error", error);
     }
@@ -87,7 +97,7 @@ const GameDetailComponent = () => {
       key: "rank",
     },
     {
-      title: "已完成的牆面數量",
+      title: "已完成的路線數量",
       dataIndex: "completeWalls",
       key: "completeWalls",
     },
@@ -113,7 +123,7 @@ const GameDetailComponent = () => {
             style={{ maxWidth: "1920px", maxHeight: "500px" }}
           />
           <br></br>
-
+          <br></br>
           <Card title="比賽資訊">
             <Row>
               <div>
@@ -138,6 +148,7 @@ const GameDetailComponent = () => {
             </Row>
           </Card>
           <br></br>
+          <h3 id="server"></h3>
           <Button block size="large" type="text" onClick={handleJoinActivity}>
             參加比賽
           </Button>
@@ -159,7 +170,7 @@ const GameDetailComponent = () => {
                       <p>
                         岩牆: {wallroom.gym_id} {wallroom.wall} {wallroom.color}
                       </p>
-                      <p>Official Level: {wallroom.official_level}</p>
+                      <p>官方等級: {wallroom.official_level}</p>
                     </div>
                     <div>
                       <Image height={300} src={wallroom.wallimage} />
@@ -168,6 +179,13 @@ const GameDetailComponent = () => {
                 </Col>
               ))}
             </Row>
+          </Card>
+          <br></br>
+          <Card style={{ textAlign: "center" }}>
+            <strong>
+              <TrophyOutlined />
+              挑戰賽規則: 最先完成全部指定路線者勝利
+            </strong>
           </Card>
           <br></br>
           <Table dataSource={dataSource} columns={columns} size="small" />

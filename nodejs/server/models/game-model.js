@@ -84,7 +84,7 @@ export async function updatePastGameStatus(today) {
 export async function updateGameStatusFuture(today) {
   let result = await pool.query(
     `Update games set game_status = 2 where date_start > ?;`,
-    [today, today]
+    [today]
   );
   return result;
 }
@@ -117,15 +117,15 @@ export async function getgamebyId(game_id) {
 
 export async function getGames() {
   let [rows, fields] = await pool.query(
-    `select * from games where game_status>0 order by date_end;`
+    `select game_status,game_id,name,short_description,date_start, date_end,main_image from games where game_status>0 order by date_end;`
   );
   return rows;
 }
 
-export async function checkWallinGame(wallroom_id) {
+export async function checkWallandUserinGame(wallroom_id, user_id) {
   let [rows, fields] = await pool.query(
-    `select game_id from game_walls where wallrooms_id = ?;`,
-    [wallroom_id]
+    `select * from game_walls w left join game_users u on w.game_id = u.game_id where wallrooms_id = ? and user_id = ? and  is_complete = 0;`,
+    [wallroom_id, user_id]
   );
   return rows;
 }
@@ -154,13 +154,13 @@ export async function countgGamewallsbyId(game_id) {
   return rows;
 }
 
-export async function getUserinGame(game_id, userId) {
-  let [rows, fields] = await pool.query(
-    `select * from game_users where game_id in (?) and user_id =?;`,
-    [game_id, userId]
-  );
-  return rows;
-}
+// export async function getUserinGame(game_id, userId) {
+//   let [rows, fields] = await pool.query(
+//     `select * from game_users where game_id in (?) and user_id =?;`,
+//     [game_id, userId]
+//   );
+//   return rows;
+// }
 
 //connection for lock
 export async function getConnection() {
@@ -237,10 +237,14 @@ export async function gameMaxRank(game_id, connection) {
   return rows[0];
 }
 
-export async function checkGameUserWalls(game_user_id, connection) {
+export async function checkGameUserWalls(
+  game_user_id,
+  roomNumericId,
+  connection
+) {
   let [rows, fields] = await connection.query(
-    `select * from game_user_walls where game_user_id = ? ;`,
-    [game_user_id]
+    `select * from game_user_walls where game_user_id = ? and wall_id = ?;`,
+    [game_user_id, roomNumericId]
   );
   return rows;
 }

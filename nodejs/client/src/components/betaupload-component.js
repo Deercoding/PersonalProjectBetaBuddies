@@ -61,7 +61,7 @@ const BetaUploadComponent = () => {
 
     try {
       if (!file) {
-        setError("Please select a video file.");
+        setError("請上傳影片");
         return;
       }
 
@@ -84,22 +84,16 @@ const BetaUploadComponent = () => {
           body: formData,
         }
       );
-
+      const data = await response.json();
       if (response.ok) {
-        console.log(response.json());
         navigate("/");
       } else {
-        console.error(`Error: ${response.status} - ${response.statusText}`);
+        console.log(data);
+        setError(data);
       }
     } catch (error) {
       console.error("Error:", error);
     }
-
-    setFile(null);
-    setVideoPreview(null);
-    setComments("");
-    setLevelByAuthor("");
-    setTags([""]);
   };
 
   return (
@@ -131,7 +125,7 @@ const BetaUploadComponent = () => {
         </div>
 
         <label>
-          Comments:
+          評論:
           <Input type="text" value={comments} onChange={handleCommentsChange} />
         </label>
 

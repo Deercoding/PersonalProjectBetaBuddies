@@ -31,15 +31,17 @@ router.get("/", async (req, res) => {
     for (let i = 0; i < ad_location.length; i++) {
       let ad_location_id = ad_location[i].ad_location_id;
       let today = new Date(Date.now()); //UTC
+      console.log(today);
       let checkAdValid = await checkAdBetweenDate(ad_location_id, today);
-      const redisDefualtExpriation = 60 * 60 * 24 * 7; //7 days
-      if (checkAdValid.length > 0) {
+      const redisDefualtExpriation = 60 * 60 * 24 * 1;
+      if (checkAdValid.length > 0 && redisClient.isReady) {
         redisClient.setEx(
           "ad_location_id_" + ad_location_id,
           redisDefualtExpriation,
           JSON.stringify(checkAdValid)
         );
       }
+      await redisClient.connect();
     }
     // update game status
     const today = new Date(Date.now());

@@ -15,7 +15,7 @@ const GameListComponent = () => {
     if (gameAd.game_id) {
       navigate(`/gamedetail/${gameAd.game_id}`);
     } else {
-      navigate("/");
+      navigate("/gamelist");
     }
   };
 
@@ -34,7 +34,7 @@ const GameListComponent = () => {
         `${process.env.REACT_APP_SERVER_URL}api/ad/?ad_location_id=2`
       );
       gameAd = await gameAd.json();
-     
+
       if (gameAd.length > 0) {
         setGameAd(gameAd[0]);
       } else {

@@ -9,6 +9,7 @@ import {
   getRoom,
   getWallOriginal,
 } from "../models/wallroom-model.js";
+import { wallCreateValidation } from "../utils/dataValidation.js";
 
 const router = express.Router();
 router.use(express.json());
@@ -17,6 +18,14 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 router.post("/", async (req, res) => {
+  console.log(req.body);
+
+  const { error } = wallCreateValidation(req.body);
+  if (error) {
+    console.log(error);
+    return res.status(400).json(error.details[0].message);
+  }
+
   const responses = req.body;
   let newRoomId;
 
@@ -79,8 +88,16 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    let tagRoomId = req.query.roomId;
-    const roomInformation = await getRoom(tagRoomId);
+    if (!req.query.roomId) {
+      return res.status(400).json("Please provide wallroom id");
+    }
+    const tagRoomId = req.query.roomId;
+    const today = new Date(Date.now());
+    const roomInformation = await getRoom(tagRoomId, today);
+
+    if (!roomInformation) {
+      return res.status(400).json("Wallroom do not exist");
+    }
 
     let roomTagPair = await TagRoom.find({
       roomNumericId: tagRoomId,
@@ -91,11 +108,13 @@ router.get("/", async (req, res) => {
     const wallUpdateDate = roomInformation.wall_update_time;
     const wallChangeDate = roomInformation.wall_change_time;
 
-    const sortedData = roomTagPair.sort((a, b) => b.tagCount - a.tagCount); //not validate yet
-    const tagsArray = sortedData.map((item) => item.tag);
+    let tagsArray = [];
+    if (roomTagPair.length > 0) {
+      const sortedData = roomTagPair.sort((a, b) => b.tagCount - a.tagCount); //not validate yet
+      tagsArray = sortedData.map((item) => item.tag);
+    }
 
     const tags = tagsArray;
-
     const response = {
       wallImage,
       roomName,

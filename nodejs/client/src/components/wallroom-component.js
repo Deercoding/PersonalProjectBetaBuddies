@@ -201,18 +201,20 @@ const WallroomComponent = () => {
                 dots={{ style: { color: "red" } }}
               >
                 {videoDetail.map((video, index) => (
-                  <li key={`video_${index}`}>
-                    <strong>用戶:</strong> {video.userName}
-                    <br />
-                    <strong>體感等級:</strong> {video.user_level}
-                    <br />
-                    <strong>評論:</strong> {video.comments}
-                    <br />
-                    <video width="180" controls>
+                  <div key={`video_${index}`} id="video">
+                    <div height="50px">
+                      <strong>用戶:</strong> {video.userName}
+                      <br />
+                      <strong>體感等級:</strong> {video.user_level}
+                      <br />
+                      <strong>評論:</strong> {video.comments}
+                      <br />
+                    </div>
+                    <video height="350px" controls>
                       <source src={video.video_link} type="video/mp4" />
                     </video>
                     <br />
-                  </li>
+                  </div>
                 ))}
               </Carousel>
             </div>

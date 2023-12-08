@@ -15,6 +15,10 @@
   min-height: calc(100vh - 260px);
 }
 
+#server {
+  color: rgb(213, 52, 35);
+}
+
 @import "wallroom.css";
 @import "home.css";
 @import "gamedetail.css";

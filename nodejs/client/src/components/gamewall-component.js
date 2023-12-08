@@ -26,7 +26,7 @@ const GameWallComponent = () => {
     await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
       headers: {
         "content-type": "application/json",
-        authorization: authorization,
+        role_authorization: authorization,
       },
       method: "POST",
     }).then(async (response) => {

@@ -1,0 +1,424 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Bouldering API",
+    "description": "RESTful API Document",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/",
+      "description": "Bouldering Project API Document - local"
+    },
+    {
+      "url": "http://13.55.105.122:8080/",
+      "description": "Bouldering Project API Document - production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Wallroom",
+      "description": "Wallroom information"
+    },
+    {
+      "name": "Game",
+      "description": "Game information"
+    },
+    {
+      "name": "Video",
+      "description": "Beta video"
+    },
+    {
+      "name": "Search",
+      "description": "Search wallrooms"
+    },
+    {
+      "name": "Ad",
+      "description": "Advertisement for games"
+    },
+    {
+      "name": "Role",
+      "description": "Check if login party is admin or user"
+    }
+  ],
+  "paths": {
+    "/api/search": {
+      "get": {
+        "tags": ["Search"],
+        "description": "Search for wallrooms - [homepage]",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "official_level",
+            "schema": {
+              "type": "string"
+            },
+            "allowEmptyValue": true
+          },
+          {
+            "in": "query",
+            "name": "gym",
+            "schema": {
+              "type": "string"
+            },
+            "allowEmptyValue": true
+          },
+          {
+            "in": "query",
+            "name": "searchtags",
+            "schema": {
+              "type": "string"
+            },
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallrooms information"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/search/tags": {
+      "get": {
+        "tags": ["Search"],
+        "description": "Autocomplete when searching tags - [homepage]",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "mysearch",
+            "schema": {
+              "type": "string"
+            },
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Autocomplete when searching tags"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/ad": {
+      "get": {
+        "tags": ["Ad"],
+        "description": "Get Ad information - [homepage, gamelist]",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "ad_location_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ad in ad_location_1 or ad_location_2"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/role": {
+      "post": {
+        "tags": ["Role"],
+        "parameters": [
+          {
+            "name": "role_authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "admin or user"
+          },
+          "401": {
+            "description": "Client Error (No token)"
+          },
+          "403": {
+            "description": "Client Error (Wrong token)"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/game/adlocation": {
+      "get": {
+        "tags": ["Game"],
+        "Content-Type": "multipart/form-data",
+        "responses": {
+          "200": {
+            "description": "Ad information for creating games"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/game/detail": {
+      "post": {
+        "tags": ["Game"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "short_description": { "type": "string" },
+                  "long_description": { "type": "string" },
+                  "date_start": { "type": "string", "format": "date" },
+                  "date_end": { "type": "string", "format": "date" },
+                  "game_winners": { "type": "string" },
+                  "game_award": { "type": "string" },
+                  "main_image": { "type": "string", "format": "binary" },
+                  "second_image": { "type": "string", "format": "binary" },
+                  "ad_location_id": { "type": "string" },
+                  "ad_start_date": { "type": "string", "format": "date" },
+                  "advertise_image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload game success"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "400": {
+            "description": "Ad location already in use/Input Error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Game"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "gameId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "description": "Get game detail Information - [Game]",
+        "responses": {
+          "200": {
+            "description": "Game information"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "400": {
+            "description": "Game does not exist & Please provide game id"
+          }
+        }
+      }
+    },
+    "/api/chat": {
+      "get": {
+        "tags": ["Wallroom"],
+        "description": "Get chat history - [wallroom]",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "roomId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat history for roomId"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/wallchatroom": {
+      "get": {
+        "tags": ["Wallroom"],
+        "description": "Get wallroom Information - [wallroom]",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "roomId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallroom Information for roomId"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "400": {
+            "description": "Wallroom do not exist"
+          }
+        }
+      }
+    },
+    "/api/beta": {
+      "get": {
+        "tags": ["Video"],
+        "description": "Get Betavideo Information - [wallroom]",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "roomId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallroom Information for roomId"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "400": {
+            "description": "Wallroom do not exist & Please provide wallroom id"
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new video",
+        "tags": ["Video"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "roomNumericId": { "type": "string" },
+                  "userId": { "type": "string" },
+                  "userName": { "type": "string" },
+                  "comments": { "type": "string" },
+                  "levelByAuthor": { "type": "string" },
+                  "tags": { "type": "array", "example": [1, 2, 3] },
+                  "video": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Beta video upload success."
+          },
+          "400": {
+            "description": "Input incorrect & 請上傳Beta影片"
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/game/list": {
+      "get": {
+        "tags": ["Game"],
+        "description": "Get Betavideo Information - [wallroom]",
+        "responses": {
+          "200": {
+            "description": "Game information"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/game/user": {
+      "get": {
+        "tags": ["Game"],
+        "description": "Get users in game  - [gamedetail]",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "gameId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "uses in game"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Game"],
+        "description": "Add new user to game - [gamedetail]",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": { "type": "string" },
+                  "gameId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success create user!"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "400": {
+            "description": "使用者已經加入挑戰賽"
+          },
+          "401": {
+            "description": "請登入後再參加挑戰賽"
+          }
+        }
+      }
+    }
+  }
+}

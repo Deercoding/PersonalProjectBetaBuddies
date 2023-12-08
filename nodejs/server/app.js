@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import url from "url";
-import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -17,12 +16,16 @@ import gameRouter from "./routes/game-api.js";
 import adRouter from "./routes/ad-api.js";
 import scheduleRouter from "./routes/schedule.js";
 import roleRouter from "./routes/rolevalid-api.js";
+import swaggerUI from "swagger-ui-express";
+import swaggerDocument from "./swagger.json" assert { type: "json" };
 
 const app = express();
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
+
 app.use(cors()); //temporary for local developement
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
@@ -40,7 +43,7 @@ app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-app.listen(8080, () => {
+const server = app.listen(8080, () => {
   console.log(`Server is running on port 8080`);
 });
 
@@ -54,7 +57,6 @@ mongoose
   });
 
 //socket io
-const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -93,6 +95,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(4000, () => {
-  console.log(`Socket is running on port 4000`);
-});
+// server.listen(4000, () => {
+//   console.log(`Socket is running on port 4000`);
+// });

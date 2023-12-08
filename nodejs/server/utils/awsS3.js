@@ -87,8 +87,8 @@ export async function uploadObjectGame(
   });
 
   const resultArray = [
-    ...imageFiles.second_image,
     ...imageFiles.main_image,
+    ...imageFiles.second_image,
     ...imageFiles.advertise_image,
   ];
   const params = resultArray.map((image) => {

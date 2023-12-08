@@ -24,6 +24,7 @@ import {
 import { getRoombySearch } from "../models/wallroom-model.js";
 import path from "path";
 import url from "url";
+import { gameCreateValidation } from "../utils/dataValidation.js";
 
 const router = express.Router();
 router.use(express.json());
@@ -60,86 +61,138 @@ const imageUpload = multer({
 });
 
 router.get("/adlocation", async (req, res) => {
-  const adLocationInfo = await getAdInfo();
-  const adstatus = await getAdStatus();
-  const adUsed = adstatus.map((ad) => {
-    return {
-      ad_location_id: ad.ad_location_id,
-      start_date: ad.start_date,
-      end_date: ad.end_date,
-      ad_status_id: ad.ad_status_id,
+  try {
+    const adLocationInfo = await getAdInfo();
+    const adstatus = await getAdStatus();
+    const adUsed = adstatus.map((ad) => {
+      return {
+        ad_location_id: ad.ad_location_id,
+        start_date: ad.start_date,
+        end_date: ad.end_date,
+        ad_status_id: ad.ad_status_id,
+      };
+    });
+    const responses = {
+      adLocationInfo: adLocationInfo,
+      adStatus: adUsed,
     };
-  });
-  const responses = {
-    adLocationInfo: adLocationInfo,
-    adStatus: adUsed,
-  };
-  res.status(200).json(responses);
+    res.status(200).json(responses);
+  } catch (err) {
+    res.status(500).json("Server Error");
+  }
 });
 
 router.post("/user", async (req, res) => {
-  const { gameId, userId } = req.body;
+  let { gameId, userId } = req.body;
   try {
+    if (!userId) {
+      return res.status(401).json("請登入後再參加挑戰賽");
+    }
+    userId = userId.split(",")[0];
+
     let userIds = await checkUserinGame(gameId);
     userIds = userIds.map((userId) => userId.user_id);
     if (userIds.includes(Number(userId))) {
-      return res.status(400).json("User already joined game.");
+      return res.status(400).json("使用者已經加入挑戰賽, 請查看底下挑戰賽排名");
     }
+
     await createGameUsers(gameId, userId);
     res.status(200).json("Success create user!");
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json("Server Error");
   }
 });
 
 router.get("/user", async (req, res) => {
-  let { gameId } = req.query;
-  const result = await getGameUser(gameId);
-  res.status(200).json(result);
+  try {
+    let { gameId } = req.query;
+    const result = await getGameUser(gameId);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json("Server Error");
+  }
 });
 
 router.get("/list", async (req, res) => {
-  const gameList = await getGames();
-  res.status(200).json(gameList);
+  try {
+    const gameList = await getGames();
+    res.status(200).json(gameList);
+  } catch (err) {
+    res.status(500).json("Server Error");
+  }
 });
 
 router.get("/detail", async (req, res) => {
-  const gameId = req.query.gameId;
-  const gameInfo = await getgamebyId(gameId);
-  const gameWalls = await getgamewallsbyId(gameId);
-  let wallroomsId = gameWalls.map((gameWall) => {
-    return `"${gameWall.wallrooms_id}"`;
-  });
-  wallroomsId = wallroomsId.join(",");
-  const wallroomInfo = await getRoombySearch(
-    `tag_room_id in (${wallroomsId});`
-  );
-  const responses = {
-    gameInfo: gameInfo,
-    wallroomInfo: wallroomInfo,
-  };
-  res.status(200).json(responses);
+  try {
+    if (!req.query.gameId) {
+      return res.status(400).json("Please provide game id");
+    }
+
+    const gameId = req.query.gameId;
+    const gameInfo = await getgamebyId(gameId);
+    if (gameInfo.length == 0) {
+      return res.status(400).json("Game does not exist");
+    }
+    const gameWalls = await getgamewallsbyId(gameId);
+    if (gameWalls.length == 0) {
+      return res.status(400).json("Game does not exist");
+    }
+
+    let wallroomsId = gameWalls.map((gameWall) => {
+      return `"${gameWall.wallrooms_id}"`;
+    });
+    wallroomsId = wallroomsId.join(",");
+    const wallroomInfo = await getRoombySearch(
+      `tag_room_id in (${wallroomsId});`
+    );
+    const responses = {
+      gameInfo: gameInfo,
+      wallroomInfo: wallroomInfo,
+    };
+    res.status(200).json(responses);
+  } catch (err) {
+    res.status(500).json("Server Error");
+  }
 });
 
 router.post(
   "/detail",
   imageUpload.fields([
     { name: "main_image", maxCount: 1 },
-    { name: "second_image", maxCount: 3 },
+    { name: "second_image", maxCount: 1 },
     { name: "advertise_image", maxCount: 1 },
   ]),
   async (req, res) => {
+    const { error } = gameCreateValidation(req.body);
+    if (error) {
+      console.log(error);
+      return res.status(400).json(error.details[0].message);
+    }
+
+    if (
+      !req.files.main_image ||
+      !req.files.second_image ||
+      !req.files.advertise_image
+    ) {
+      return res.status(400).json("請上傳挑戰賽照片");
+    }
+
     const __filename = url.fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const toFolder = __dirname;
-    //save to DB
-    await uploadObjectGame(
-      "videobouldering",
-      req.files,
-      "ap-southeast-1",
-      toFolder
-    );
+
+    try {
+      await uploadObjectGame(
+        "videobouldering",
+        req.files,
+        "ap-southeast-1",
+        toFolder
+      );
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json("Server Error");
+    }
 
     //lock ad location
     let connection = await getConnection();
@@ -154,7 +207,6 @@ router.post(
       // 2. get ad info
       const adLocationInfo = await checkAdInfo(req.body.ad_location_id);
       const adTimeLimit = adLocationInfo.ad_time_limit;
-
       let adStartDate = new Date(req.body.ad_start_date);
       let adEndDate = new Date(adStartDate);
       adEndDate.setDate(adStartDate.getDate() + Number(adTimeLimit));
@@ -188,7 +240,7 @@ router.post(
         }
       }
       if (hasOverlap) {
-        console.log("Ad location already in use");
+        console.log("Ad location already in use.");
         await rollbackSQL(connection); //Server error - rollback
         await releaseConnection(connection);
         return res.status(400).json("Ad location already in use");
@@ -236,11 +288,7 @@ router.post(
         return `(${game_id},'${wallroom}')`;
       });
       wallroomIdforSQl = wallroomIdforSQl.join(",");
-      const wallsResult = await createGameWalls(wallroomIdforSQl);
-
-      // 6. add walls to games - not used
-      // const wallsId = wallsResult[0].insertId;
-      // await updateGamesTableWithWallsId(wallsId, game_id);
+      await createGameWalls(wallroomIdforSQl);
 
       res.status(200).json("Upload game success");
     } catch (err) {

@@ -40,10 +40,18 @@ export async function getWallOriginal(search) {
   return rows;
 }
 
-export async function getRoom(tag_room_id) {
+export async function getRoom(tag_room_id, today) {
   let [rows, fields] = await pool.query(
-    `select * from wallrooms where tag_room_id = ? `,
-    [tag_room_id]
+    `select * from wallrooms where tag_room_id = ? and wall_change_time > ? `,
+    [tag_room_id, today]
+  );
+  return rows[0];
+}
+
+export async function getRoomId(tag_room_id, today) {
+  let [rows, fields] = await pool.query(
+    `select wallroomId from wallrooms where tag_room_id = ? and wall_change_time > ? `,
+    [tag_room_id, today]
   );
   return rows[0];
 }
