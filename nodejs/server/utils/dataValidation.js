@@ -64,19 +64,38 @@ export function betaCreateValidation(data) {
 }
 
 export function wallCreateValidation(data) {
-  const schema = Joi.object({
-    wallImage: Joi.string().required(),
-    color: Joi.string().required(),
-    officialLevel: Joi.string().required(),
-    tags: Joi.string().required(),
-    levelByAuthor: Joi.string().required(),
-    gym: Joi.array().required(),
-    wall: Joi.array().required(),
-    wallUpdateTime: Joi.date().required(),
-    wallChangeTime: Joi.date().required(),
-    keepImage: Joi.boolean().required(),
+  const schema = Joi.array().items({
+    wallImage: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 無牆面照片" }),
+    color: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填入牆面顏色" }),
+    officialLevel: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填入官方等級" }),
+    tags: Joi.array()
+      .required()
+      .messages({ "array.empty": "Error: 請填入tags" }),
+    gym: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填入岩館名稱" }),
+    wall: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填入牆面名稱" }),
+    wallUpdateTime: Joi.date().required().messages({
+      "date.empty": "Error: 請填入更新時間",
+      "date.base": "Error: 請填入正確時間格式",
+    }),
+    wallChangeTime: Joi.date().required().messages({
+      "date.empty": "Error: 請填入換線時間",
+      "date.base": "Error: 請填入正確時間格式",
+    }),
+    keepImage: Joi.boolean().required().messages({
+      "boolean.empty": "Error: 請勾選是否使用照片",
+      "boolean.base": "Error: 請勾選是否使用照片",
+    }),
     isOriginImage: Joi.boolean().required(),
   });
-
   return schema.validate(data);
 }

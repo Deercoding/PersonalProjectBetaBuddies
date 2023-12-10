@@ -18,48 +18,61 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 router.post("/", async (req, res) => {
-  console.log(req.body);
-
+  if (req.body.length == 0) {
+    return res.status(400).json("請填入資料再送出聊天室");
+  }
+  const responses = req.body;
   const { error } = wallCreateValidation(req.body);
   if (error) {
-    console.log(error);
     return res.status(400).json(error.details[0].message);
   }
 
-  const responses = req.body;
-  let newRoomId;
-
-  //save original picture
-  const originalCdn = "https://d2mh6uqojgaomb.cloudfront.net/";
-  const parts = responses[0].wallImage.split("/");
-  const originalImage =
-    originalCdn + parts[parts.length - 1].split("_").slice(1).join("_");
-
-  try {
-    if (!responses[0].isOriginImage) {
-      await saveWallOriginal(
-        originalImage,
-        responses[0].gym,
-        responses[0].wall
-      );
+  console.log(responses[0].isOriginImage);
+  if (responses[0].isOriginImage == true) {
+    const originalCdn = "https://d2mh6uqojgaomb.cloudfront.net/";
+    let originalImage;
+    if (responses.length > 0 && responses[0].wallImage) {
+      const parts = responses[0].wallImage.split("/");
+      console.log(parts);
+      if (parts.length > 1) {
+        const lastPart = parts[parts.length - 1];
+        const splitLastPart = lastPart.split("_");
+        if (splitLastPart.length > 1) {
+          originalImage = originalCdn + splitLastPart.slice(1).join("_");
+          console.log(originalImage);
+        }
+      }
     }
+    try {
+      if (originalImage ) {
+        await saveWallOriginal(
+          originalImage,
+          responses[0].gym,
+          responses[0].wall
+        );
+      }
+      console.log("save");
+    } catch (err) {
+      console.log(err);
+      res.status(500).json("Server error");
+    }
+  }
 
-    for (let i = 0; i < responses.length; i++) {
-      const response = responses[i];
-      const roomId = `${response.gym}_${response.wall}_${response.color}`;
-      const wallUpdateTime = new Date(response.wallUpdateTime);
-      const wallChangeTime = new Date(response.wallChangeTime);
-
+  let newRoomId;
+  try {
+    for (const response of responses) {
       if (response.keepImage) {
+        const roomId = `${response.gym}_${response.wall}_${response.color}`;
+        const wallUpdateTime = new Date(response.wallUpdateTime);
+        const wallChangeTime = new Date(response.wallChangeTime);
+
         const saveRoom = new RoomCounter({
           unique_id: roomId + "_" + new Date(),
           roomId: roomId,
         });
-
         let newRoom = await saveRoom.save();
         newRoomId = newRoom._id.toString();
 
-        //save the other in mysql
         await createRoom(
           response.wallImage,
           response.officialLevel,
@@ -71,18 +84,20 @@ router.post("/", async (req, res) => {
           wallChangeTime
         );
 
-        for (let i = 0; i < response.tags.length; i++) {
+        for (const tags of response.tags) {
           const saveTag = new TagRoom({
             roomNumericId: newRoomId,
-            tag: response.tags[i],
+            tag: tags,
             tagCount: 1,
           });
           await saveTag.save();
         }
       }
     }
+    res.status(200).json("建立聊天室成功");
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err);
+    res.status(500).json("Server error");
   }
 });
 
@@ -131,25 +146,8 @@ router.get("/", async (req, res) => {
 
 router.get("/originalwall", async (req, res) => {
   //gym_id and wall
-  const { wall, gym } = req.query;
-
-  let search;
-  switch (true) {
-    case wall === "" && gym === "":
-      search = `1=1`;
-      break;
-    case wall === "":
-      search = `wall=wall and gym_id="${gym}"`;
-      break;
-    case gym === "":
-      search = `wall="${wall}" and gym_id=gym_id`;
-      break;
-    default:
-      search = `wall="${wall}" and gym_id="${gym}"`;
-      break;
-  }
-
-  const originalwall = await getWallOriginal(search);
+  const { gym } = req.query;
+  const originalwall = await getWallOriginal(gym);
   res.status(200).json(originalwall);
 });
 

@@ -32,10 +32,10 @@ export async function saveWallOriginal(wallimage_original, gym_id, wall) {
   );
 }
 
-export async function getWallOriginal(search) {
+export async function getWallOriginal(gym_id) {
   let [rows, fields] = await pool.query(
-    `select *  from walls where ${search}`,
-    [search]
+    `select walls.wallimage_original, walls.gym_id, walls.wall, wallrooms.wall_update_time, wallrooms.wall_change_time from walls left join wallrooms on walls.gym_id = wallrooms.gym_id and walls.wall = wallrooms.wall where walls.gym_id = ? group by walls.wallimage_original, walls.gym_id, walls.wall, wallrooms.wall_update_time, wallrooms.wall_change_time;`,
+    [gym_id]
   );
   return rows;
 }

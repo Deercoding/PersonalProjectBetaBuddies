@@ -70,7 +70,7 @@ const WalladdtagComponent = () => {
       {
         imageProcessed: imageProcessed,
         color: defaultColor,
-        officialLevel: "",
+        officialLevel: "請填入官方等級",
         tags: "指力/動態/勾腳",
         keepImage: false,
       },
@@ -152,7 +152,7 @@ const WalladdtagComponent = () => {
     });
   };
 
-  const submitAllImages = () => {
+  const submitAllImages = async () => {
     const formData = imageFormData.map((imageData) => ({
       wallImage: imageData.imageProcessed,
       color: imageData.color,
@@ -163,24 +163,31 @@ const WalladdtagComponent = () => {
       wallUpdateTime: wallUpdateTime,
       wallChangeTime: wallChangeTime,
       keepImage: imageData.keepImage,
-      isOriginImage: false,
+      isOriginImage: true,
     }));
     console.log(formData);
 
-    fetch(process.env.REACT_APP_SERVER_URL + "api/wallchatroom", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => console.error("Error:", error));
-    // navigate("/");
+    const response = await fetch(
+      process.env.REACT_APP_SERVER_URL + "api/wallchatroom",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+    if (response.ok) {
+      navigate("/");
+    } else {
+      const data = await response.json();
+      console.log(data);
+      sendData(`Error: ${data}`);
+    }
   };
+  function sendData(result) {
+    document.getElementById("server").innerHTML = JSON.stringify(result);
+  }
 
   return (
     <div id="outer-walladdtag-image-container">
@@ -188,6 +195,8 @@ const WalladdtagComponent = () => {
         <p>Authorization...</p>
       ) : (
         <div id="walladdtag-image-container">
+          <br></br>
+          <p id="server"></p>
           <Card title="牆面基本資訊">
             {createDropdownInput(
               "storeValue",

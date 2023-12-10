@@ -52,6 +52,14 @@ router.get("/", async (req, res) => {
     // search keyword
     await searchKeyword();
 
+    //check if need to update redis
+    let yesterday = new Date(Date.now());
+    yesterday.setDate(yesterday.getDate() - 1);
+    console.log(yesterday);
+    if (today.getMonth() != yesterday.getMonth()) {
+      console.log("clear redis");
+    }
+
     res.status(200).json("Daily schedule success.");
   } catch (err) {
     res.status(500).json(err);

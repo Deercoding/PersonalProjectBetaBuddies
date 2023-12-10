@@ -287,6 +287,69 @@
             "description": "Wallroom do not exist"
           }
         }
+      },
+      "post": {
+        "tags": ["Wallroom"],
+        "description": "Create multiple wallrooms",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "wallImage": {
+                      "type": "string"
+                    },
+                    "color": {
+                      "type": "string"
+                    },
+                    "officialLevel": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "gym": {
+                      "type": "string"
+                    },
+                    "wall": {
+                      "type": "string"
+                    },
+                    "wallUpdateTime": {
+                      "type": "string"
+                    },
+                    "wallChangeTime": {
+                      "type": "string"
+                    },
+                    "keepImage": {
+                      "type": "boolean"
+                    },
+                    "isOriginImage": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "建立聊天室成功"
+          },
+          "400": {
+            "description": "請填入資料再送出聊天室 & 聊天室輸入欄位有誤"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
       }
     },
     "/api/beta": {

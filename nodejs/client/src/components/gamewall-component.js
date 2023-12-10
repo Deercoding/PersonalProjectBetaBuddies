@@ -93,9 +93,14 @@ const GameWallComponent = () => {
       }))
       .filter((item) => item.chooseImage)
       .map((result, index) => result.roomNumericId);
-    localStorage.setItem("choosedImage", roomIdData);
-    localStorage.setItem("imageInfo", JSON.stringify(combinedData));
-    navigate("/gameadd");
+
+    if (roomIdData.length > 0) {
+      localStorage.setItem("choosedImage", roomIdData);
+      localStorage.setItem("imageInfo", JSON.stringify(combinedData));
+      navigate("/gameadd");
+    } else {
+      sendData(`請選擇至少一面牆`);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -106,6 +111,9 @@ const GameWallComponent = () => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+  function sendData(result) {
+    document.getElementById("server").innerHTML = JSON.stringify(result);
+  }
 
   return (
     <div id="outer-gamewall-container">
@@ -114,6 +122,7 @@ const GameWallComponent = () => {
       ) : (
         <div id="gamewall-container">
           <Form id="gamewall-form">
+            <p id="server"></p>
             <Form.Item name="gym" label="岩館">
               <Select
                 placeholder="合作岩館"
