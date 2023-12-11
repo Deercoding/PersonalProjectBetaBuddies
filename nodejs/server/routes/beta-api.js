@@ -94,6 +94,7 @@ router.post("/", upload.single("video"), async (req, res) => {
       }
     }
 
+    console.log("start game logic");
     //check game logic
     let gameUsers = await checkWallandUserinGame(roomNumericId, userId);
     if (gameUsers.length == 0) {

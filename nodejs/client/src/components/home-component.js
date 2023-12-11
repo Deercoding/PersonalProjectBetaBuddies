@@ -124,22 +124,18 @@ const HomeComponent = () => {
       <br></br>
       <br></br>
       <br></br>
-      <br></br>
-      <Form>
+      <Form layout="inline">
         <Form.Item name="gym" label="岩館">
-          <Select placeholder="合作岩館" onChange={handleGymChange} allowClear>
+          <Select placeholder="合作岩館" onChange={handleGymChange}>
             <Option value="岩館一">攀岩石樂樂合作岩館</Option>
             <Option value="快樂岩館">快樂岩館</Option>
             <Option value="岩壁探險谷">岩壁探險谷</Option>
             <Option value="岩漫天地">岩漫天地</Option>
+            <Option value="">不限制岩館</Option>
           </Select>
         </Form.Item>
         <Form.Item name="officialLevel" label="官方等級">
-          <Select
-            placeholder="VB-V9"
-            onChange={handleOfficialLevelChange}
-            allowClear
-          >
+          <Select placeholder="VB-V9" onChange={handleOfficialLevelChange}>
             <Option value="B">VB</Option>
             <Option value="0">V0</Option>
             <Option value="1">V1</Option>
@@ -151,6 +147,7 @@ const HomeComponent = () => {
             <Option value="7">V7</Option>
             <Option value="8">V8</Option>
             <Option value="9">V9</Option>
+            <Option value="">不限制等級</Option>
           </Select>
         </Form.Item>
 

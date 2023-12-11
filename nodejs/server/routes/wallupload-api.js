@@ -32,7 +32,7 @@ const imageStorage = multer.diskStorage({
 
 async function fileFilter(req, file, cb) {
   if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
-    return cb(new Error("請上傳圖片"));
+    return cb("ERROR:請上傳圖片檔(png|jpg|jpeg)", false);
   }
   cb(undefined, true);
 }
@@ -58,13 +58,15 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
       globalImageHash
     );
     if (duplicateImage) {
-      res.redirect("http://localhost:3000/walladdtag");
+      res.redirect("https://deercodeweb.com/walladdtag");
+      //http://localhost:3000/walladdtag
 
       let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
 
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      await fetch("http://localhost:8080/api/wallupload/response", {
+      await fetch("/api/wallupload/response", {
+        //http://localhost:8080/api/wallupload/response
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -6,10 +6,18 @@ import {
   TrophyOutlined,
   SmileOutlined,
 } from "@ant-design/icons";
+import logo from "../images/logo.png";
+import { useNavigate } from "react-router-dom";
 
 const NavComponent = () => {
+  let navigate = useNavigate();
+  function logoClick() {
+    navigate("/");
+  }
+
   return (
-    <div>
+    <div id="nav-container">
+      <img height={80} src={logo} onClick={() => logoClick()}></img>
       <Breadcrumb
         id="nav"
         items={[

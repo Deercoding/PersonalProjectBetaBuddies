@@ -56,7 +56,7 @@ export function betaCreateValidation(data) {
       .messages({ "string.empty": "Error: 請填入體感等級" }),
     tags: Joi.array()
       .required()
-      .messages({ "string.empty": "Error: 請至少填入一個tag" }),
+      .messages({ "array.empty": "Error: 請至少填入一個tag" }),
     video: Joi.any(),
   });
 
@@ -96,6 +96,35 @@ export function wallCreateValidation(data) {
       "boolean.base": "Error: 請勾選是否使用照片",
     }),
     isOriginImage: Joi.boolean().required(),
+  });
+  return schema.validate(data);
+}
+
+export function signupValidation(data) {
+  const schema = Joi.object({
+    name: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填使用者名稱" }),
+    email: Joi.string()
+      .required()
+      .email({ tlds: { allow: ["com", "net"] } })
+      .rule({ message: "Error: 請填入有效的信箱" })
+      .messages({ "string.empty": "Error: 請填信箱" }),
+    password: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填密碼" }),
+  });
+  return schema.validate(data);
+}
+
+export function signinValidation(data) {
+  const schema = Joi.object({
+    email: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填信箱" }),
+    password: Joi.string()
+      .required()
+      .messages({ "string.empty": "Error: 請填密碼" }),
   });
   return schema.validate(data);
 }

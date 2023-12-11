@@ -31,17 +31,19 @@ router.get("/", async (req, res) => {
     for (let i = 0; i < ad_location.length; i++) {
       let ad_location_id = ad_location[i].ad_location_id;
       let today = new Date(Date.now()); //UTC
-      console.log(today);
       let checkAdValid = await checkAdBetweenDate(ad_location_id, today);
       const redisDefualtExpriation = 60 * 60 * 24 * 1;
-      if (checkAdValid.length > 0 && redisClient.isReady) {
-        redisClient.setEx(
-          "ad_location_id_" + ad_location_id,
-          redisDefualtExpriation,
-          JSON.stringify(checkAdValid)
-        );
+      if (redisClient.isReady) {
+        if (checkAdValid.length > 0) {
+          redisClient.setEx(
+            "ad_location_id_" + ad_location_id,
+            redisDefualtExpriation,
+            JSON.stringify(checkAdValid)
+          );
+        }
+      } else {
+        await redisClient.connect();
       }
-      await redisClient.connect();
     }
     // update game status
     const today = new Date(Date.now());
@@ -55,14 +57,19 @@ router.get("/", async (req, res) => {
     //check if need to update redis
     let yesterday = new Date(Date.now());
     yesterday.setDate(yesterday.getDate() - 1);
-    console.log(yesterday);
     if (today.getMonth() != yesterday.getMonth()) {
-      console.log("clear redis");
+      console.log("clear redis for hash images");
+      if (redisClient.isReady) {
+        redisClient.del("test");
+      } else {
+        await redisClient.connect();
+      }
     }
 
     res.status(200).json("Daily schedule success.");
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err);
+    res.status(500).json("Server Error");
   }
 });
 

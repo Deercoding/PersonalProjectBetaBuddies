@@ -17,19 +17,26 @@
   justify-content: center;
   align-items: center;
   color: #ffff;
-  margin-top: 50px;
+  margin-top: 20px;
+}
+
+#nav-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  margin-bottom: 20px;
+  height: 160px;
+  background-color: #ffff;
 }
 
 #nav {
   display: flex;
   flex-direction: row;
-  background-color: #ffff;
-  height: 80px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 50px;
   padding: 20px;
-  font-size: large;
 }
 
 #nav a {

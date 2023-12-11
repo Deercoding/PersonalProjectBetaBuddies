@@ -39,7 +39,7 @@ const SignComponent = ({}) => {
     let username = document.getElementById("signup-username").value;
     let email = document.getElementById("signup-email").value;
     let password = document.getElementById("signup-password").value;
-    console.log(username, email, password);
+
     postData(process.env.REACT_APP_SERVER_URL + "api/sign/signup", {
       name: username,
       email: email,
@@ -83,8 +83,8 @@ const SignComponent = ({}) => {
 
   return (
     <Col gutter={16} justify="center" align="middle">
+      <div id="server"></div>
       <Card span={8} id="sign">
-        <div id="server"></div>
         <div className="sign-container">
           <div className="sign-form-container">
             <h1>註冊</h1>
