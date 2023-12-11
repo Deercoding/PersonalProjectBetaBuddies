@@ -1,13 +1,37 @@
 // export default ImageUploadComponent;
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, Input } from "antd";
 
 const ImageuploadComponent = () => {
   const [fileList, setFileList] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
-
   let navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const checkRole = async (authorization) => {
+    await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
+      headers: {
+        "content-type": "application/json",
+        Authorization: authorization,
+      },
+      method: "POST",
+    }).then(async (response) => {
+      const role = await response.json();
+      console.log(role);
+      if (role == "admin") {
+        setIsAdmin(true);
+        console.log(isAdmin);
+      } else {
+        navigate("/");
+      }
+    });
+  };
+
+  useEffect(() => {
+    const authorization = localStorage.getItem("Authorization");
+    checkRole(authorization);
+  }, []);
+
   const updateList = (event) => {
     const input = event.target;
     const newFileList = [];

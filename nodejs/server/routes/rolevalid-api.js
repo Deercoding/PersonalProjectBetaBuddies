@@ -8,14 +8,15 @@ router.use(express.urlencoded({ extended: true }));
 
 router.post("/", async (req, res) => {
   try {
-    const { role_authorization } = req.headers;
+    console.log(req.headers);
+    const { authorization } = req.headers;
 
-    if (!role_authorization) {
+    if (!authorization) {
       return res.status(401).json("Client Error (No token)");
     }
 
     let jwtResult;
-    const mytoken = role_authorization.split(" ")[1];
+    const mytoken = authorization.split(" ")[1];
     try {
       jwtResult = jwt.verify(mytoken, process.env.JWT_SECRET);
     } catch (err) {

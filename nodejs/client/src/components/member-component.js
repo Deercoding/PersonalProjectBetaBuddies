@@ -9,7 +9,7 @@ const MemberComponent = () => {
     await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
       headers: {
         "content-type": "application/json",
-        role_authorization: authorization,
+        Authorization: authorization,
       },
       method: "POST",
     }).then(async (response) => {
