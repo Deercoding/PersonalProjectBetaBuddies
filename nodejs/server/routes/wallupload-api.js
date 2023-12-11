@@ -52,7 +52,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
     );
     console.log("Data:" + data);
     globalImageHash = crypto.createHash("sha256").update(data).digest("hex");
-    
+
     console.log("hGet:" + globalImageHash);
     const duplicateImage = await redisClient.hGet(
       "image_hashes",
@@ -66,9 +66,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
       res.redirect("https://deercodeweb.com/walladdtag");
 
       let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
-
       await new Promise((resolve) => setTimeout(resolve, 3000));
-
       await fetch("https://deercodeweb.com/api/wallupload/response", {
         method: "POST",
         headers: {
@@ -89,7 +87,6 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json("Server Error: 請重新上傳照片");
   }
 });
 
@@ -121,7 +118,6 @@ router.post("/response", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
   }
 });
 
