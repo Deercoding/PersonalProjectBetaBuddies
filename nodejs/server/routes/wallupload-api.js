@@ -52,6 +52,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
     );
     console.log("Data:" + data);
     globalImageHash = crypto.createHash("sha256").update(data).digest("hex");
+    
     console.log("hGet:" + globalImageHash);
     const duplicateImage = await redisClient.hGet(
       "image_hashes",
@@ -88,7 +89,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json("Error: 請重新上傳照片");
+    res.status(500).json("Server Error: 請重新上傳照片");
   }
 });
 
