@@ -73,6 +73,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(sentBody),
+        agent: new https.Agent({ rejectUnauthorized: false }),
       });
     } else {
       console.log("Upload to S3");
