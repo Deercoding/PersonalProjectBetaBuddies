@@ -103,13 +103,15 @@ router.post("/response", async (req, res) => {
     } else {
       io.emit("wallcolor", imageNames.imageNames);
 
-      if (redisClient.isReady && globalImageHash) {
-        console.log(globalImageHash);
-        redisClient.hSet(
-          "image_hashes",
-          globalImageHash,
-          JSON.stringify(imageNames.imageNames)
-        );
+      if (redisClient.isReady) {
+        if (globalImageHash) {
+          console.log(globalImageHash);
+          redisClient.hSet(
+            "image_hashes",
+            globalImageHash,
+            JSON.stringify(imageNames.imageNames)
+          );
+        }
       } else {
         await redisClient.connect();
       }
