@@ -5,6 +5,7 @@ import url from "url";
 import fs from "fs";
 import { uploadObject } from "../utils/awsS3.js";
 import crypto from "node:crypto";
+import https from "node:https";
 import { redisClient } from "../utils/cache.js";
 
 let globalImageHash = "";
@@ -67,6 +68,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
 
       let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
       await new Promise((resolve) => setTimeout(resolve, 3000));
+
       await fetch("https://deercodeweb.com/api/wallupload/response", {
         method: "POST",
         headers: {
