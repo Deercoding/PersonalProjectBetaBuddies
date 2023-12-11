@@ -43,39 +43,41 @@ const imageUpload = multer({
 });
 
 router.post("/", imageUpload.array("file", 12), async (req, res) => {
-  if (req.files.length == 0) {
-    return res.status(400).json("請上傳圖片再送出");
-  }
-
-  const data = fs.readFileSync(
-    path.resolve(__dirname, "..//public//images//", req.files[0].filename)
-  );
-  globalImageHash = crypto.createHash("sha256").update(data).digest("hex");
-
-  if (redisClient.isReady) {
-    const duplicateImage = await redisClient.hGet(
-      "image_hashes",
-      globalImageHash
-    );
-    if (duplicateImage) {
-      res.redirect("https://deercodeweb.com/walladdtag");
-      //http://localhost:3000/walladdtag
-
-      let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      await fetch("https://deercodeweb.com/api/wallupload/response", {
-        //http://localhost:8080/api/wallupload/response
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(sentBody),
-      });
+  try {
+    if (req.files.length == 0) {
+      return res.status(400).json("請上傳圖片再送出");
     }
-  } else {
-    try {
+
+    const data = fs.readFileSync(
+      path.resolve(__dirname, "..//public//images//", req.files[0].filename)
+    );
+    globalImageHash = crypto.createHash("sha256").update(data).digest("hex");
+    console.log("hGet:" + globalImageHash);
+
+    if (redisClient.isReady) {
+      const duplicateImage = await redisClient.hGet(
+        "image_hashes",
+        globalImageHash
+      );
+      if (duplicateImage) {
+        res.redirect("https://deercodeweb.com/walladdtag");
+        //http://localhost:3000/walladdtag
+
+        let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
+        await fetch("https://deercodeweb.com/api/wallupload/response", {
+          //http://localhost:8080/api/wallupload/response
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sentBody),
+        });
+        console.log("No upload to S3");
+      }
+    } else {
       let toFolder = __dirname;
       await uploadObject(
         "boulderingproject",
@@ -83,11 +85,13 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
         "ap-southeast-1",
         toFolder
       );
+      console.log("Upload to S3");
       res.redirect("https://deercodeweb.com/walladdtag");
       await redisClient.connect();
-    } catch (err) {
-      res.status(500).json("Error: 請重新上傳照片");
     }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json("Error: 請重新上傳照片");
   }
 });
 
@@ -98,10 +102,12 @@ router.post("/response", async (req, res) => {
 
     if (imageNames.oldImageNames) {
       io.emit("wallcolor", imageNames.oldImageNames);
-      console.log("Get color detection image result");
+      console.log("Get color detection image from old image");
+
       return res.status(200).send("Color detection success.");
     } else {
       io.emit("wallcolor", imageNames.imageNames);
+      console.log("hSet:" + globalImageHash);
 
       if (redisClient.isReady) {
         if (globalImageHash) {
@@ -115,7 +121,8 @@ router.post("/response", async (req, res) => {
       } else {
         await redisClient.connect();
       }
-      console.log("Get color detection image result");
+      console.log("Get color detection image result from new image");
+
       return res.status(200).send("Color detection success.");
     }
   } catch (err) {
