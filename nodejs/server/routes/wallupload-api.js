@@ -68,7 +68,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
       let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      await fetch("/api/wallupload/response", {
+      await fetch("http://localhost:8080/api/wallupload/response", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
