@@ -53,16 +53,15 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
     console.log("Data:" + data);
     globalImageHash = crypto.createHash("sha256").update(data).digest("hex");
     console.log("hGet:" + globalImageHash);
+    const duplicateImage = await redisClient.hGet(
+      "image_hashes",
+      globalImageHash
+    );
+    console.log(duplicateImage);
 
     if (redisClient.isReady && duplicateImage) {
       console.log("No upload to S3");
       console.log("Redis ready");
-      const duplicateImage = await redisClient.hGet(
-        "image_hashes",
-        globalImageHash
-      );
-      console.log(duplicateImage);
-
       res.redirect("https://deercodeweb.com/walladdtag");
 
       let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
