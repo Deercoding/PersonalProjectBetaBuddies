@@ -83,7 +83,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
         "ap-southeast-1",
         toFolder
       );
-      res.redirect("http://localhost:3000/walladdtag");
+      res.redirect("https://deercodeweb.com/walladdtag");
       await redisClient.connect();
     } catch (err) {
       res.status(500).json("Error: 請重新上傳照片");
