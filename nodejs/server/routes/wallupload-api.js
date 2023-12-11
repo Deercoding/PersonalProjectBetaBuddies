@@ -55,38 +55,39 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
     console.log("hGet:" + globalImageHash);
 
     if (redisClient.isReady) {
+      console.log("Redis ready");
       const duplicateImage = await redisClient.hGet(
         "image_hashes",
         globalImageHash
       );
+      console.log(duplicateImage);
       if (duplicateImage) {
+        console.log("No upload to S3");
         res.redirect("https://deercodeweb.com/walladdtag");
-        //http://localhost:3000/walladdtag
 
         let sentBody = { oldImageNames: JSON.parse(duplicateImage) };
 
         await new Promise((resolve) => setTimeout(resolve, 3000));
 
         await fetch("https://deercodeweb.com/api/wallupload/response", {
-          //http://localhost:8080/api/wallupload/response
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(sentBody),
         });
-        console.log("No upload to S3");
+      } else {
+        console.log("Upload to S3");
+        let toFolder = __dirname;
+        await uploadObject(
+          "boulderingproject",
+          req.files,
+          "ap-southeast-1",
+          toFolder
+        );
+        res.redirect("https://deercodeweb.com/walladdtag");
       }
     } else {
-      let toFolder = __dirname;
-      await uploadObject(
-        "boulderingproject",
-        req.files,
-        "ap-southeast-1",
-        toFolder
-      );
-      console.log("Upload to S3");
-      res.redirect("https://deercodeweb.com/walladdtag");
       await redisClient.connect();
     }
   } catch (err) {

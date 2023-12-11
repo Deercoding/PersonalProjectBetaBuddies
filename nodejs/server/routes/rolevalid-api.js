@@ -8,7 +8,6 @@ router.use(express.urlencoded({ extended: true }));
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.headers);
     const { authorization } = req.headers;
 
     if (!authorization) {
