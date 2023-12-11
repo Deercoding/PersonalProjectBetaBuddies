@@ -61,7 +61,7 @@ const ImageuploadComponent = () => {
         <div id="outside-video-upload-container">
           <Card id="video-upload-container" title="上傳圖像辨識的圖片">
             <form
-              action="http://localhost:8080/api/wallupload"
+              action="https://deercodeweb.com/api/wallupload"
               method="post"
               encType="multipart/form-data"
             >
