@@ -65,7 +65,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
 
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      await fetch("/api/wallupload/response", {
+      await fetch("https://deercodeweb.com/api/wallupload/response", {
         //http://localhost:8080/api/wallupload/response
         method: "POST",
         headers: {
