@@ -52,7 +52,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
     );
     console.log("Data:" + data);
     globalImageHash = crypto.createHash("sha256").update(data).digest("hex");
-    
+
     console.log("hGet:" + globalImageHash);
     const duplicateImage = await redisClient.hGet(
       "image_hashes",
@@ -69,13 +69,16 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
 
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      await fetch("https://deercodeweb.com/api/wallupload/response", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(sentBody),
-      });
+      await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/wallupload/response`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sentBody),
+        }
+      );
     } else {
       console.log("Upload to S3");
       let toFolder = __dirname;
