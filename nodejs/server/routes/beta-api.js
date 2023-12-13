@@ -120,10 +120,12 @@ router.post("/", upload.single("video"), async (req, res) => {
           await updateUserWallStatus(game_users_id, roomNumericId, connection);
           await updateUserWallsCount(game_users_id, connection);
         } else {
+          await commitSQL(connection);
           await releaseConnection(connection);
+          console.log("No update on wall count. Beta video upload success");
           return res
             .status(200)
-            .json("Ne update on wall count. Beta video upload success");
+            .json("No update on wall count. Beta video upload success");
         }
 
         //rank
@@ -149,10 +151,12 @@ router.post("/", upload.single("video"), async (req, res) => {
             await updateUserWallsComplete(1, game_users_id, connection);
           }
         } else {
+          await commitSQL(connection);
           await releaseConnection(connection);
+          console.log("No update on rank. Beta video upload success");
           return res
             .status(200)
-            .json("Ne update on rank. Beta video upload success");
+            .json("No update on rank. Beta video upload success");
         }
 
         await commitSQL(connection);
@@ -163,6 +167,7 @@ router.post("/", upload.single("video"), async (req, res) => {
         await releaseConnection(connection);
       }
     }
+    console.log("Beta video upload success");
     res.status(200).json("Beta video upload success");
   } catch (err) {
     console.log(err);
