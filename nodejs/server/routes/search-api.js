@@ -3,7 +3,11 @@ const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-import { getRoombySearch } from "../models/wallroom-model.js";
+import {
+  getMaxVideoRoom,
+  getRoombyIds,
+  getRoombySearch,
+} from "../models/wallroom-model.js";
 import { BoulderingChat } from "../models/chat-model.js";
 import { countVideos } from "../models/video-model.js";
 import { searchTags } from "../utils/elastic-func.js";
@@ -76,6 +80,48 @@ router.get("/", async (req, res) => {
         };
         results.data.push(oneResult);
       }
+    }
+    results.data.sort((a, b) => b.roomChatCount - a.roomChatCount);
+
+    res.status(200).json(results);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/gamerooms", async (req, res) => {
+  try {
+    let maxVideoRoom = await getMaxVideoRoom();
+    maxVideoRoom = maxVideoRoom.map((room) => room.tag_room_id);
+    let searchResults = await getRoombyIds(maxVideoRoom);
+
+    let results = { data: [] };
+    for (const searchResult of searchResults) {
+      const tagRoomId = searchResult.tag_room_id;
+      const wallroomId = searchResult.wallroomId;
+      const roomChatCount = await BoulderingChat.countDocuments({
+        roomNumericId: tagRoomId,
+      });
+      const videoCount = await countVideos(wallroomId);
+      let tags = await TagRoom.find({ roomNumericId: tagRoomId }).select(
+        "tag -_id"
+      );
+      tags = tags.map((tag) => tag.tag);
+
+      const oneResult = {
+        wallimage: searchResult.wallimage,
+        official_level: searchResult.official_level,
+        gym_id: searchResult.gym_id,
+        wall: searchResult.wall,
+        color: searchResult.color,
+        roomChatCount: roomChatCount,
+        videoCount: videoCount.videoCount,
+        roomNumericId: tagRoomId,
+        wallUpdateDate: searchResult.wall_update_time,
+        wallChangeDate: searchResult.wall_change_time,
+        tags: tags,
+      };
+      results.data.push(oneResult);
     }
     results.data.sort((a, b) => b.roomChatCount - a.roomChatCount);
 

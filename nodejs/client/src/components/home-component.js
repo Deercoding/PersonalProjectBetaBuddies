@@ -54,6 +54,7 @@ const HomeComponent = () => {
 
   useEffect(() => {
     fetchAdData();
+    handleFirstSearch();
   }, []);
 
   const fetchAdData = async () => {
@@ -74,6 +75,20 @@ const HomeComponent = () => {
     fetch(
       `${process.env.REACT_APP_SERVER_URL}api/search?official_level=${officialLevel}&gym=${gym}&searchtags=${input}`
     )
+      .then((response) => response.json())
+      .then((data) => {
+        setIsLoading(false);
+        setSearchResults(data.data || []);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  const handleFirstSearch = () => {
+    setIsLoading(true);
+    fetch(`${process.env.REACT_APP_SERVER_URL}api/search/gamerooms`)
       .then((response) => response.json())
       .then((data) => {
         setIsLoading(false);

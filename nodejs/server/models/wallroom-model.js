@@ -65,6 +65,21 @@ export async function getRoombySearch(search) {
   return rows;
 }
 
+export async function getRoombyIds(tagRoomIds) {
+  let [rows, fields] = await pool.query(
+    `select * from wallrooms where tag_room_id in (?)`,
+    [tagRoomIds]
+  );
+  return rows;
+}
+
+export async function getMaxVideoRoom() {
+  let [rows, fields] = await pool.query(
+    `select tag_room_id, count( video_id) as video_count from betavideos group by tag_room_id order by video_count desc limit 3;`
+  );
+  return rows;
+}
+
 // export async function getRole(user_id) {
 //   let [rows, fields] = await pool.query(
 //     `select * from user_admin where user_id = ? `,
