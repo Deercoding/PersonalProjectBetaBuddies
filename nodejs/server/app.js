@@ -16,6 +16,7 @@ import gameRouter from "./routes/game-api.js";
 import adRouter from "./routes/ad-api.js";
 import scheduleRouter from "./routes/schedule.js";
 import roleRouter from "./routes/rolevalid-api.js";
+import dashboardRouter from "./routes/dashboard.js";
 import swaggerUI from "swagger-ui-express";
 import swaggerDocument from "./swagger.json" assert { type: "json" };
 
@@ -37,6 +38,7 @@ app.use("/api/game", gameRouter);
 app.use("/api/ad", adRouter);
 app.use("/api/schedule", scheduleRouter);
 app.use("/api/role", roleRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/*", (req, res) => {

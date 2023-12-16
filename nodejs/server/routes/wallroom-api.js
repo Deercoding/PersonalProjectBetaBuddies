@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
       }
     }
     try {
-      if (originalImage ) {
+      if (originalImage) {
         await saveWallOriginal(
           originalImage,
           responses[0].gym,
@@ -81,7 +81,8 @@ router.post("/", async (req, res) => {
           response.color,
           newRoomId,
           wallUpdateTime,
-          wallChangeTime
+          wallChangeTime,
+          response.creator
         );
 
         for (const tags of response.tags) {

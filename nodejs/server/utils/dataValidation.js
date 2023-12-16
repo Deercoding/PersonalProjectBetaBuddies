@@ -39,6 +39,7 @@ export function gameCreateValidation(data) {
     main_image: Joi.any(),
     second_image: Joi.any(),
     advertise_image: Joi.any(),
+    creator: Joi.string().required(),
   });
   return schema.validate(data);
 }
@@ -96,6 +97,7 @@ export function wallCreateValidation(data) {
       "boolean.base": "Error: 請勾選是否使用照片",
     }),
     isOriginImage: Joi.boolean().required(),
+    creator: Joi.string().required(),
   });
   return schema.validate(data);
 }

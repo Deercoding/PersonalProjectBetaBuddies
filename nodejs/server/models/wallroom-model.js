@@ -8,10 +8,11 @@ export async function createRoom(
   color,
   tag_room_id,
   wall_update_time,
-  wall_change_time
+  wall_change_time,
+  creator
 ) {
   let result = await pool.query(
-    `insert into wallrooms(wallimage,official_level,gym_id,wall,color,tag_room_id, wall_update_time, wall_change_time) values(?,?,?,?,?,?,?,?)`,
+    `insert into wallrooms(wallimage,official_level,gym_id,wall,color,tag_room_id, wall_update_time, wall_change_time, creator) values(?,?,?,?,?,?,?,?,?)`,
     [
       wallimage,
       official_level,
@@ -21,6 +22,7 @@ export async function createRoom(
       tag_room_id,
       wall_update_time,
       wall_change_time,
+      creator,
     ]
   );
 }

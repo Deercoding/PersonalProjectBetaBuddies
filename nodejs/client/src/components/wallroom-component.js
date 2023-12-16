@@ -12,7 +12,8 @@ const WallroomComponent = () => {
   const [videoDetail, setVideoDetail] = useState([]);
 
   let navigate = useNavigate();
-  const jwtToken = localStorage.getItem("Authorization");
+  let isUser = localStorage.getItem("userInfo");
+
   const userinfo = localStorage.getItem("userInfo").split(",");
   const { roomId } = useParams();
   const userName = userinfo[1];

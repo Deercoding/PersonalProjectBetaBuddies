@@ -49,7 +49,6 @@ function App() {
           <Route path="/addnewroom" exact element={<AddNewRoomComponent />} />
         </Routes>
       </div>
-      <FootComponent />
     </>
   );
 }

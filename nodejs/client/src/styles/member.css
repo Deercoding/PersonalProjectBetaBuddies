@@ -17,3 +17,21 @@
 #member-admin-links button {
   margin: 10px;
 }
+
+#pie-chart {
+  width: 250px;
+}
+#upper-chart {
+  display: flex;
+  justify-content: center;
+}
+#upper-card {
+  width: 400px;
+  display: flex;
+  align-items: center;
+}
+
+#dashboard-name {
+  display: flex;
+  justify-content: center;
+}

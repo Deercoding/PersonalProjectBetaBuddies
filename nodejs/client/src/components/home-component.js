@@ -30,9 +30,12 @@ const HomeComponent = () => {
     setGym(event);
   };
 
-  const handleAdClick = () => {
+  const handleAdClick = async () => {
     if (gameAd.game_id) {
       navigate(`/gamedetail/${gameAd.game_id}`);
+      await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/dashboard/adclick?ad_status_id=${gameAd.ad_status_id}`
+      );
     } else {
       navigate("/");
     }

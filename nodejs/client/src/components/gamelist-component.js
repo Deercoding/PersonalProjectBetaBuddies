@@ -7,13 +7,19 @@ const GameListComponent = () => {
   const [gameAd, setGameAd] = useState([]);
   let navigate = useNavigate();
 
-  const handleResultClick = (game_id) => {
+  const handleResultClick = async (game_id) => {
     navigate(`/gamedetail/${game_id}`);
+    await fetch(
+      `${process.env.REACT_APP_SERVER_URL}api/dashboard/gameclick?game_id=${game_id}`
+    );
   };
 
-  const handleAdClick = () => {
+  const handleAdClick = async () => {
     if (gameAd.game_id) {
       navigate(`/gamedetail/${gameAd.game_id}`);
+      await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/dashboard/adclick?ad_status_id=${gameAd.ad_status_id}`
+      );
     } else {
       navigate("/gamelist");
     }

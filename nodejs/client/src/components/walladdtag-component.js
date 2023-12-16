@@ -20,6 +20,7 @@ const WalladdtagComponent = () => {
   const [wallUpdateTime, setWallUpdateTime] = useState(defaultWallUpdateTime);
   const [wallChangeTime, setWallChangeTime] = useState(defaultWallChangeTime);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState("");
 
   const checkRole = async (authorization) => {
     await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
@@ -32,6 +33,8 @@ const WalladdtagComponent = () => {
       const role = await response.json();
       if (role == "admin") {
         setIsAdmin(true);
+        let userInfo = localStorage.getItem("userInfo").split(",");
+        setUserId(userInfo[0]);
       } else {
         navigate("/");
       }
@@ -164,6 +167,7 @@ const WalladdtagComponent = () => {
       wallChangeTime: wallChangeTime,
       keepImage: imageData.keepImage,
       isOriginImage: true,
+      creator: userId,
     }));
     console.log(formData);
 

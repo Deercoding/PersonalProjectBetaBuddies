@@ -25,6 +25,7 @@ import { getRoombySearch } from "../models/wallroom-model.js";
 import path from "path";
 import url from "url";
 import { gameCreateValidation } from "../utils/dataValidation.js";
+import Click from "../models/clicks-model.js";
 
 const router = express.Router();
 router.use(express.json());
@@ -98,6 +99,31 @@ router.post("/user", async (req, res) => {
 
     await createGameUsers(gameId, userId);
     res.status(200).json("Success create user!");
+
+    //dashboard
+    const today = new Date(Date.now());
+    let formattedDate = today.toISOString().split("T")[0];
+
+    const findGame = await Click.find({
+      date: formattedDate,
+      searchId: gameId,
+      type: "user_join",
+    }).select("-_id clickCount");
+    if (findGame.length == 0) {
+      const saveClick = new Click({
+        searchId: gameId,
+        date: formattedDate,
+        type: "user_join",
+        clickCount: 1,
+      });
+      await saveClick.save();
+    } else {
+      await Click.updateOne(
+        { date: formattedDate, searchId: gameId, type: "user_join" },
+        { $inc: { clickCount: 1 } },
+        { new: true }
+      );
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json("Server Error");
@@ -264,7 +290,8 @@ router.post(
         req.files["second_image"][0].filename,
         req.body.ad_location_id,
         adStartDate,
-        req.files["advertise_image"][0].filename
+        req.files["advertise_image"][0].filename,
+        req.body.creator
       );
 
       // 4. save ad location

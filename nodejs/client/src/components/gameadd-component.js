@@ -9,6 +9,7 @@ const GameAddComponent = () => {
   let roomImage = localStorage.getItem("imageInfo");
   roomImage = JSON.parse(roomImage);
   let navigate = useNavigate();
+  const [userId, setUserId] = useState("");
 
   const [adLocation, setAdLocation] = useState([]);
   const [adStatus, setAdStatus] = useState([]);
@@ -26,6 +27,7 @@ const GameAddComponent = () => {
     ad_location_id: "",
     ad_start_date: "",
     advertise_image: "",
+    creator: "",
   });
   const [isAdmin, setIsAdmin] = useState(false);
   const checkRole = async (authorization) => {
@@ -39,6 +41,9 @@ const GameAddComponent = () => {
       const role = await response.json();
       if (role == "admin") {
         setIsAdmin(true);
+        let userInfo = localStorage.getItem("userInfo").split(",");
+
+        setUserId(userInfo[0]);
       } else {
         navigate("/");
       }
@@ -69,6 +74,9 @@ const GameAddComponent = () => {
 
     try {
       const formDataForUpload = new FormData();
+
+      formData.creator = userId;
+
       Object.entries(formData).forEach(([key, value]) => {
         formDataForUpload.append(key, value);
       });
@@ -85,7 +93,7 @@ const GameAddComponent = () => {
         navigate("/gamelist");
       } else {
         const data = await response.json();
-        console.log(data);
+
         sendData(`Error: ${data}`);
       }
     } catch (error) {
@@ -98,7 +106,6 @@ const GameAddComponent = () => {
     fetch(`${process.env.REACT_APP_SERVER_URL}api/game/adlocation`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setAdLocation(data.adLocationInfo || []);
         setAdStatus(data.adStatus || []);
       })
@@ -297,7 +304,7 @@ const GameAddComponent = () => {
                     new Date(date) >= new Date(adstat.start_date) &&
                     new Date(date) <= new Date(adstat.end_date)
                 );
-                console.log(matchingAd);
+
                 if (matchingAd) {
                   return (
                     <p style={{ color: "red" }}>
@@ -322,7 +329,7 @@ const GameAddComponent = () => {
                     new Date(date) >= new Date(adstat.start_date) &&
                     new Date(date) <= new Date(adstat.end_date)
                 );
-                console.log(matchingAd);
+
                 if (matchingAd) {
                   return (
                     <p style={{ color: "red" }}>

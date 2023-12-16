@@ -12,10 +12,11 @@ export async function createGame(
   second_image,
   ad_location_id,
   ad_start_date,
-  advertise_image
+  advertise_image,
+  creator
 ) {
   let result = await pool.query(
-    `insert into games(name,short_description,long_description,date_start,date_end,game_winners,game_award,main_image, second_image,ad_location_id,ad_start_date, advertise_image) values(?,?,?,?,?,?,?,?,?,?,?,?);`,
+    `insert into games(name,short_description,long_description,date_start,date_end,game_winners,game_award,main_image, second_image,ad_location_id,ad_start_date, advertise_image,creator) values(?,?,?,?,?,?,?,?,?,?,?,?,?);`,
     [
       name,
       short_description,
@@ -29,6 +30,7 @@ export async function createGame(
       ad_location_id,
       ad_start_date,
       advertise_image,
+      creator,
     ]
   );
   return result;

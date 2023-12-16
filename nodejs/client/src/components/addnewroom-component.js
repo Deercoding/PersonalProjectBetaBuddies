@@ -8,8 +8,36 @@ const AddNewRoomComponent = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [imageFormData, setImageFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState("");
   let navigate = useNavigate();
   const { Option } = Select;
+
+  let role;
+
+  const checkRole = async (authorization) => {
+    await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
+      headers: {
+        "content-type": "application/json",
+        Authorization: authorization,
+      },
+      method: "POST",
+    }).then(async (response) => {
+      role = await response.json();
+    });
+
+    if (role != "admin" && role != "user") {
+      alert("請登入再新增聊天室");
+      navigate("/");
+    } else {
+      let userInfo = localStorage.getItem("userInfo").split(",");
+      setUserId(userInfo[0]);
+    }
+  };
+
+  useEffect(() => {
+    const authorization = localStorage.getItem("Authorization");
+    checkRole(authorization);
+  }, []);
 
   const handleSearchGymChange = (event) => {
     setGym(event);
@@ -26,7 +54,6 @@ const AddNewRoomComponent = () => {
         setSearchResults(data || []);
         setImageFormData([]);
         data.forEach((searchResult) => {
-          console.log(searchResult);
           const imageProcessed = searchResult.wallimage_original;
           appendImage(searchResult);
         });
@@ -38,7 +65,6 @@ const AddNewRoomComponent = () => {
   };
 
   const appendImage = (imageProcessed) => {
-    console.log(imageProcessed);
     setImageFormData((prevImageFormData) => [
       ...prevImageFormData,
       {
@@ -55,6 +81,7 @@ const AddNewRoomComponent = () => {
         wallChangeTime: new Date(imageProcessed.wall_change_time),
         // .toISOString()
         // .split("T")[0],
+        creator: userId,
       },
     ]);
   };
@@ -154,6 +181,7 @@ const AddNewRoomComponent = () => {
       wallChangeTime: imageData.wallChangeTime,
       keepImage: imageData.keepImage,
       isOriginImage: false,
+      creator: userId,
     }));
     console.log(formData);
 
@@ -172,7 +200,7 @@ const AddNewRoomComponent = () => {
         navigate("/");
       } else {
         const data = await response.json();
-        console.log(data);
+
         sendData(`${data}`);
       }
     } catch (err) {
