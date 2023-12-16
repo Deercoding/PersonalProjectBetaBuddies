@@ -88,7 +88,7 @@ const HomeComponent = () => {
 
   const handleFirstSearch = () => {
     setIsLoading(true);
-    fetch(`${process.env.REACT_APP_SERVER_URL}api/search/gamerooms`)
+    fetch(`${process.env.REACT_APP_SERVER_URL}api/search/maxvideorooms`)
       .then((response) => response.json())
       .then((data) => {
         setIsLoading(false);

@@ -13,6 +13,7 @@ import { countVideos } from "../models/video-model.js";
 import { searchTags } from "../utils/elastic-func.js";
 import client from "../utils/elastic-client.js";
 import TagRoom from "../models/tagroom-model.js";
+import { getGamebyRoom } from "../models/game-model.js";
 
 router.get("/", async (req, res) => {
   try {
@@ -89,7 +90,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/gamerooms", async (req, res) => {
+router.get("/maxvideorooms", async (req, res) => {
   try {
     let maxVideoRoom = await getMaxVideoRoom();
     maxVideoRoom = maxVideoRoom.map((room) => room.tag_room_id);
@@ -147,6 +148,16 @@ router.get("/tags", async (req, res) => {
     }
 
     res.status(200).json(results);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/gamerooms", async (req, res) => {
+  try {
+    const { roomId } = req.query;
+    let games = await getGamebyRoom(roomId);
+    res.status(200).json(games);
   } catch (err) {
     res.status(500).json(err);
   }

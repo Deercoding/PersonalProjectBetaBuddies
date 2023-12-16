@@ -278,3 +278,11 @@ export async function updateUserWallsComplete(
   );
   return rows;
 }
+
+export async function getGamebyRoom(tagRoomIds) {
+  let [rows, fields] = await pool.query(
+    `select games.game_id, name, main_image, date_end from game_walls left join games on games.game_id = game_walls.game_id where wallrooms_id = ? and game_status=1 order by date_end limit 1;`,
+    [tagRoomIds]
+  );
+  return rows;
+}

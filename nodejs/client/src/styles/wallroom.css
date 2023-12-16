@@ -24,6 +24,11 @@
   overflow-y: scroll;
 }
 
+#game-wallroom-container {
+  text-align: center;
+  width: 600px;
+}
+
 #carousel-container {
   text-align: center;
   height: 400px;

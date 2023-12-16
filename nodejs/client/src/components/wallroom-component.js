@@ -1,8 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import { socket } from "../socketio.js";
 import { useNavigate, useParams } from "react-router-dom";
-import { Image, Card, Input, Space, Button, Carousel, Tag } from "antd";
 import { MessageBox } from "react-chat-elements";
+import {
+  Image,
+  Card,
+  Input,
+  Space,
+  Button,
+  Carousel,
+  Tag,
+  Col,
+  Statistic,
+  Row,
+} from "antd";
+const { Countdown } = Statistic;
 
 const WallroomComponent = () => {
   const [chatHistory, setChatHistory] = useState([]);
@@ -10,6 +22,7 @@ const WallroomComponent = () => {
   const [roomInfo, setRoomInfo] = useState({});
   const [inputValue, setInputValue] = useState("");
   const [videoDetail, setVideoDetail] = useState([]);
+  const [gameInfo, setGameInfo] = useState([]);
 
   let navigate = useNavigate();
   let isUser = localStorage.getItem("userInfo");
@@ -26,6 +39,7 @@ const WallroomComponent = () => {
     fetchChatHistory(roomId);
     fetchRoomInfo(roomId);
     fetchVideoDetail(roomId);
+    fetchGameInfo(roomId);
 
     socket.on("connect", (response) => {
       console.log(`You connect with id ${socket.id}`);
@@ -123,6 +137,23 @@ const WallroomComponent = () => {
       );
     } catch (error) {
       console.error(`Error fetching beta detail: ${error}`);
+    }
+  };
+
+  const fetchGameInfo = async (roomId) => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/search/gamerooms?roomId=${roomId}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const gameInfo = await response.json();
+      setGameInfo(gameInfo);
+    } catch (error) {
+      console.error(`Error fetching room info: ${error}`);
     }
   };
 
@@ -230,6 +261,35 @@ const WallroomComponent = () => {
               上傳我的Beta
             </Button>
           </Card>
+          <br></br>
+          <div id="game-wallroom-container">
+            {gameInfo.map((game, index) => (
+              <Row>
+                <Card>
+                  <div>
+                    <p>這條線是 {game.name} 指定線路</p>
+                    <p>觀看更多挑戰賽</p>
+                    <div>
+                      <Image
+                        style={{ maxWidth: "960px", maxHeight: "250px" }}
+                        src={
+                          "https://d23j097i06b1t0.cloudfront.net/" +
+                          game.main_image
+                        }
+                        preview={false}
+                      />
+                    </div>
+                    <p>挑戰賽結束時間到數</p>
+                    <Countdown
+                      value={game.date_end}
+                      format="D 天 H 小時 m 分 s 秒"
+                      valueStyle={{ color: "#cf1322", fontSize: "24px" }}
+                    />
+                  </div>
+                </Card>
+              </Row>
+            ))}
+          </div>
         </div>
       </div>
     </div>
