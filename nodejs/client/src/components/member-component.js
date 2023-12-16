@@ -33,6 +33,15 @@ const MemberComponent = () => {
 
   const options = {
     responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+          precision: 0,
+        },
+      },
+    },
     plugins: {
       legend: {
         position: "bottom",

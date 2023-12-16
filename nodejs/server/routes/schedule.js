@@ -40,6 +40,8 @@ router.get("/", async (req, res) => {
             redisDefualtExpriation,
             JSON.stringify(checkAdValid)
           );
+        } else {
+          redisClient.del("ad_location_id_" + ad_location_id);
         }
       } else {
         await redisClient.connect();

@@ -114,6 +114,11 @@ router.get("/", async (req, res) => {
 router.get("/adclick", async (req, res) => {
   try {
     const { ad_status_id } = req.query;
+
+    if (!ad_status_id) {
+      res.status(400).json("No ad click data");
+    }
+
     const today = new Date(Date.now());
     let formattedDate = today.toISOString().split("T")[0];
 
@@ -149,6 +154,11 @@ router.get("/adclick", async (req, res) => {
 router.get("/gameclick", async (req, res) => {
   try {
     const { game_id } = req.query;
+
+    if (!game_id) {
+      res.status(400).json("No game click data");
+    }
+
     const today = new Date(Date.now());
     let formattedDate = today.toISOString().split("T")[0];
 
@@ -224,5 +234,6 @@ router.get("/mockdata", async (req, res) => {
     });
     await saveClick.save();
   }
+  res.status(200).json("Add mock data success");
 });
 export default router;
