@@ -65,7 +65,7 @@ const GameListComponent = () => {
       <div id="gamelist-container">
         <div>
           <Image
-            style={{ maxHeight: "400px" }}
+            style={{ maxHeight: "400px", cursor: "pointer" }}
             src={`https://d23j097i06b1t0.cloudfront.net/${gameAd.ad_image}`}
             preview={false}
             onClick={() => handleAdClick()}
@@ -81,7 +81,7 @@ const GameListComponent = () => {
               key={game.game_id}
               onClick={() => handleResultClick(game.game_id)}
             >
-              <Card id="gamelist-card">
+              <Card id="gamelist-card-online">
                 <Row>
                   <div id="home-wall-info">
                     <p>比賽序號 : {game.game_id}</p>

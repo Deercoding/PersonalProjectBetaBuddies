@@ -167,7 +167,7 @@ const GameWallComponent = () => {
           </Form>
           {isLoading ? (
             <p>
-              Searching <LoadingOutlined />
+              尋找符合條件的路線 <LoadingOutlined />
             </p>
           ) : (
             searchResults.length > 0 && (

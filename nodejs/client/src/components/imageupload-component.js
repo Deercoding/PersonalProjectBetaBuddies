@@ -96,7 +96,7 @@ const ImageuploadComponent = () => {
                   padding: "7px 20px",
                 }}
               >
-                Send
+                送出
               </button>
             </form>
           </Card>

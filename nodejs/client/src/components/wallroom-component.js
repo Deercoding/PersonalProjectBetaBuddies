@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { socket } from "../socketio.js";
 import { useNavigate, useParams } from "react-router-dom";
-import { Image, Card, Input, Space, Button, Carousel } from "antd";
+import { Image, Card, Input, Space, Button, Carousel, Tag } from "antd";
 import { MessageBox } from "react-chat-elements";
 
 const WallroomComponent = () => {
@@ -146,9 +146,16 @@ const WallroomComponent = () => {
                 <p>更新時間: {formatDate(roomInfo.wallUpdateDate)}</p>
                 <p>換牆時間: {formatDate(roomInfo.wallChangeDate)}</p>
               </Card>
-              <Card type="inner" title="主題標籤">
-                {roomInfo.tags && roomInfo.tags.join(", ")}
-              </Card>
+              <br></br>
+
+              {roomInfo.tags &&
+                roomInfo.tags.map((tag, index) => (
+                  <Space size={[0, 8]} wrap>
+                    <Tag color="rgb(213, 52, 35)" style={{ fontSize: "15px" }}>
+                      {"#" + tag}
+                    </Tag>
+                  </Space>
+                ))}
             </Card>
             <Card title="岩牆圖片: 點擊圖片放大">
               <Image width={250} src={roomInfo.wallImage} />
@@ -187,13 +194,13 @@ const WallroomComponent = () => {
                 onChange={(e) => setInputValue(e.target.value)}
               />
               <Button type="text" onClick={() => sendMessage()}>
-                Submit
+                送出
               </Button>
             </Space.Compact>
           </Card>
 
           <br></br>
-          <Card id="carousel-card" title="看看別人的Beta">
+          <Card id="carousel-card" title="看看別人的Beta影片">
             <div id="carousel-container">
               <Carousel
                 afterChange={onChange}

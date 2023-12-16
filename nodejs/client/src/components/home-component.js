@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Image, Card, Button, Row, Form, Select, Input, List } from "antd";
+import {
+  Image,
+  Card,
+  Button,
+  Row,
+  Form,
+  Select,
+  Input,
+  List,
+  Tag,
+  Space,
+} from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 const { Search } = Input;
 
@@ -118,7 +129,7 @@ const HomeComponent = () => {
     <div id="home-container">
       <div>
         <Image
-          style={{ maxHeight: "400px" }}
+          style={{ maxHeight: "400px", cursor: "pointer" }}
           src={`https://d23j097i06b1t0.cloudfront.net/${gameAd.ad_image}`}
           preview={false}
           onClick={() => handleAdClick()}
@@ -178,14 +189,14 @@ const HomeComponent = () => {
             htmlType="submit"
             onClick={(e) => handleSubmit(e)}
           >
-            Search
+            搜尋
           </Button>
         </Form.Item>
       </Form>
       <br></br>
       {isLoading ? (
         <p>
-          Searching <LoadingOutlined />
+          尋找符合條件的路線 <LoadingOutlined />
         </p>
       ) : (
         searchResults?.map((result, index) => (
@@ -193,7 +204,7 @@ const HomeComponent = () => {
             key={index}
             onClick={() => handleResultClick(result.roomNumericId)}
           >
-            <Card>
+            <Card style={{ margin: "10px" }}>
               <Row>
                 <div id="home-wall-info">
                   <strong>
@@ -204,7 +215,18 @@ const HomeComponent = () => {
                   <p>Beta影片: {result.videoCount}</p>
                   <p>更新時間: {formatDate(result.wallUpdateDate)}</p>
                   <p>換線時間: {formatDate(result.wallChangeDate)}</p>
-                  <p>#tags: {result.tags.join("/")}</p>
+
+                  {result.tags &&
+                    result.tags.map((tag, index) => (
+                      <Space size={[0, 6]} wrap>
+                        <Tag
+                          color="rgb(213, 52, 35)"
+                          style={{ fontSize: "16px" }}
+                        >
+                          {"#" + tag}
+                        </Tag>
+                      </Space>
+                    ))}
                 </div>
                 <br></br>
                 <div>

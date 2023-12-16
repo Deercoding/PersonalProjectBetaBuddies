@@ -163,7 +163,7 @@ const GameDetailComponent = () => {
                   onClick={() => handleResultClick(wallroom.tag_room_id)}
                   span={12}
                 >
-                  <Card>
+                  <Card style={{ cursor: "pointer" }}>
                     <div>
                       {/* <p>WallroomId : {wallroom.tag_room_id}</p> */}
                       <strong>點擊進入聊天室</strong>

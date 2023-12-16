@@ -7,5 +7,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
 
+#original-wall-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+#original-wall-card-row {
+  display: flex;
+  justify-content: space-around;
 }

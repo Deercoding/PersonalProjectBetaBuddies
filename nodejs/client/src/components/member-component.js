@@ -33,6 +33,11 @@ const MemberComponent = () => {
 
   const options = {
     responsive: true,
+    onHover: (event, chartElement) => {
+      event.native.target.style.cursor = chartElement[0]
+        ? "pointer"
+        : "default";
+    },
     scales: {
       y: {
         beginAtZero: true,
@@ -57,6 +62,11 @@ const MemberComponent = () => {
   };
 
   const pieOptions = {
+    onHover: (event, chartElement) => {
+      event.native.target.style.cursor = chartElement[0]
+        ? "pointer"
+        : "default";
+    },
     plugins: {
       title: {
         display: true,
@@ -143,7 +153,7 @@ const MemberComponent = () => {
 
             {isLoading ? (
               <p>
-                Generating Dashboard <LoadingOutlined />
+                報表製作中 <LoadingOutlined />
               </p>
             ) : (
               dashboard?.map((result, index) => (

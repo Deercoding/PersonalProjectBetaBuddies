@@ -93,6 +93,7 @@ const AddNewRoomComponent = () => {
       </Col>
       <Col>
         <Input
+          style={{ width: 180 }}
           type={type}
           name={name}
           placeholder={placeholder}
@@ -107,7 +108,7 @@ const AddNewRoomComponent = () => {
     <div>
       <label>{title}</label>
       <Select
-        style={{ width: 200 }}
+        style={{ width: 180 }}
         name={name}
         value={value}
         onChange={(newValue) => onChange({ target: { value: newValue } })}
@@ -245,7 +246,7 @@ const AddNewRoomComponent = () => {
         </Form>
         {isLoading ? (
           <p>
-            Searching <LoadingOutlined />
+            尋找符合條件的路線 <LoadingOutlined />
           </p>
         ) : (
           searchResults.length > 0 && (
@@ -259,8 +260,8 @@ const AddNewRoomComponent = () => {
               <br></br>
               <div>
                 {imageFormData.map((imageData, index) => (
-                  <Card key={index} title="圖片辨識結果">
-                    <Row>
+                  <Card key={index} title="原始牆面" id="original-wall-card">
+                    <Row id="original-wall-card-row">
                       <div>
                         {createInput(
                           "text",
@@ -268,7 +269,7 @@ const AddNewRoomComponent = () => {
                           "Gym",
                           imageData.gym,
                           (e) => handleGymChange(index, e.target.value),
-                          "岩館"
+                          "岩館:"
                         )}
 
                         {createInput(
@@ -277,7 +278,7 @@ const AddNewRoomComponent = () => {
                           "Wall",
                           imageData.wall,
                           (e) => handleWallChange(index, e.target.value),
-                          "牆面"
+                          "牆面:"
                         )}
                         {createInput(
                           "text",
@@ -285,11 +286,11 @@ const AddNewRoomComponent = () => {
                           "Color",
                           imageData.color,
                           (e) => handleColorChange(index, e.target.value),
-                          "線路顏色"
+                          "顏色:"
                         )}
                         {createDropdownInput(
                           "officialLevel",
-                          "官方等級",
+                          "等級:",
                           [
                             { key: "B", value: "B", label: "VB" },
                             { key: "0", value: "0", label: "V0" },
@@ -313,9 +314,17 @@ const AddNewRoomComponent = () => {
                           "Tags",
                           imageData.tags,
                           (e) => handleTagsChange(index, e.target.value),
-                          "#tags"
+                          "#tags:"
                         )}
-                        <label>建立聊天室</label>
+
+                        <label
+                          style={{
+                            fontSize: "16px",
+                            color: "rgb(213, 52, 35)",
+                          }}
+                        >
+                          確認建立聊天室
+                        </label>
                         <input
                           type="checkbox"
                           name="keep-image"

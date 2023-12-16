@@ -87,6 +87,7 @@ const WalladdtagComponent = () => {
       </Col>
       <Col>
         <Input
+          style={{ width: 180 }}
           type={type}
           name={name}
           placeholder={placeholder}
@@ -101,7 +102,7 @@ const WalladdtagComponent = () => {
     <div>
       <label>{title}</label>
       <Select
-        style={{ width: 200 }}
+        style={{ width: 180 }}
         name={name}
         value={value}
         onChange={(newValue) => onChange({ target: { value: newValue } })}
@@ -250,7 +251,7 @@ const WalladdtagComponent = () => {
           <div>
             {imageFormData.map((imageData, index) => (
               <Card key={index} title="圖片辨識結果">
-                <Row>
+                <Row id="original-wall-card-row">
                   <div>
                     {createInput(
                       "text",
@@ -258,12 +259,12 @@ const WalladdtagComponent = () => {
                       "Color",
                       imageData.color,
                       (e) => handleColorChange(index, e.target.value),
-                      "線路顏色"
+                      "顏色"
                     )}
 
                     {createDropdownInput(
                       "officialLevel",
-                      "官方等級",
+                      "等級",
                       [
                         { key: "B", value: "B", label: "VB" },
                         { key: "0", value: "0", label: "V0" },
@@ -288,7 +289,14 @@ const WalladdtagComponent = () => {
                       (e) => handleTagsChange(index, e.target.value),
                       "#tags"
                     )}
-                    <label>保留圖片</label>
+                    <label
+                      style={{
+                        fontSize: "16px",
+                        color: "rgb(213, 52, 35)",
+                      }}
+                    >
+                      確認建立聊天室
+                    </label>
                     <input
                       type="checkbox"
                       name="keep-image"
@@ -305,7 +313,7 @@ const WalladdtagComponent = () => {
           </div>
 
           <Button type="text" onClick={submitAllImages}>
-            Submit All Images
+            建立多個聊天室
           </Button>
         </div>
       )}

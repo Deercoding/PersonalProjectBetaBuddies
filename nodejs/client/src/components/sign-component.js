@@ -89,22 +89,22 @@ const SignComponent = ({}) => {
           <div className="sign-form-container">
             <h1>註冊</h1>
             <div className="mb-3">
-              <label htmlFor="signup-username">Username</label>
+              <label htmlFor="signup-username">使用者名稱</label>
               <Input id="signup-username" />
             </div>
 
             <div className="mb-3">
-              <label htmlFor="signup-email">Email address</label>
+              <label htmlFor="signup-email">Email</label>
               <Input type="email" id="signup-email" />
             </div>
 
             <div className="mb-3">
-              <label htmlFor="signup-password">Password</label>
+              <label htmlFor="signup-password">密碼</label>
               <Input.Password id="signup-password" />
             </div>
             <br></br>
             <Button type="text" onClick={signup}>
-              Submit
+              送出
             </Button>
           </div>
         </div>
@@ -116,18 +116,18 @@ const SignComponent = ({}) => {
           <h1>登入</h1>
 
           <div className="mb-3">
-            <label htmlFor="email">Email address</label>
+            <label htmlFor="email">Email</label>
             <Input type="email" id="email" />
           </div>
 
           <div className="mb-3">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">密碼</label>
             <Input.Password id="password" />
           </div>
           <br></br>
 
           <Button type="text" onClick={signin}>
-            Submit
+            送出
           </Button>
         </div>
       </Card>

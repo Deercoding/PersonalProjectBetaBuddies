@@ -17,8 +17,14 @@
   margin: 10px;
 }
 
+#gamelist-card-online {
+  margin: 10px;
+  cursor: pointer;
+}
+
 #home-wall-info {
   width: 300px;
+  cursor: pointer;
 }
 
 /* game wall choose */
