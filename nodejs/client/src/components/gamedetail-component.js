@@ -95,6 +95,11 @@ const GameDetailComponent = () => {
       title: "排名",
       dataIndex: "rank",
       key: "rank",
+      sorter: (a, b) => {
+        if (a.rank === "已參賽") return -1; 
+        if (b.rank === "已參賽") return 1; 
+        return a.rank - b.rank;
+      },
     },
     {
       title: "已完成的路線數量",
@@ -170,7 +175,7 @@ const GameDetailComponent = () => {
                       <p>
                         岩牆: {wallroom.gym_id} {wallroom.wall} {wallroom.color}
                       </p>
-                      <p>官方等級: {wallroom.official_level}</p>
+                      <p>官方等級: V{wallroom.official_level}</p>
                     </div>
                     <div>
                       <Image height={300} src={wallroom.wallimage} />

@@ -190,48 +190,67 @@ router.get("/gameclick", async (req, res) => {
 });
 
 router.get("/mockdata", async (req, res) => {
-  let game_id = "64";
-  let ad_status_id = "51";
-  let count = Math.floor(Math.random() * 5);
+  let game_id = "77";
+  let ad_status_id = "65";
+  let count = Math.floor(Math.random() * 30);
   //mock data
-  for (let i = 0; i < 30; i++) {
-    const anotherDay = new Date(Date.now());
-    anotherDay.setDate(anotherDay.getDate() + i);
-    let formattedDate = anotherDay.toISOString().split("T")[0];
-    const saveClick = new Click({
-      searchId: game_id,
-      date: formattedDate,
-      type: "game_click",
-      clickCount: count,
-    });
-    await saveClick.save();
-  }
-  //mock data
-  for (let i = 0; i < 10; i++) {
-    const anotherDay = new Date(Date.now());
-    anotherDay.setDate(anotherDay.getDate() + i);
-    let formattedDate = anotherDay.toISOString().split("T")[0];
-    const saveClick = new Click({
-      searchId: ad_status_id,
-      date: formattedDate,
-      type: "ad_click",
-      clickCount: count,
-    });
-    await saveClick.save();
-  }
+  // for (let i = 0; i < 13; i++) {
+  //   const anotherDay = new Date(Date.now());
+  //   anotherDay.setDate(anotherDay.getDate() - 10);
+  //   anotherDay.setDate(anotherDay.getDate() + i);
 
-  for (let i = 0; i < 10; i++) {
-    const anotherDay = new Date(Date.now());
-    anotherDay.setDate(anotherDay.getDate() + i);
-    let formattedDate = anotherDay.toISOString().split("T")[0];
-    const saveClick = new Click({
-      searchId: game_id,
-      date: formattedDate,
-      type: "user_join",
-      clickCount: count,
-    });
-    await saveClick.save();
-  }
+  //   let formattedDate = anotherDay.toISOString().split("T")[0];
+  //   const saveClick = new Click({
+  //     searchId: game_id,
+  //     date: formattedDate,
+  //     type: "game_click",
+  //     clickCount: count,
+  //   });
+  //   await saveClick.save();
+  // }
+
+  //add certain day
+  // const anotherDay = new Date("2023-12-17");
+  // let formattedDate = anotherDay.toISOString().split("T")[0];
+  // await Click.updateOne(
+  //   { date: formattedDate, searchId: game_id, type: "game_click" },
+  //   { $inc: { clickCount: 8 } },
+  //   { new: true }
+  // );
+
+  //mock data
+  // const anotherDay = new Date("2023-12-10");
+  // let formattedDate = anotherDay.toISOString().split("T")[0];
+  // const saveClick = new Click({
+  //   searchId: ad_status_id,
+  //   date: formattedDate,
+  //   type: "ad_click",
+  //   clickCount: 36,
+  // });
+  // await saveClick.save();
+
+  // for (let i = 0; i < 10; i++) {
+  //   const anotherDay = new Date(Date.now());
+  //   anotherDay.setDate(anotherDay.getDate() + i);
+  //   let formattedDate = anotherDay.toISOString().split("T")[0];
+  //   const saveClick = new Click({
+  //     searchId: game_id,
+  //     date: formattedDate,
+  //     type: "user_join",
+  //     clickCount: count,
+  //   });
+  //   await saveClick.save();
+  // }
+  // const anotherDay = new Date("2023-12-14");
+  // let formattedDate = anotherDay.toISOString().split("T")[0];
+  // const saveClick = new Click({
+  //   searchId: game_id,
+  //   date: formattedDate,
+  //   type: "user_join",
+  //   clickCount:1,
+  // });
+  // await saveClick.save();
+
   res.status(200).json("Add mock data success");
 });
 export default router;
