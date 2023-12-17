@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { socket } from "../socketio.js";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { MessageBox } from "react-chat-elements";
 import {
   Image,
@@ -10,7 +10,6 @@ import {
   Button,
   Carousel,
   Tag,
-  Col,
   Statistic,
   Row,
 } from "antd";
@@ -25,11 +24,13 @@ const WallroomComponent = () => {
   const [gameInfo, setGameInfo] = useState([]);
 
   let navigate = useNavigate();
-  let isUser = localStorage.getItem("userInfo");
+  let userinfo = localStorage.getItem("userInfo");
+  let userName = "岩友";
+  if (userinfo) {
+    userName = userinfo.split(",")[1];
+  }
 
-  const userinfo = localStorage.getItem("userInfo").split(",");
   const { roomId } = useParams();
-  const userName = userinfo[1];
 
   const BetaUpload = () => {
     navigate(`/betaupload/${roomId}`);
@@ -265,26 +266,29 @@ const WallroomComponent = () => {
           <div id="game-wallroom-container">
             {gameInfo.map((game, index) => (
               <Row>
-                <Card>
+                <Card title="上傳Beta影片就能參加比賽">
                   <div>
-                    <p>這條線是 {game.name} 指定線路</p>
-                    <p>觀看更多挑戰賽</p>
-                    <div>
-                      <Image
-                        style={{ maxWidth: "960px", maxHeight: "250px" }}
-                        src={
-                          "https://d23j097i06b1t0.cloudfront.net/" +
-                          game.main_image
-                        }
-                        preview={false}
-                      />
-                    </div>
-                    <p>挑戰賽結束時間到數</p>
+                    <h3> | {game.name} | 指定線路</h3>
+
+                    <p> 挑戰賽 結束時間倒數 </p>
+
                     <Countdown
                       value={game.date_end}
                       format="D 天 H 小時 m 分 s 秒"
-                      valueStyle={{ color: "#cf1322", fontSize: "24px" }}
+                      valueStyle={{ color: "#cf1322" }}
                     />
+                    <br></br>
+                    <Image
+                      style={{ maxWidth: "960px", maxHeight: "250px" }}
+                      src={
+                        "https://d23j097i06b1t0.cloudfront.net/" +
+                        game.main_image
+                      }
+                      preview={false}
+                    />
+                    <Link to="/gamelist" style={{ color: "#cf1322" }}>
+                      | 觀看更多挑戰賽 |
+                    </Link>
                   </div>
                 </Card>
               </Row>

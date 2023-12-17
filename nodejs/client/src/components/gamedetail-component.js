@@ -105,7 +105,7 @@ const GameDetailComponent = () => {
 
   const dataSource = userRankResults?.map((user) => {
     return {
-      userId: user.user_id,
+      userId: user.name,
       rank: user.user_rank ?? "已參賽",
       completeWalls: user.complete_walls_count,
     };
@@ -182,9 +182,9 @@ const GameDetailComponent = () => {
           </Card>
           <br></br>
           <Card style={{ textAlign: "center" }}>
-            <strong>
+            <strong style={{ color: "#cf1322" }}>
               <TrophyOutlined />
-              挑戰賽規則: 最先完成全部指定路線者勝利
+              比賽辦法: 上傳Beta影片完成路線 | 最先完成全部指定路線者勝利
             </strong>
           </Card>
           <br></br>

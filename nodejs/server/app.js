@@ -74,7 +74,11 @@ io.on("connection", (socket) => {
     const roomNumericId = userIdentify.roomNumericId;
     const roomName = userIdentify.roomName;
 
+    let roomNumericIdExist;
     const roomExist = await RoomCounter.find({ _id: roomNumericId });
+    if (roomExist.length > 0) {
+      roomNumericIdExist = roomExist[0]._id;
+    }
 
     const saveMessage = new BoulderingChat({
       sendTime: new Date(),
@@ -82,7 +86,7 @@ io.on("connection", (socket) => {
       roomId: roomName,
       content: msg,
       tagSearched: 0,
-      roomNumericId: roomExist[0]._id,
+      roomNumericId: roomNumericIdExist,
     });
     await saveMessage.save();
 

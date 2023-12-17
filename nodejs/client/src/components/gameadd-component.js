@@ -5,7 +5,10 @@ import { Calendar } from "antd";
 
 const GameAddComponent = () => {
   let game_wallrooms_id = localStorage.getItem("choosedImage");
-  game_wallrooms_id = game_wallrooms_id.split(",");
+  if (game_wallrooms_id) {
+    game_wallrooms_id = game_wallrooms_id.split(",");
+  }
+
   let roomImage = localStorage.getItem("imageInfo");
   roomImage = JSON.parse(roomImage);
   let navigate = useNavigate();
@@ -41,9 +44,11 @@ const GameAddComponent = () => {
       const role = await response.json();
       if (role == "admin") {
         setIsAdmin(true);
-        let userInfo = localStorage.getItem("userInfo").split(",");
-
-        setUserId(userInfo[0]);
+        let userInfo = localStorage.getItem("userInfo");
+        if (userInfo) {
+          userInfo = userInfo.split(",");
+          setUserId(userInfo[0]);
+        }
       } else {
         navigate("/");
       }

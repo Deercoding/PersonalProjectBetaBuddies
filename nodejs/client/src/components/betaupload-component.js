@@ -13,10 +13,14 @@ const BetaUploadComponent = () => {
   const { roomId } = useParams();
 
   const roomNumericId = roomId;
-  const jwtToken = localStorage.getItem("Authorization");
-  const userinfo = localStorage.getItem("userInfo").split(",");
-  const userId = userinfo[0];
-  const userName = userinfo[1];
+  let userinfo = localStorage.getItem("userInfo");
+  let userId;
+  let userName;
+  if (userinfo) {
+    userinfo = userinfo.split(",");
+    userId = userinfo[0];
+    userName = userinfo[1];
+  }
 
   const handleFileChange = (event) => {
     const maxSize = 30 * 1024 * 1024; // 30MB in bytes

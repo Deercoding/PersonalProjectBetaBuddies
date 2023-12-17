@@ -33,8 +33,11 @@ const WalladdtagComponent = () => {
       const role = await response.json();
       if (role == "admin") {
         setIsAdmin(true);
-        let userInfo = localStorage.getItem("userInfo").split(",");
-        setUserId(userInfo[0]);
+        let userInfo = localStorage.getItem("userInfo");
+        if (userInfo) {
+          userInfo = userInfo.split(",");
+          setUserId(userInfo[0]);
+        }
       } else {
         navigate("/");
       }

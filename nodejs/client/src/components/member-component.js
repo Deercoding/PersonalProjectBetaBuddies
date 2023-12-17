@@ -158,7 +158,6 @@ const MemberComponent = () => {
             ) : (
               dashboard?.map((result, index) => (
                 <>
-                  {" "}
                   <br></br>
                   <Card
                     title={"挑戰賽序號:   " + result.game.game_id}
@@ -173,8 +172,11 @@ const MemberComponent = () => {
                           廣告開始: {result.game.ad_start_date?.split("T")[0]}
                         </p>
                         <p>廣告投放天數: {result.game.ad_time_limit + "天"}</p>
-                        <Link to={"/gamedetail/" + result.game.game_id}>
-                          觀看比賽頁面
+                        <Link
+                          to={"/gamedetail/" + result.game.game_id}
+                          style={{ color: "#cf1322" }}
+                        >
+                          觀看挑戰賽頁面
                         </Link>
                       </Card>
                       <div id="pie-chart">

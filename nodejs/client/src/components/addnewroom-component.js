@@ -29,8 +29,12 @@ const AddNewRoomComponent = () => {
       alert("請登入再新增聊天室");
       navigate("/");
     } else {
-      let userInfo = localStorage.getItem("userInfo").split(",");
-      setUserId(userInfo[0]);
+      let userId = "creator";
+      let userInfo = localStorage.getItem("userInfo");
+      if (userInfo) {
+        userId = userInfo.split(",")[0];
+      }
+      setUserId(userId);
     }
   };
 

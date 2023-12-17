@@ -103,7 +103,7 @@ export async function getAdInfo() {
 
 export async function getGameUser(game_id) {
   let [rows, fields] = await pool.query(
-    `select * from game_users where game_id = ?;`,
+    ` select game_users.*, name from game_users left join users on game_users.user_id = users.id  where game_id = ?;`,
     [game_id]
   );
   return rows;

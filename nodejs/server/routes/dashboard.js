@@ -127,7 +127,6 @@ router.get("/adclick", async (req, res) => {
       searchId: ad_status_id,
       type: "ad_click",
     }).select("-_id clickCount");
-    console.log(findAdDate);
 
     if (findAdDate.length == 0) {
       const saveClick = new Click({
@@ -167,7 +166,6 @@ router.get("/gameclick", async (req, res) => {
       searchId: game_id,
       type: "game_click",
     }).select("-_id clickCount");
-    console.log(findGameDate);
 
     if (findGameDate.length == 0) {
       const saveClick = new Click({
