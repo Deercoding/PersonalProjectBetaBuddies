@@ -15,7 +15,7 @@ const WalladdtagComponent = () => {
   const defaultWallChangeTime = futureDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
   const [imageFormData, setImageFormData] = useState([]);
-  const [storeValue, setStoreValue] = useState("岩館一");
+  const [storeValue, setStoreValue] = useState("攀岩石樂樂合作岩館");
   const [branchValue, setBranchValue] = useState("AB牆");
   const [wallUpdateTime, setWallUpdateTime] = useState(defaultWallUpdateTime);
   const [wallChangeTime, setWallChangeTime] = useState(defaultWallChangeTime);
@@ -210,7 +210,11 @@ const WalladdtagComponent = () => {
               "storeValue",
               "選擇岩館",
               [
-                { key: "岩館一", value: "岩館一", label: "攀岩石樂樂合作岩館" },
+                {
+                  key: "攀岩石樂樂合作岩館",
+                  value: "攀岩石樂樂合作岩館",
+                  label: "攀岩石樂樂合作岩館",
+                },
                 { key: "快樂岩館", value: "快樂岩館", label: "快樂岩館" },
                 { key: "岩壁探險谷", value: "岩壁探險谷", label: "岩壁探險谷" },
                 { key: "岩漫天地", value: "岩漫天地", label: "岩漫天地" },

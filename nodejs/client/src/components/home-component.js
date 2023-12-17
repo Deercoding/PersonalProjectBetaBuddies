@@ -156,7 +156,7 @@ const HomeComponent = () => {
       <Form layout="inline">
         <Form.Item name="gym" label="岩館">
           <Select placeholder="合作岩館" onChange={handleGymChange}>
-            <Option value="岩館一">攀岩石樂樂合作岩館</Option>
+            <Option value="攀岩石樂樂合作岩館">攀岩石樂樂合作岩館</Option>
             <Option value="快樂岩館">快樂岩館</Option>
             <Option value="岩壁探險谷">岩壁探險谷</Option>
             <Option value="岩漫天地">岩漫天地</Option>

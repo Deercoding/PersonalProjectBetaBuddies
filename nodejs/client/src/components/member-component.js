@@ -168,6 +168,7 @@ const MemberComponent = () => {
                         <p>挑戰賽名稱: {result.game.name}</p>
                         <p>挑戰開始: {result.game.date_start?.split("T")[0]}</p>
                         <p>挑戰結束: {result.game.date_end?.split("T")[0]}</p>
+                        <p>廣告位置: {result.game.ad_location}</p>
                         <p>
                           廣告開始: {result.game.ad_start_date?.split("T")[0]}
                         </p>
