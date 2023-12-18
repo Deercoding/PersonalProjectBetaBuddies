@@ -19,6 +19,10 @@
   color: rgb(213, 52, 35);
 }
 
+.ant-card {
+  border-width: 3px;
+}
+
 @import "wallroom.css";
 @import "home.css";
 @import "gamedetail.css";

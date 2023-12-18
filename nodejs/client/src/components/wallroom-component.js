@@ -194,7 +194,7 @@ const WallroomComponent = () => {
             </Card>
           </div>
           <br></br>
-          <Card title="留言區">
+          <Card title="即時聊天室">
             <div id="chat-history-card">
               {chatHistory.map((message, index) => (
                 <MessageBox
@@ -266,7 +266,7 @@ const WallroomComponent = () => {
           <div id="game-wallroom-container">
             {gameInfo.map((game, index) => (
               <Row>
-                <Card title="上傳Beta影片就能參加比賽">
+                <Card title="上傳Beta影片參加比賽">
                   <div>
                     <h3> | {game.name} | 指定線路</h3>
 
