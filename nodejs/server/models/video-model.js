@@ -11,7 +11,15 @@ export async function createVideo(
 ) {
   let result = await pool.query(
     `insert into betavideos(wallroomId,video_link,comments,user_level,userId, userName,tag_room_id) values(?,?,?,?,?,?,?)`,
-    [wallroomId, video_link, comments, user_level, userId, userName,tag_room_id]
+    [
+      wallroomId,
+      video_link,
+      comments,
+      user_level,
+      userId,
+      userName,
+      tag_room_id,
+    ]
   );
   console.log(result);
 }
@@ -30,4 +38,12 @@ export async function countVideos(wallroomId) {
     [wallroomId]
   );
   return rows[0];
+}
+
+export async function countMultipleRoomVideos(wallroomIds) {
+  let [rows, fields] = await pool.query(
+    `select wallroomId, count(*) as videoCount from betavideos where wallroomId in (?) group by wallroomId  `,
+    [wallroomIds]
+  );
+  return rows;
 }
