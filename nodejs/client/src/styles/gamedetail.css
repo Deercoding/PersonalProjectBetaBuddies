@@ -5,6 +5,13 @@
   justify-content: center;
 }
 
+#gamedetail-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 #gamedetail-second-image {
   margin-left: 40px;
 }

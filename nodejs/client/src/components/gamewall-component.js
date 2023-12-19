@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image, Card, Button, Row, Form, Select } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 const GameWallComponent = () => {
   const [officialLevel, setOfficialLevel] = useState("");
@@ -10,6 +10,9 @@ const GameWallComponent = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [creator, setCreator] = useState(false);
+  const [creatorName, setCreatorName] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
 
   let navigate = useNavigate();
   const { Option } = Select;
@@ -34,7 +37,9 @@ const GameWallComponent = () => {
       console.log(role);
       if (role == "admin") {
         setIsAdmin(true);
-        console.log(isAdmin);
+        const userInfo = localStorage.getItem("userInfo");
+        setCreator(userInfo.split(",")[0]);
+        setCreatorName(userInfo.split(",")[1]);
       } else {
         navigate("/");
       }
@@ -48,13 +53,17 @@ const GameWallComponent = () => {
 
   const handleSearch = async () => {
     setIsLoading(true);
+    console.log(
+      `${process.env.REACT_APP_SERVER_URL}api/search/creator?official_level=${officialLevel}&gym=${gym}&creator=${creator}`
+    );
     await fetch(
-      `${process.env.REACT_APP_SERVER_URL}api/search?official_level=${officialLevel}&gym=${gym}&searchtags=`
+      `${process.env.REACT_APP_SERVER_URL}api/search/creator?official_level=${officialLevel}&gym=${gym}&creator=${creator}`
     )
       .then((response) => response.json())
       .then((data) => {
         setIsLoading(false);
         setSearchResults(data.data || []);
+        setIsSearch(true);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -95,6 +104,7 @@ const GameWallComponent = () => {
       .map((result, index) => result.roomNumericId);
 
     if (roomIdData.length > 0) {
+      console.log(roomIdData);
       localStorage.setItem("choosedImage", roomIdData);
       localStorage.setItem("imageInfo", JSON.stringify(combinedData));
       navigate("/gameadd");
@@ -123,6 +133,7 @@ const GameWallComponent = () => {
         <div id="gamewall-container">
           <Form id="gamewall-form">
             <p id="server"></p>
+            <h3>(已篩選) 聊天室建立者: {creatorName} </h3>
             <Form.Item name="gym" label="岩館">
               <Select
                 placeholder="合作岩館"
@@ -168,6 +179,10 @@ const GameWallComponent = () => {
           {isLoading ? (
             <p>
               尋找符合條件的路線 <LoadingOutlined />
+            </p>
+          ) : isSearch && searchResults && searchResults.length === 0 ? (
+            <p>
+              <CloseCircleOutlined /> 沒有符合條件的聊天室
             </p>
           ) : (
             searchResults.length > 0 && (

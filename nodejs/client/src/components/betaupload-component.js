@@ -9,6 +9,8 @@ const BetaUploadComponent = () => {
   const [tags, setTags] = useState([]);
   const [videoPreview, setVideoPreview] = useState(null);
   const [error, setError] = useState(null);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+
   let navigate = useNavigate();
   const { roomId } = useParams();
 
@@ -23,20 +25,24 @@ const BetaUploadComponent = () => {
   }
 
   const handleFileChange = (event) => {
-    const maxSize = 30 * 1024 * 1024; // 30MB in bytes
+    const maxSize = 5 * 1024 * 1024;
     const selectedFile = event.target.files[0];
+    console.log(selectedFile.type);
 
     if (selectedFile) {
-      if (selectedFile.type !== "video/mp4") {
+      if (
+        selectedFile.type !== "video/mp4" &&
+        selectedFile.type !== "video/quicktime"
+      ) {
         setError(
-          "Invalid file type. Please select a valid video file (MP4 only)."
+          "Invalid file type. Please select a valid video file (MP4/MOV only)."
         );
         setFile(null);
         setVideoPreview(null);
         return;
       }
       if (selectedFile.size > maxSize) {
-        setError("File size exceeds the maximum allowed size (10MB).");
+        setError("File size exceeds the maximum allowed size (5MB).");
         setFile(null);
         setVideoPreview(null);
         return;
@@ -81,6 +87,8 @@ const BetaUploadComponent = () => {
       });
 
       // Send a POST request to the backend
+      setIsButtonClicked(true);
+      alert("影片上傳中請稍後");
       const response = await fetch(
         `${process.env.REACT_APP_SERVER_URL}api/beta`,
         {
@@ -90,13 +98,15 @@ const BetaUploadComponent = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        navigate("/");
+        navigate(`/wallroom/${roomNumericId}`);
       } else {
         console.log(data);
         setError(data);
+        setIsButtonClicked(false);
       }
     } catch (error) {
       console.error("Error:", error);
+      setIsButtonClicked(false);
     }
   };
 
@@ -106,7 +116,7 @@ const BetaUploadComponent = () => {
         <br></br>
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <strong>上傳Beta影片:</strong>
+        <strong>上傳Beta影片(Max Size 5MB):</strong>
         <input
           type="file"
           onChange={handleFileChange}
@@ -150,10 +160,11 @@ const BetaUploadComponent = () => {
             onChange={handleTagsChange}
           />
         </label>
-
-        <Button type="text" onClick={(e) => handleSubmit(e)}>
-          Upload
-        </Button>
+        {!isButtonClicked && (
+          <Button type="text" onClick={(e) => handleSubmit(e)}>
+            Upload
+          </Button>
+        )}
       </Card>
     </div>
   );

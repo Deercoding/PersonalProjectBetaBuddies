@@ -95,7 +95,8 @@ const GameAddComponent = () => {
       );
 
       if (response.ok) {
-        navigate("/gamelist");
+        alert("挑戰賽已新增成功, 請下滑觀看 挑戰比賽報表");
+        navigate("/member");
       } else {
         const data = await response.json();
 
@@ -241,7 +242,7 @@ const GameAddComponent = () => {
               <Form.Item
                 label="廣告ID"
                 name="ad_location_id"
-                rules={[{ required: true, message: "這是必填項目" }]}
+                rules={[{ required: true, message: "請填1或是2" }]}
               >
                 <Input
                   type="text"

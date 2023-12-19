@@ -80,8 +80,6 @@ export async function getMaxVideoRoom() {
   return rows;
 }
 
-
-
 // export async function getRole(user_id) {
 //   let [rows, fields] = await pool.query(
 //     `select * from user_admin where user_id = ? `,

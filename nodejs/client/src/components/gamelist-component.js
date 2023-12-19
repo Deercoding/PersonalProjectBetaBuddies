@@ -82,7 +82,7 @@ const GameListComponent = () => {
               onClick={() => handleResultClick(game.game_id)}
             >
               <Card id="gamelist-card-online">
-                <Row>
+                <Row id="gamelist-info">
                   <div id="home-wall-info">
                     <p>比賽序號 : {game.game_id}</p>
                     <p>比賽名稱: {game.name}</p>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image, Card, Button, Row, Form, Select, Input, Col } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 const AddNewRoomComponent = () => {
   const [gym, setGym] = useState("");
@@ -9,6 +9,7 @@ const AddNewRoomComponent = () => {
   const [imageFormData, setImageFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState("");
+  const [isSearch, setIsSearch] = useState(false);
   let navigate = useNavigate();
   const { Option } = Select;
 
@@ -61,6 +62,7 @@ const AddNewRoomComponent = () => {
           const imageProcessed = searchResult.wallimage_original;
           appendImage(searchResult);
         });
+        setIsSearch(true);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -202,6 +204,7 @@ const AddNewRoomComponent = () => {
         }
       );
       if (response.ok) {
+        alert("聊天室已新增成功, 請回到首頁搜尋聊天室");
         navigate("/");
       } else {
         const data = await response.json();
@@ -251,6 +254,10 @@ const AddNewRoomComponent = () => {
         {isLoading ? (
           <p>
             尋找符合條件的路線 <LoadingOutlined />
+          </p>
+        ) : isSearch && searchResults && searchResults.length === 0 ? (
+          <p>
+            <CloseCircleOutlined /> 沒有符合條件的聊天室
           </p>
         ) : (
           searchResults.length > 0 && (

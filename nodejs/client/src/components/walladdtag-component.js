@@ -186,6 +186,7 @@ const WalladdtagComponent = () => {
       }
     );
     if (response.ok) {
+      alert("多條聊天室已新增成功, 請回到首頁搜尋聊天室");
       navigate("/");
     } else {
       const data = await response.json();

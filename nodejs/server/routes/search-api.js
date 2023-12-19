@@ -90,6 +90,51 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/creator", async (req, res) => {
+  try {
+    const { official_level, gym, creator } = req.query;
+
+    let search = "";
+    switch (true) {
+      case official_level === "" && gym === "":
+        search = `creator=${creator}`;
+        break;
+      case official_level === "":
+        search = `official_level=official_level and gym_id="${gym}" and creator=${creator}`;
+        break;
+      case gym === "":
+        search = `official_level="${official_level}" and gym_id=gym_id and creator=${creator}`;
+        break;
+      default:
+        search = `official_level="${official_level}" and gym_id="${gym}" and creator=${creator}`;
+        break;
+    }
+
+    const searchResults = await getRoombySearch(search);
+    console.log(searchResults);
+    let results = { data: [] };
+    for (const searchResult of searchResults) {
+      const oneResult = {
+        wallimage: searchResult.wallimage,
+        official_level: searchResult.official_level,
+        gym_id: searchResult.gym_id,
+        wall: searchResult.wall,
+        color: searchResult.color,
+        roomNumericId: searchResult.tag_room_id,
+        wallUpdateDate: searchResult.wall_update_time,
+        wallChangeDate: searchResult.wall_change_time,
+      };
+      results.data.push(oneResult);
+    }
+
+    results.data.sort((a, b) => b.roomChatCount - a.roomChatCount);
+
+    res.status(200).json(results);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 router.get("/maxvideorooms", async (req, res) => {
   try {
     let maxVideoRoom = await getMaxVideoRoom();
@@ -166,7 +211,7 @@ router.get("/gamerooms", async (req, res) => {
 router.get("/2.0", async (req, res) => {
   try {
     const { official_level, gym, searchtags } = req.query;
-    console.time("2.0 start");
+
     let search = "";
     switch (true) {
       case official_level === "" && gym === "":
@@ -237,9 +282,12 @@ router.get("/2.0", async (req, res) => {
       if (isTagRoomPresent) {
         const wallroomId = searchResult.wallroomId;
 
-        let roomChatCount = roomChatCounts
-          .filter((oneRoom) => oneRoom.roomNumericId == tagRoomId)
-          .map((oneRoom) => oneRoom.chatCount);
+        let roomChatCount = roomChatCounts.filter((oneRoom) => {
+          return oneRoom._id.equals(new mongoose.Types.ObjectId(tagRoomId));
+        });
+        console.log(roomChatCount);
+        roomChatCount = roomChatCount.map((oneRoom) => oneRoom.chatCount);
+        console.log(roomChatCount);
         if (roomChatCount.length == 0) {
           roomChatCount = [0];
         }
@@ -274,7 +322,7 @@ router.get("/2.0", async (req, res) => {
     }
 
     results.data.sort((a, b) => b.roomChatCount - a.roomChatCount);
-    console.timeEnd("2.0 start");
+
     res.status(200).json(results);
   } catch (err) {
     res.status(500).json(err);

@@ -40,6 +40,7 @@ async function fileFilter(req, file, cb) {
 const imageUpload = multer({
   storage: imageStorage,
   fileFilter: fileFilter,
+  limits: { fileSize: 3 * 1024 * 1024 },
 });
 
 router.post("/", imageUpload.array("file", 12), async (req, res) => {

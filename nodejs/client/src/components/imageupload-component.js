@@ -65,7 +65,7 @@ const ImageuploadComponent = () => {
               method="post"
               encType="multipart/form-data"
             >
-              <label htmlFor="file">上傳一張岩牆圖片: </label>
+              <label htmlFor="file">上傳一張岩牆圖片(Max Size 3MB): </label>
               <Input
                 id="file"
                 type="file"

@@ -269,7 +269,7 @@ router.post(
         console.log("Ad location already in use.");
         await rollbackSQL(connection); //Server error - rollback
         await releaseConnection(connection);
-        return res.status(400).json("Ad location already in use");
+        return res.status(400).json("廣告日期已被預訂");
       }
 
       // create game

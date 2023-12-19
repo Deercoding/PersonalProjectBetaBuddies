@@ -96,8 +96,8 @@ const GameDetailComponent = () => {
       dataIndex: "rank",
       key: "rank",
       sorter: (a, b) => {
-        if (a.rank === "已參賽") return -1; 
-        if (b.rank === "已參賽") return 1; 
+        if (a.rank === "已參賽") return -1;
+        if (b.rank === "已參賽") return 1;
         return a.rank - b.rank;
       },
     },
@@ -120,13 +120,15 @@ const GameDetailComponent = () => {
     <div id="gamedetail-container">
       {data ? (
         <div>
-          <img
-            src={
-              "https://d23j097i06b1t0.cloudfront.net/" +
-              data.gameInfo[0].main_image
-            }
-            style={{ maxWidth: "1920px", maxHeight: "500px" }}
-          />
+          <div id="gamedetail-image">
+            <img
+              src={
+                "https://d23j097i06b1t0.cloudfront.net/" +
+                data.gameInfo[0].main_image
+              }
+              style={{ maxWidth: "1920px", maxHeight: "500px" }}
+            />
+          </div>
           <br></br>
           <br></br>
           <Card title="比賽資訊">

@@ -12,7 +12,7 @@ import {
   Tag,
   Space,
 } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
 const { Search } = Input;
 
 const HomeComponent = () => {
@@ -212,6 +212,10 @@ const HomeComponent = () => {
       {isLoading ? (
         <p>
           尋找符合條件的路線 <LoadingOutlined />
+        </p>
+      ) : searchResults && searchResults.length === 0 ? (
+        <p>
+          <CloseCircleOutlined /> 沒有符合條件的聊天室
         </p>
       ) : (
         searchResults?.map((result, index) => (
