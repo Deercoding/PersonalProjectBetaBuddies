@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { socket } from "../socketio.js";
 import { useNavigate } from "react-router-dom";
 import { Image, Card, Button, Row, Form, Select, Input, Col } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+
 const { Option } = Select;
 
 const WalladdtagComponent = () => {
@@ -21,6 +23,7 @@ const WalladdtagComponent = () => {
   const [wallChangeTime, setWallChangeTime] = useState(defaultWallChangeTime);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userId, setUserId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const checkRole = async (authorization) => {
     await fetch(process.env.REACT_APP_SERVER_URL + "api/role", {
@@ -54,6 +57,7 @@ const WalladdtagComponent = () => {
 
     socket.on("wallcolor", (response) => {
       console.log(response);
+      setIsLoading(false);
       const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
       setImageFormData([]);
       response.forEach((imageName) => {
@@ -202,6 +206,10 @@ const WalladdtagComponent = () => {
     <div id="outer-walladdtag-image-container">
       {!isAdmin ? (
         <p>Authorization...</p>
+      ) : isLoading ? (
+        <p>
+          正在圈出相同顏色的路線 <LoadingOutlined />
+        </p>
       ) : (
         <div id="walladdtag-image-container">
           <br></br>

@@ -27,6 +27,7 @@ router.post("/signup", async (req, res) => {
     // create user
     let pepperPassword = password + process.env.BCRYPT_SECRET;
     let hashPassword = await bcrypt.hash(pepperPassword, SaltRounds);
+    console.log(hashPassword);
     let createUserResult = await createUser(name, email, hashPassword, role);
     let userId = createUserResult[0].insertId;
 
