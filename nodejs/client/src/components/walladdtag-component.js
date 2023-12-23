@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../socketio.js";
 import { useNavigate } from "react-router-dom";
-import { Image, Card, Button, Row, Form, Select, Input, Col } from "antd";
+import { Image, Card, Button, Row, Select, Input, Col } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -51,11 +51,19 @@ const WalladdtagComponent = () => {
     const authorization = localStorage.getItem("Authorization");
     checkRole(authorization);
 
+    let responseTimeout = setTimeout(function () {
+      console.log("No result");
+      setIsLoading(false);
+      alert("圖像辨識失敗, 請重新上傳一張圖片");
+      navigate("/imageupload");
+    }, 30000);
+
     socket.on("connect", () => {
       console.log(`You connect with id ${socket.id}`);
     });
 
     socket.on("wallcolor", (response) => {
+      clearTimeout(responseTimeout);
       console.log(response);
       setIsLoading(false);
       const cloudfrontUrl = "https://d3ebcb0pef2qqe.cloudfront.net/";
@@ -69,6 +77,7 @@ const WalladdtagComponent = () => {
     return () => {
       socket.off("connect");
       socket.off("wallcolor");
+      clearTimeout(responseTimeout);
     };
   }, []);
 
