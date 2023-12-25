@@ -63,22 +63,21 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const io = req.app.get("socketio");
         io.emit("wallcolor", JSON.parse(duplicateImage));
+      } else {
+        let toFolder = __dirname;
+        await uploadObject(
+          "boulderingproject",
+          req.files,
+          "ap-southeast-1",
+          toFolder
+        );
+        redisClient.set("hash_image_name", imageHash, {
+          EX: 120,
+          NX: true,
+        });
+
+        res.redirect("https://deercodeweb.com/walladdtag");
       }
-
-      redisClient.set("hash_image_name", imageHash, {
-        EX: 120,
-        NX: true,
-      });
-    } else {
-      let toFolder = __dirname;
-      await uploadObject(
-        "boulderingproject",
-        req.files,
-        "ap-southeast-1",
-        toFolder
-      );
-
-      res.redirect("https://deercodeweb.com/walladdtag");
     }
   } catch (err) {
     console.log(err);
