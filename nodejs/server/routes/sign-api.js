@@ -23,15 +23,13 @@ router.post("/signup", async (req, res) => {
     if (userExist.length != 0) {
       return res.status(403).json("ERROR: 信箱已經註冊");
     }
-
-    // create user
-    let pepperPassword = password + process.env.BCRYPT_SECRET;
-    let hashPassword = await bcrypt.hash(pepperPassword, SaltRounds);
-    console.log(hashPassword);
+    let hashPassword = await bcrypt.hash(
+      password + process.env.BCRYPT_SECRET,
+      SaltRounds
+    );
     let createUserResult = await createUser(name, email, hashPassword, role);
     let userId = createUserResult[0].insertId;
 
-    //jwt token
     const mypayload = {
       userName: name,
       email: email,
@@ -67,21 +65,16 @@ router.post("/signin", async (req, res) => {
       return res.status(400).json(error.details[0].message);
     }
 
-    //validate email
     let { email, password } = req.body;
     let userExist = await checkUser(email);
     if (userExist.length == 0) {
       return res.status(403).json("ERROR: 信箱或是密碼有誤");
     }
 
-    // // validate password
-    let pepperPassword = password + process.env.BCRYPT_SECRET;
     const matchPassword = await bcrypt.compare(
-      pepperPassword,
+      password + process.env.BCRYPT_SECRET,
       userExist[0].password
     );
-
-    // //create JWT token
     if (matchPassword) {
       const mypayload = {
         userName: userExist[0].name,
@@ -91,7 +84,6 @@ router.post("/signin", async (req, res) => {
       const token = jwt.sign(mypayload, process.env.JWT_SECRET, {
         expiresIn: 36000,
       });
-
       let respond = {
         data: {
           access_token: token,
@@ -103,9 +95,10 @@ router.post("/signin", async (req, res) => {
           },
         },
       };
-
       return res.status(200).json(respond);
     }
+
+    return res.status(403).json("ERROR: 信箱或是密碼有誤");
   } catch (error) {
     res.status(500).json("Server Error");
     console.error(error);

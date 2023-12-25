@@ -1,6 +1,10 @@
 import { RoomCounter } from "../models/chat-model.js";
 import TagRoom from "../models/tagroom-model.js";
-import { createRoom, saveWallOriginal } from "../models/wallroom-model.js";
+import {
+  createRoom,
+  saveWallOriginal,
+  getRoom,
+} from "../models/wallroom-model.js";
 
 export async function createOriginalWall(wallrooms) {
   if (wallrooms[0].isOriginImage) {
@@ -69,4 +73,47 @@ export async function createOneWallroom(wallroom) {
     return "Saved wallroom";
   }
   return "Wallroom not keeped";
+}
+
+export async function getOneWallroom(request) {
+  const tagRoomId = request.roomId;
+  const today = new Date();
+  const roomInformation = await getRoom(tagRoomId, today);
+
+  if (!roomInformation) {
+    return res.status(400).json("Wallroom do not exist");
+  }
+
+  let roomTagPair = await TagRoom.find({
+    roomNumericId: tagRoomId,
+  }).select("tag tagCount -_id");
+
+  const {
+    wallimage: wallImage,
+    gym_id: gymId,
+    wall,
+    color,
+    official_level: officialLevel,
+    wall_update_time: wallUpdateDate,
+    wall_change_time: wallChangeDate,
+  } = roomInformation;
+  const roomName = `${gymId} ${wall} ${color}`;
+
+  let tagsArray = [];
+  if (roomTagPair.length > 0) {
+    const sortedData = roomTagPair.sort((a, b) => b.tagCount - a.tagCount);
+    tagsArray = sortedData.map((item) => item.tag);
+  }
+
+  const tags = tagsArray;
+  const response = {
+    wallImage,
+    roomName,
+    officialLevel,
+    tags,
+    wallUpdateDate,
+    wallChangeDate,
+  };
+
+  return response;
 }

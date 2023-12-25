@@ -7,7 +7,7 @@ import { redisClient } from "../utils/cache.js";
 import { uploadObject } from "../utils/awsS3.js";
 
 const router = routerSetup();
-const { __filename, __dirname } = dirnameSetup();
+const { __dirname } = dirnameSetup();
 
 router.post("/", imageUpload.array("file", 12), async (req, res) => {
   try {
@@ -40,12 +40,11 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
           "ap-southeast-1",
           toFolder
         );
-        console.log(imageHash);
-        const imageName = await redisClient.set("hash_image_name", imageHash, {
+
+        await redisClient.set("hash_image_name", imageHash, {
           EX: 120,
           NX: true,
         });
-        console.log(imageName);
 
         res.redirect("https://deercodeweb.com/walladdtag");
       }
@@ -63,8 +62,6 @@ router.post("/response", async (req, res) => {
 
     if (redisClient.isReady) {
       const globalImageHash = await redisClient.getDel("hash_image_name");
-      console.log(globalImageHash);
-
       await redisClient.hSet(
         "image_hashes",
         globalImageHash,
