@@ -71,7 +71,7 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
           "ap-southeast-1",
           toFolder
         );
-        redisClient.set("hash_image_name", imageHash, {
+        await redisClient.set("hash_image_name", imageHash, {
           EX: 120,
           NX: true,
         });
@@ -92,10 +92,10 @@ router.post("/response", async (req, res) => {
     io.emit("wallcolor", imageNames);
 
     if (redisClient.isReady) {
-      const globalImageHash = redisClient.getDel("hash_image_name");
+      const globalImageHash = await redisClient.getDel("hash_image_name");
       console.log(globalImageHash);
 
-      redisClient.hSet(
+      await redisClient.hSet(
         "image_hashes",
         globalImageHash,
         JSON.stringify(imageNames)
