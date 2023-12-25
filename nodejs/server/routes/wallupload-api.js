@@ -7,8 +7,6 @@ import { uploadObject } from "../utils/awsS3.js";
 import crypto from "node:crypto";
 import { redisClient } from "../utils/cache.js";
 
-let globalImageHash = "";
-
 const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -71,17 +69,17 @@ router.post("/", imageUpload.array("file", 12), async (req, res) => {
         EX: 120,
         NX: true,
       });
+    } else {
+      let toFolder = __dirname;
+      await uploadObject(
+        "boulderingproject",
+        req.files,
+        "ap-southeast-1",
+        toFolder
+      );
+
+      res.redirect("https://deercodeweb.com/walladdtag");
     }
-
-    let toFolder = __dirname;
-    await uploadObject(
-      "boulderingproject",
-      req.files,
-      "ap-southeast-1",
-      toFolder
-    );
-
-    res.redirect("https://deercodeweb.com/walladdtag");
   } catch (err) {
     console.log(err);
   }
@@ -101,7 +99,7 @@ router.post("/response", async (req, res) => {
       redisClient.hSet(
         "image_hashes",
         globalImageHash,
-        JSON.stringify(imageNames.imageNames)
+        JSON.stringify(imageNames)
       );
     }
 
