@@ -1,6 +1,4 @@
 import {
-  //checkWallinGame,
-  //getUserinGame,
   getConnection,
   beginSQL,
   commitSQL,
@@ -9,8 +7,7 @@ import {
   lockGameUser,
   oneGameUserStatus,
   checkGameUserWalls,
-  updateUserWallStatus,
-  updateUserWallsCount,
+  updateUserWalls,
   countgGamewallsbyId,
   gameMaxRank,
   updateUserWallsComplete,
@@ -19,7 +16,7 @@ import {
 
 export async function updateGameRank(roomNumericId, userId) {
   let gameUsers = await checkWallandUserinGame(roomNumericId, userId);
-  console.log(gameUsers);
+
   if (gameUsers.length == 0) {
     return "Not in Game. Beta video upload success";
   }
@@ -39,15 +36,16 @@ export async function updateGameRank(roomNumericId, userId) {
         connection
       );
 
-      console.log(userWalls);
-
       if (userWalls.length == 0) {
-        await updateUserWallStatus(game_users_id, roomNumericId, connection);
-        await updateUserWallsCount(game_users_id, connection);
+        await updateUserWalls(
+          game_users_id,
+          roomNumericId,
+          game_users_id,
+          connection
+        );
       } else {
         await commitSQL(connection);
         await releaseConnection(connection);
-        console.log("No update on wall count. Beta video upload success");
         return "No update on wall count. Beta video upload success";
       }
 
@@ -59,8 +57,6 @@ export async function updateGameRank(roomNumericId, userId) {
         userId,
         connection
       );
-      console.log(countGamewalls);
-      console.log(oneUserOneGame);
 
       if (oneUserOneGame.complete_walls_count == countGamewalls) {
         let maxRank = await gameMaxRank(oneGameId, connection);
@@ -74,7 +70,6 @@ export async function updateGameRank(roomNumericId, userId) {
       } else {
         await commitSQL(connection);
         await releaseConnection(connection);
-        console.log("No update on rank. Beta video upload success");
         return "No update on rank. Beta video upload success";
       }
 

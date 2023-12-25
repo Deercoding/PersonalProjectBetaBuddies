@@ -267,6 +267,20 @@ export async function updateUserWallsCount(game_user_id, connection) {
   return rows;
 }
 
+export async function updateUserWalls(
+  game_user_id,
+  wall_id,
+  game_user_id_2,
+  connection
+) {
+  let [rows, fields] = await connection.query(
+    `insert into  game_user_walls (game_user_id, wall_id) values (?, ?);
+    update game_users set complete_walls_count = complete_walls_count +1 where game_users_id = ?;`,
+    [game_user_id, wall_id, game_user_id_2]
+  );
+  return rows;
+}
+
 export async function updateUserWallsComplete(
   max_rank,
   game_user_id,

@@ -1,7 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1703402811107" clover="3.2.0">
-  <project timestamp="1703402811107" name="All files">
-    <metrics statements="17" coveredstatements="6" conditionals="6" coveredconditionals="2" methods="2" coveredmethods="1" elements="25" coveredelements="9" complexity="0" loc="17" ncloc="17" packages="1" files="1" classes="1"/>
+<coverage generated="1703488540565" clover="3.2.0">
+  <project timestamp="1703488540566" name="All files">
+    <metrics statements="63" coveredstatements="51" conditionals="18" coveredconditionals="13" methods="4" coveredmethods="3" elements="85" coveredelements="67" complexity="0" loc="63" ncloc="63" packages="1" files="3" classes="3"/>
+    <file name="gameLogic.js" path="C:\Users\a9021\Desktop\2023\Backend Learning\app_works_school\personal project\nodejs\server\controller\gameLogic.js">
+      <metrics statements="35" coveredstatements="34" conditionals="8" coveredconditionals="7" methods="1" coveredmethods="1"/>
+      <line num="18" count="5" type="stmt"/>
+      <line num="20" count="5" type="cond" truecount="2" falsecount="0"/>
+      <line num="21" count="1" type="stmt"/>
+      <line num="24" count="4" type="stmt"/>
+      <line num="25" count="4" type="stmt"/>
+      <line num="26" count="4" type="stmt"/>
+      <line num="27" count="4" type="stmt"/>
+      <line num="28" count="4" type="stmt"/>
+      <line num="29" count="4" type="stmt"/>
+      <line num="32" count="4" type="stmt"/>
+      <line num="33" count="4" type="stmt"/>
+      <line num="39" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="40" count="2" type="stmt"/>
+      <line num="47" count="1" type="stmt"/>
+      <line num="48" count="1" type="stmt"/>
+      <line num="49" count="1" type="stmt"/>
+      <line num="53" count="2" type="stmt"/>
+      <line num="54" count="2" type="stmt"/>
+      <line num="55" count="2" type="stmt"/>
+      <line num="61" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="62" count="1" type="stmt"/>
+      <line num="63" count="1" type="stmt"/>
+      <line num="65" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="66" count="1" type="stmt"/>
+      <line num="68" count="0" type="stmt"/>
+      <line num="71" count="1" type="stmt"/>
+      <line num="72" count="1" type="stmt"/>
+      <line num="73" count="1" type="stmt"/>
+      <line num="76" count="1" type="stmt"/>
+      <line num="77" count="1" type="stmt"/>
+      <line num="78" count="1" type="stmt"/>
+      <line num="80" count="1" type="stmt"/>
+      <line num="81" count="1" type="stmt"/>
+      <line num="82" count="1" type="stmt"/>
+      <line num="83" count="1" type="stmt"/>
+    </file>
+    <file name="roleValidation.js" path="C:\Users\a9021\Desktop\2023\Backend Learning\app_works_school\personal project\nodejs\server\controller\roleValidation.js">
+      <metrics statements="11" coveredstatements="11" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
+      <line num="5" count="4" type="stmt"/>
+      <line num="7" count="4" type="cond" truecount="2" falsecount="0"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="12" count="3" type="stmt"/>
+      <line num="13" count="3" type="stmt"/>
+      <line num="14" count="3" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="19" count="2" type="stmt"/>
+      <line num="21" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="24" count="1" type="stmt"/>
+    </file>
     <file name="wallupload.js" path="C:\Users\a9021\Desktop\2023\Backend Learning\app_works_school\personal project\nodejs\server\controller\wallupload.js">
       <metrics statements="17" coveredstatements="6" conditionals="6" coveredconditionals="2" methods="2" coveredmethods="1"/>
       <line num="8" count="2" type="stmt"/>

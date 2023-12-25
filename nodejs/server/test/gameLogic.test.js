@@ -9,8 +9,7 @@ import {
   lockGameUser,
   oneGameUserStatus,
   checkGameUserWalls,
-  updateUserWallStatus,
-  updateUserWallsCount,
+  updateUserWalls,
   countgGamewallsbyId,
   gameMaxRank,
   updateUserWallsComplete,
@@ -28,8 +27,7 @@ jest.mock("../models/game-model.js", () => ({
   lockGameUser: jest.fn(),
   oneGameUserStatus: jest.fn(),
   checkGameUserWalls: jest.fn(),
-  updateUserWallStatus: jest.fn(),
-  updateUserWallsCount: jest.fn(),
+  updateUserWalls: jest.fn(),
   countgGamewallsbyId: jest.fn(),
   gameMaxRank: jest.fn(),
   updateUserWallsComplete: jest.fn(),
@@ -121,8 +119,7 @@ describe("gameLogicValidation", () => {
     expect(lockGameUser).toHaveBeenCalled();
     expect(checkGameUserWalls).toHaveBeenCalled();
 
-    expect(updateUserWallStatus).toHaveBeenCalled();
-    expect(updateUserWallsCount).toHaveBeenCalled();
+    expect(updateUserWalls).toHaveBeenCalled();
 
     expect(countgGamewallsbyId).toHaveBeenCalled();
     expect(oneGameUserStatus).toHaveBeenCalled();
@@ -166,8 +163,7 @@ describe("gameLogicValidation", () => {
     expect(lockGameUser).toHaveBeenCalled();
 
     expect(checkGameUserWalls).toHaveBeenCalled();
-    expect(updateUserWallStatus).toHaveBeenCalled();
-    expect(updateUserWallsCount).toHaveBeenCalled();
+    expect(updateUserWalls).toHaveBeenCalled();
 
     expect(countgGamewallsbyId).toHaveBeenCalled();
     expect(oneGameUserStatus).toHaveBeenCalled();

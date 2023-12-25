@@ -1,11 +1,8 @@
-import * as url from "url";
 import path from "path";
 import fs from "fs";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // upload object
 export async function uploadObject(bucketName, imageFiles, REGION, toFolder) {
@@ -39,7 +36,7 @@ export async function uploadObject(bucketName, imageFiles, REGION, toFolder) {
 }
 
 // upload video
-export async function uploadVideo(
+export async function uploadVideoS3(
   bucketName,
   oneVideo,
   videoSaveName,
