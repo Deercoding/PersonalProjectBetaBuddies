@@ -10,6 +10,10 @@ import {
   getWallOriginal,
 } from "../models/wallroom-model.js";
 import { wallCreateValidation } from "../utils/dataValidation.js";
+import {
+  createOneWallroom,
+  createOriginalWall,
+} from "../controller/wallRoom.js";
 
 const router = express.Router();
 router.use(express.json());
@@ -21,79 +25,77 @@ router.post("/", async (req, res) => {
   if (req.body.length == 0) {
     return res.status(400).json("請填入資料再送出聊天室");
   }
-  const responses = req.body;
-  const { error } = wallCreateValidation(req.body);
+
+  const wallrooms = req.body;
+  const { error } = wallCreateValidation(wallrooms);
   if (error) {
     return res.status(400).json(error.details[0].message);
   }
 
-  console.log(responses[0].isOriginImage);
-  if (responses[0].isOriginImage == true) {
-    const originalCdn = "https://d2mh6uqojgaomb.cloudfront.net/";
-    let originalImage;
-    if (responses.length > 0 && responses[0].wallImage) {
-      const parts = responses[0].wallImage.split("/");
-      console.log(parts);
-      if (parts.length > 1) {
-        const lastPart = parts[parts.length - 1];
-        const splitLastPart = lastPart.split("_");
-        if (splitLastPart.length > 1) {
-          originalImage = originalCdn + splitLastPart.slice(1).join("_");
-          console.log(originalImage);
-        }
-      }
-    }
-    try {
-      if (originalImage) {
-        await saveWallOriginal(
-          originalImage,
-          responses[0].gym,
-          responses[0].wall
-        );
-      }
-      console.log("save");
-    } catch (err) {
-      console.log(err);
-      res.status(500).json("Server error");
-    }
-  }
+  await createOriginalWall(wallrooms);
 
-  let newRoomId;
+  // if (wallrooms[0].isOriginImage) {
+  //   const originalCdn = "https://d2mh6uqojgaomb.cloudfront.net/";
+  //   let originalImage;
+  //   if (wallrooms.length > 0 && wallrooms[0].wallImage) {
+  //     const parts = wallrooms[0].wallImage.split("/");
+  //     if (parts.length > 1) {
+  //       const lastPart = parts[parts.length - 1];
+  //       const splitLastPart = lastPart.split("_");
+  //       if (splitLastPart.length > 1) {
+  //         originalImage = originalCdn + splitLastPart.slice(1).join("_");
+  //         console.log(originalImage);
+  //       }
+  //     }
+  //   }
+  //   try {
+  //     if (originalImage) {
+  //       await saveWallOriginal(
+  //         originalImage,
+  //         wallrooms[0].gym,
+  //         wallrooms[0].wall
+  //       );
+  //     }
+  //   } catch (err) {
+  //     console.log("Server Error: " + err);
+  //   }
+  // }
+
+  //let newRoomId;
   try {
-    for (const response of responses) {
-      if (response.keepImage) {
-        const roomId = `${response.gym}_${response.wall}_${response.color}`;
-        const wallUpdateTime = new Date(response.wallUpdateTime);
-        const wallChangeTime = new Date(response.wallChangeTime);
+    for (const wallroom of wallrooms) {
+      await createOneWallroom(wallroom);
+      // if (wallroom.keepImage) {
+      //   const roomId = `${wallroom.gym}_${wallroom.wall}_${wallroom.color}`;
+      //   const wallUpdateTime = new Date(wallroom.wallUpdateTime);
+      //   const wallChangeTime = new Date(wallroom.wallChangeTime);
 
-        const saveRoom = new RoomCounter({
-          unique_id: roomId + "_" + new Date(),
-          roomId: roomId,
-        });
-        let newRoom = await saveRoom.save();
-        newRoomId = newRoom._id.toString();
+      //   const saveRoom = new RoomCounter({
+      //     unique_id: roomId + "_" + new Date(),
+      //     roomId: roomId,
+      //   });
+      //   const newRoom = await saveRoom.save();
+      //   newRoomId = newRoom._id.toString();
 
-        await createRoom(
-          response.wallImage,
-          response.officialLevel,
-          response.gym,
-          response.wall,
-          response.color,
-          newRoomId,
-          wallUpdateTime,
-          wallChangeTime,
-          response.creator
-        );
+      //   await createRoom(
+      //     wallroom.wallImage,
+      //     wallroom.officialLevel,
+      //     wallroom.gym,
+      //     wallroom.wall,
+      //     wallroom.color,
+      //     newRoomId,
+      //     wallUpdateTime,
+      //     wallChangeTime,
+      //     wallroom.creator
+      //   );
 
-        for (const tags of response.tags) {
-          const saveTag = new TagRoom({
-            roomNumericId: newRoomId,
-            tag: tags,
-            tagCount: 1,
-          });
-          await saveTag.save();
-        }
-      }
+      //   let tagRooms = wallroom.tags.map((tag) => ({
+      //     roomNumericId: newRoomId,
+      //     tag: tag,
+      //     tagCount: 1,
+      //   }));
+      //   await TagRoom.insertMany(tagRooms);
+      // }
     }
     res.status(200).json("建立聊天室成功");
   } catch (err) {

@@ -12,7 +12,9 @@ redisClient.on("error", (error) => {
   redisClient.disconnect();
 });
 
-console.log("Redis try to connect");
 await redisClient.connect();
+if (redisClient.isReady) {
+  console.log("Redis connected");
+}
 
 export { redisClient };

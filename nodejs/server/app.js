@@ -2,8 +2,8 @@ import express from "express";
 import path from "path";
 import url from "url";
 import { Server } from "socket.io";
+import mongoDBConnect from "./utils/mongoDB.js";
 import cors from "cors";
-import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import { BoulderingChat, RoomCounter } from "./models/chat-model.js";
 import chatRouter from "./routes/chat-api.js";
@@ -21,13 +21,13 @@ import swaggerUI from "swagger-ui-express";
 import swaggerDocument from "./swagger.json" assert { type: "json" };
 
 const app = express();
+dotenv.config();
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config();
+mongoDBConnect();
 
-app.use(cors()); //temporary for local developement
+app.use(cors({ origin: ["http://localhost:3000"] }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
-
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
 app.use("/api/wallchatroom", roomRouter);
@@ -48,38 +48,20 @@ app.get("/*", (req, res) => {
 const server = app.listen(8080, () => {
   console.log(`Server is running on port 8080`);
 });
-
-mongoose
-  .connect(process.env.mongodbconnect)
-  .then(() => {
-    console.log("Connect to MongoDB Atlas");
-  })
-  .catch((err) => {
-    console.log("Connection Failed.");
-  });
-
-//socket io
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
+  cors: { origin: ["http://localhost:3000"] },
 });
 app.set("socketio", io);
+
 io.on("connection", (socket) => {
-  console.log("Socket-connect");
-
   socket.on("talk", async (msg, userIdentify) => {
-    console.log(userIdentify);
-    const userName = userIdentify.userName;
-    const roomNumericId = userIdentify.roomNumericId;
-    const roomName = userIdentify.roomName;
-
+    const { userName, roomNumericId, roomName } = userIdentify;
     let roomNumericIdExist;
     const roomExist = await RoomCounter.find({ _id: roomNumericId });
+
     if (roomExist.length > 0) {
       roomNumericIdExist = roomExist[0]._id;
     }
-
     const saveMessage = new BoulderingChat({
       sendTime: new Date(),
       userName: userName,
@@ -90,8 +72,6 @@ io.on("connection", (socket) => {
     });
     await saveMessage.save();
 
-    // const room = io.sockets.adapter.rooms.get("admin");
-    // const roomUsers = await io.in("admin").fetchSockets();
     socket.join(roomNumericId);
     io.emit("talk", {
       message: msg,
@@ -100,7 +80,3 @@ io.on("connection", (socket) => {
     });
   });
 });
-
-// server.listen(4000, () => {
-//   console.log(`Socket is running on port 4000`);
-// });

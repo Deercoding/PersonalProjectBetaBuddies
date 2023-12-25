@@ -12,4 +12,14 @@ const pool = mysql
   })
   .promise();
 
+const checkConnection = async () => {
+  try {
+    const [rows, fields] = await pool.query("SELECT 1");
+    console.log("MySQL connected");
+  } catch (error) {
+    console.error("MySQL connection failed: ", error);
+  }
+};
+await checkConnection();
+
 export { pool };
