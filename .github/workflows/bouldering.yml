@@ -1,0 +1,48 @@
+name: Node.js CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18" # Specify your Node.js version
+
+      - name: Build React Native Frontend
+        run: |
+          cd client
+          npm install
+          npm run build
+
+      - name: Clear Server Public Directory
+        run: |
+          rm -rf server/public/*
+          mkdir -p server/public
+
+      - name: Copy Built Files to Server
+        run: |
+          cp -R client/build/* server/public/
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            source ~/.bashrc
+            cd /home/ubuntu/desktop/personal_project
+            git pull origin develop
+            cd /home/ubuntu/desktop/personal_project/server
+            /home/ubuntu/.nvm/versions/node/v18.18.0/bin/npm install
+            /home/ubuntu/.nvm/versions/node/v18.18.0/bin/pm2 restart all

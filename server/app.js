@@ -26,7 +26,7 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 mongoDBConnect();
 
-app.use(cors({ origin: ["http://localhost:3000"] }));
+app.use(cors({ origin: ["http://localhost:3000", "https://localhost:9200/"] }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use("/api/chat", chatRouter);
 app.use("/api/wallupload", wallUpdateRouter);
@@ -49,7 +49,7 @@ const server = app.listen(8080, () => {
   console.log(`Server is running on port 8080`);
 });
 const io = new Server(server, {
-  cors: { origin: ["http://localhost:3000"] },
+  cors: { origin: ["http://localhost:3000", "https://localhost:9200/"] },
 });
 app.set("socketio", io);
 

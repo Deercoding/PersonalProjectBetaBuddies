@@ -231,7 +231,7 @@ router.get("/tags", async (req, res) => {
         return result._source.text;
       });
     }
-
+    console.log("tag result");
     res.status(200).json(results);
   } catch (err) {
     res.status(500).json(err);
