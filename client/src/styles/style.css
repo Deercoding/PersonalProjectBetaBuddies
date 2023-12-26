@@ -1,0 +1,32 @@
+* {
+  font-family: "Noto Sans TC";
+  font-size: 16px;
+}
+
+.ant-btn {
+  background-color: rgb(213, 52, 35);
+  color: #ffff;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: calc(100vh - 240px);
+}
+
+#server {
+  color: rgb(213, 52, 35);
+}
+
+.ant-card {
+  border-width: 3px;
+}
+
+@import "wallroom.css";
+@import "home.css";
+@import "gamedetail.css";
+@import "gamelist.css";
+@import "videoupload.css";
+@import "walladdtag.css";
+@import "member.css";

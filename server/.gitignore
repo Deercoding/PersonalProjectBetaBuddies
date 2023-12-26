@@ -1,0 +1,6 @@
+node_modules
+/build
+.env
+/public/images
+/public/videos
+/utils/http_ca.crt
