@@ -73,7 +73,7 @@ const HomeComponent = () => {
   const handleSearch = () => {
     setIsLoading(true);
     fetch(
-      `${process.env.REACT_APP_SERVER_URL}api/search?official_level=${officialLevel}&gym=${gym}&searchtags=${input}`
+      `${process.env.REACT_APP_SERVER_URL}api/search/2.0?official_level=${officialLevel}&gym=${gym}&searchtags=${input}`
     )
       .then((response) => response.json())
       .then((data) => {
