@@ -4,4 +4,4 @@ node_modules
 /public/images
 /public/videos
 /utils/http_ca.crt
-/.idea
+.idea/
