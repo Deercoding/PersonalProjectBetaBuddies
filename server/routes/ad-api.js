@@ -33,8 +33,7 @@ router.get("/", async (req, res) => {
     adResult = await redisClient.get("ad_location_id_" + ad_location_id);
 
     if (!adResult) {
-      console.log("No cache");
-      let today = new Date(Date.now()); //UTC
+      let today = new Date();
       adResult = await checkAdBetweenDate(ad_location_id, today);
       if (adResult.length > 0) {
         redisClient.setEx(

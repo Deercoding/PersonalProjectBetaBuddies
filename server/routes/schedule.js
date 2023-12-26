@@ -26,7 +26,6 @@ router.use(express.urlencoded({ extended: true }));
 
 router.get("/", async (req, res) => {
   try {
-    // schedule ad status
     const ad_location = await getAdLocationId();
     for (let i = 0; i < ad_location.length; i++) {
       let ad_location_id = ad_location[i].ad_location_id;
@@ -47,16 +46,14 @@ router.get("/", async (req, res) => {
         await redisClient.connect();
       }
     }
-    // update game status
+
     const today = new Date(Date.now());
     await updateGameStatus(today);
     await updateGameStatusFuture(today);
     await updatePastGameStatus(today);
 
-    // search keyword
     await searchKeyword();
 
-    //check if need to update redis
     let yesterday = new Date(Date.now());
     yesterday.setDate(yesterday.getDate() - 1);
     if (today.getMonth() != yesterday.getMonth()) {
@@ -77,7 +74,6 @@ router.get("/", async (req, res) => {
 
 router.get("/elastic", async (req, res) => {
   let myindex = "autocomplete-tagsearch-12030744";
-
   await createAutocompleteIndex(client, myindex);
 
   let dataset = fs
@@ -86,7 +82,6 @@ router.get("/elastic", async (req, res) => {
     .split("\n");
   dataset = dataset.map((item) => item.replace(/\r/g, ""));
   const datasetArray = [];
-
   for (const line of dataset) {
     if (line.trim() === "") {
       continue;
@@ -100,7 +95,6 @@ router.get("/elastic", async (req, res) => {
   const autosearch = await searchDocuments(client, myindex, "指");
   console.log(autosearch);
 
-  // test ik analyzer
   let iktest = await client.indices.analyze({
     body: {
       analyzer: "ik_max_word",

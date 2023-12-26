@@ -13,7 +13,6 @@ import {
 router.get("/", async (req, res) => {
   try {
     const { creator } = req.query;
-
     let gameBasicInfo = await getGameDashboard(creator);
 
     let gameInfo = [];
@@ -22,9 +21,9 @@ router.get("/", async (req, res) => {
       const gameId = game.game_id;
       const totalUsers = await getCompleteUsers(gameId);
       const completeWalls = await getCompleteWalls(gameId);
+
       let completeCount = 0;
       let incompleteCount = 0;
-
       totalUsers.forEach((item) => {
         if (item.is_complete === 1) {
           completeCount += item.total_users;
@@ -32,7 +31,6 @@ router.get("/", async (req, res) => {
           incompleteCount += item.total_users;
         }
       });
-
       const pieChartData = {
         labels: ["完成比賽", "未完成比賽"],
         datasets: [
@@ -57,7 +55,6 @@ router.get("/", async (req, res) => {
       const rawData = adClick.concat(gameAndUserClick);
 
       const uniqueDates = [...new Set(rawData.map((item) => item.date))].sort();
-
       const groupedData = rawData.reduce((acc, item) => {
         if (!acc[item.type]) {
           acc[item.type] = {};
@@ -66,19 +63,16 @@ router.get("/", async (req, res) => {
           (acc[item.type][item.date] || 0) + item.clickCount;
         return acc;
       }, {});
-
       const colors = {
         ad_click: "rgba(0, 0, 154, 1)",
         game_click: "rgba(0, 0, 0, 1)",
         user_join: "rgba(213, 52, 35, 1)",
       };
-
       const typeName = {
         ad_click: "廣告點擊",
         game_click: "挑戰賽點擊",
         user_join: "使用者參賽",
       };
-
       const datasets = Object.keys(groupedData).map((type) => {
         return {
           label: typeName[type],
@@ -88,8 +82,6 @@ router.get("/", async (req, res) => {
           borderWidth: 1,
         };
       });
-
-      // Final data structure for Chart.js
       const chartData = {
         labels: uniqueDates,
         datasets: datasets,
@@ -114,7 +106,6 @@ router.get("/", async (req, res) => {
 router.get("/adclick", async (req, res) => {
   try {
     const { ad_status_id } = req.query;
-
     if (!ad_status_id) {
       res.status(400).json("No ad click data");
     }
@@ -153,7 +144,6 @@ router.get("/adclick", async (req, res) => {
 router.get("/gameclick", async (req, res) => {
   try {
     const { game_id } = req.query;
-
     if (!game_id) {
       res.status(400).json("No game click data");
     }
@@ -189,68 +179,4 @@ router.get("/gameclick", async (req, res) => {
   }
 });
 
-router.get("/mockdata", async (req, res) => {
-  let game_id = "77";
-  let ad_status_id = "65";
-  let count = Math.floor(Math.random() * 30);
-  //mock data
-  // for (let i = 0; i < 13; i++) {
-  //   const anotherDay = new Date(Date.now());
-  //   anotherDay.setDate(anotherDay.getDate() - 10);
-  //   anotherDay.setDate(anotherDay.getDate() + i);
-
-  //   let formattedDate = anotherDay.toISOString().split("T")[0];
-  //   const saveClick = new Click({
-  //     searchId: game_id,
-  //     date: formattedDate,
-  //     type: "game_click",
-  //     clickCount: count,
-  //   });
-  //   await saveClick.save();
-  // }
-
-  //add certain day
-  // const anotherDay = new Date("2023-12-17");
-  // let formattedDate = anotherDay.toISOString().split("T")[0];
-  // await Click.updateOne(
-  //   { date: formattedDate, searchId: game_id, type: "game_click" },
-  //   { $inc: { clickCount: 8 } },
-  //   { new: true }
-  // );
-
-  //mock data
-  // const anotherDay = new Date("2023-12-10");
-  // let formattedDate = anotherDay.toISOString().split("T")[0];
-  // const saveClick = new Click({
-  //   searchId: ad_status_id,
-  //   date: formattedDate,
-  //   type: "ad_click",
-  //   clickCount: 36,
-  // });
-  // await saveClick.save();
-
-  // for (let i = 0; i < 10; i++) {
-  //   const anotherDay = new Date(Date.now());
-  //   anotherDay.setDate(anotherDay.getDate() + i);
-  //   let formattedDate = anotherDay.toISOString().split("T")[0];
-  //   const saveClick = new Click({
-  //     searchId: game_id,
-  //     date: formattedDate,
-  //     type: "user_join",
-  //     clickCount: count,
-  //   });
-  //   await saveClick.save();
-  // }
-  // const anotherDay = new Date("2023-12-14");
-  // let formattedDate = anotherDay.toISOString().split("T")[0];
-  // const saveClick = new Click({
-  //   searchId: game_id,
-  //   date: formattedDate,
-  //   type: "user_join",
-  //   clickCount:1,
-  // });
-  // await saveClick.save();
-
-  res.status(200).json("Add mock data success");
-});
 export default router;
