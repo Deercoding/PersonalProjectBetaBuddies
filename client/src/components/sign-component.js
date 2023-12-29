@@ -149,12 +149,19 @@ const SignComponent = ({}) => {
 
               <div className="mb-3">
                 <label htmlFor="email">Email</label>
-                <Input type="email" id="email" />
+                <Input
+                  type="email"
+                  id="email"
+                  defaultValue="smallclimbing@email.com"
+                />
               </div>
 
               <div className="mb-3">
                 <label htmlFor="password">密碼</label>
-                <Input.Password id="password" />
+                <Input.Password
+                  id="password"
+                  defaultValue="boulclimsmall0123"
+                />
               </div>
               <br></br>
 
