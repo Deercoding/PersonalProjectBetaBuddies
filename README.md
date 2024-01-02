@@ -2,7 +2,8 @@
 
 BetaBuddies (攀岩石樂樂) 
 A platform designed for bouldering enthusiasts to exchange insights on bouldering problems.
-[[Click to see Website](https://deercodeweb.com/)]
+* [[Click to see Website](https://deercodeweb.com/)]
+* [[Click to see Demo](https://youtu.be/p6bnUINLLmQ)]
 
 ## Server structure
 
