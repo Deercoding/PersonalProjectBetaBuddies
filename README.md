@@ -16,7 +16,7 @@ A platform designed for bouldering enthusiasts to exchange insights on boulderin
 * Others: RESTful API, Socket.IO, NGINX
 
 ## Entity Relationship Diagram 
-![betabuddies entity relationship drawio](https://github.com/Deercoding/PersonalProjectBetaBuddies/assets/106392618/63fb6cb1-c08e-430b-bf77-28c8872fe2ab)
+![er model betabuddies drawio](https://github.com/Deercoding/PersonalProjectBetaBuddies/assets/106392618/134c52fb-8e84-4ca8-9137-d3a88e0253d0)
 
 
 ## Features
